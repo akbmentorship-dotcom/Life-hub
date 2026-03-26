@@ -515,84 +515,67 @@ if (!text) return;
 DB.push(‘todos’, { id: uid(), text, area: document.getElementById(‘td-area’).value, date: document.getElementById(‘td-date’).value, done: false });
 closeModal();
 }
-</script>
-
-<script>
 // ═══════════════════════════════════════════════════════
 // FAITH PAGE
 // ═══════════════════════════════════════════════════════
 function renderFaith(scr) {
-  const tab = pageState.tab || 'log';
-  const entries = DB.get('faith_log', []).slice().reverse();
-  const streak = calcFaithStreak();
+const tab = pageState.tab || ‘log’;
+const entries = DB.get(‘faith_log’, []).slice().reverse();
+const streak = calcFaithStreak();
 
-  let html = `<div class="pg-head"><div class="pg-title">Faith</div><div class="pg-sub">Bible · Prayer · Growth</div></div>`;
-  html += `<div class="tab-bar">
-    <button class="tab-btn ${tab==='log'?'active':''}" onclick="goPage('faith',{tab:'log'})">Log</button>
-    <button class="tab-btn ${tab==='history'?'active':''}" onclick="goPage('faith',{tab:'history'})">History</button>
-    <button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('faith',{tab:'reminders'})">Reminders</button>
+let html = `<div class="pg-head"><div class="pg-title">Faith</div><div class="pg-sub">Bible · Prayer · Growth</div></div>`;
+html += `<div class="tab-bar">
+<button class="tab-btn ${tab==='log'?'active':''}" onclick="goPage('faith',{tab:'log'})">Log</button>
+<button class="tab-btn ${tab==='history'?'active':''}" onclick="goPage('faith',{tab:'history'})">History</button>
+<button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('faith',{tab:'reminders'})">Reminders</button>
+
   </div>`;
 
-  if (tab === 'log') {
-    const today_done = entries.find(e => e.date === today());
-    html += `<div class="sec">
-      <div style="display:flex;gap:10px;margin-bottom:16px">
-        <div class="streak-badge"><span class="streak-num">${streak}</span><div class="streak-txt">Day<br>Streak</div></div>
-        <div style="flex:1"></div>
-        <button class="btn btn-or" onclick="openFaithEntry()">${today_done ? '✓ Edit Today' : '+ Log Today'}</button>
-      </div>`;
-    // week dots
-    const wdays = weekDays(); const DAY_LBLS=['M','T','W','T','F','S','S'];
-    html += `<div class="week-dots">`;
-    wdays.forEach((wd,i)=>{
-      const has = entries.find(e=>e.date===wd);
-      const isT = wd===today();
-      html+=`<div class="wdot"><div class="wdot-lbl">${DAY_LBLS[i]}</div><div class="wdot-circle${has?' filled':''}${isT&&!has?' today-dot':''}">${has?'✓':''}</div></div>`;
-    });
-    html += `</div>`;
-    if (today_done) {
-      html += `<div class="card"><div class="log-date">Today · ${today_done.book}</div><div class="log-text">${today_done.notes || 'No notes recorded.'}</div></div>`;
-    }
-    html += `</div>`;
-  } else if (tab === 'history') {
-    html += `<div class="sec">`;
-    if (entries.length === 0) html += `<div class="empty"><div class="empty-icon">✦</div>No entries yet</div>`;
-    entries.forEach(e => {
-      html += `<div class="log-entry"><div class="log-date">${fmtDate(e.date)} · ${e.book || ''}</div><div class="log-text">${e.notes || '—'}</div></div>`;
-    });
-    html += `</div>`;
-  } else if (tab === 'reminders') {
-    html += renderRemindersTab('Faith');
-  }
+if (tab === ‘log’) {
+const today_done = entries.find(e => e.date === today());
+html += `<div class="sec"> <div style="display:flex;gap:10px;margin-bottom:16px"> <div class="streak-badge"><span class="streak-num">${streak}</span><div class="streak-txt">Day<br>Streak</div></div> <div style="flex:1"></div> <button class="btn btn-or" onclick="openFaithEntry()">${today_done ? '✓ Edit Today' : '+ Log Today'}</button> </div>`;
+// week dots
+const wdays = weekDays(); const DAY_LBLS=[‘M’,‘T’,‘W’,‘T’,‘F’,‘S’,‘S’];
+html += `<div class="week-dots">`;
+wdays.forEach((wd,i)=>{
+const has = entries.find(e=>e.date===wd);
+const isT = wd===today();
+html+=`<div class="wdot"><div class="wdot-lbl">${DAY_LBLS[i]}</div><div class="wdot-circle${has?' filled':''}${isT&&!has?' today-dot':''}">${has?'✓':''}</div></div>`;
+});
+html += `</div>`;
+if (today_done) {
+html += `<div class="card"><div class="log-date">Today · ${today_done.book}</div><div class="log-text">${today_done.notes || 'No notes recorded.'}</div></div>`;
+}
+html += `</div>`;
+} else if (tab === ‘history’) {
+html += `<div class="sec">`;
+if (entries.length === 0) html += `<div class="empty"><div class="empty-icon">✦</div>No entries yet</div>`;
+entries.forEach(e => {
+html += `<div class="log-entry"><div class="log-date">${fmtDate(e.date)} · ${e.book || ''}</div><div class="log-text">${e.notes || '—'}</div></div>`;
+});
+html += `</div>`;
+} else if (tab === ‘reminders’) {
+html += renderRemindersTab(‘Faith’);
+}
 
-  scr.innerHTML = html;
-  if (tab === 'log') scr.innerHTML += `<button class="fab" onclick="openFaithEntry()">+</button>`;
+scr.innerHTML = html;
+if (tab === ‘log’) scr.innerHTML += `<button class="fab" onclick="openFaithEntry()">+</button>`;
 }
 
 function calcFaithStreak() {
-  const entries = DB.get('faith_log', []).map(e=>e.date).sort((a,b)=>b.localeCompare(a));
-  let streak = 0, cursor = new Date(today()+'T00:00:00');
-  for (let i=0;i<365;i++) {
-    const k = cursor.toISOString().split('T')[0];
-    if (entries.includes(k)) { streak++; cursor.setDate(cursor.getDate()-1); }
-    else break;
-  }
-  return streak;
+const entries = DB.get(‘faith_log’, []).map(e=>e.date).sort((a,b)=>b.localeCompare(a));
+let streak = 0, cursor = new Date(today()+‘T00:00:00’);
+for (let i=0;i<365;i++) {
+const k = cursor.toISOString().split(‘T’)[0];
+if (entries.includes(k)) { streak++; cursor.setDate(cursor.getDate()-1); }
+else break;
+}
+return streak;
 }
 
 function openFaithEntry() {
-  const existing = DB.get('faith_log',[]).find(e=>e.date===today()) || {};
-  openModal(`
-    <div class="modal-title">Bible Reading</div>
-    <div class="field"><label>Date</label><input class="inp" type="date" id="fe-date" value="${existing.date||today()}"></div>
-    <div class="field"><label>Book / Chapter</label><input class="inp" id="fe-book" placeholder="e.g. Proverbs 4" value="${existing.book||''}"></div>
-    <div class="field"><label>Takeaways / Notes</label><textarea class="inp" id="fe-notes" placeholder="What stood out today?">${existing.notes||''}</textarea></div>
-
-```
-<button class="btn btn-or btn-full" onclick="saveFaithEntry('${existing.id||''}')">Save</button>
-```
-
-`);
+const existing = DB.get(‘faith_log’,[]).find(e=>e.date===today()) || {};
+openModal(`<div class="modal-title">Bible Reading</div> <div class="field"><label>Date</label><input class="inp" type="date" id="fe-date" value="${existing.date||today()}"></div> <div class="field"><label>Book / Chapter</label><input class="inp" id="fe-book" placeholder="e.g. Proverbs 4" value="${existing.book||''}"></div> <div class="field"><label>Takeaways / Notes</label><textarea class="inp" id="fe-notes" placeholder="What stood out today?">${existing.notes||''}</textarea></div> <button class="btn btn-or btn-full" onclick="saveFaithEntry('${existing.id||''}')">Save</button>`);
 }
 
 function saveFaithEntry(existingId) {
@@ -698,142 +681,116 @@ function saveWorkoutLog(day) {
 DB.push(‘workout_history’, { id: uid(), date: today(), day, notes: document.getElementById(‘wl-notes’).value.trim() });
 closeModal();
 }
-</script>
-
-<script>
 // ═══════════════════════════════════════════════════════
 // FAMILY PAGE (Marriage + Parenting)
 // ═══════════════════════════════════════════════════════
 function renderFamily(scr) {
-  const sub = pageState.sub || 'marriage';
+const sub = pageState.sub || ‘marriage’;
 
-  let html = `<div class="pg-head"><div class="pg-title">Family</div><div class="pg-sub">Marriage · Parenting</div></div>`;
-  html += `<div class="tab-bar">
-    <button class="tab-btn ${sub==='marriage'?'active':''}" onclick="goPage('family',{sub:'marriage'})">Marriage</button>
-    <button class="tab-btn ${sub==='parenting'?'active':''}" onclick="goPage('family',{sub:'parenting'})">Parenting</button>
+let html = `<div class="pg-head"><div class="pg-title">Family</div><div class="pg-sub">Marriage · Parenting</div></div>`;
+html += `<div class="tab-bar">
+<button class="tab-btn ${sub==='marriage'?'active':''}" onclick="goPage('family',{sub:'marriage'})">Marriage</button>
+<button class="tab-btn ${sub==='parenting'?'active':''}" onclick="goPage('family',{sub:'parenting'})">Parenting</button>
+
   </div>`;
 
-  if (sub === 'marriage') {
-    html += renderMarriage();
-  } else {
-    html += renderParenting();
-  }
+if (sub === ‘marriage’) {
+html += renderMarriage();
+} else {
+html += renderParenting();
+}
 
-  scr.innerHTML = html;
+scr.innerHTML = html;
 }
 
 function renderMarriage() {
-  const tab = pageState.mtab || 'notes';
-  let html = `<div class="tab-bar" style="padding-top:0">
-    <button class="tab-btn ${tab==='notes'?'active':''}" onclick="pageState.mtab='notes';goPage('family',{sub:'marriage',mtab:'notes'})">Journal</button>
-    <button class="tab-btn ${tab==='gifts'?'active':''}" onclick="pageState.mtab='gifts';goPage('family',{sub:'marriage',mtab:'gifts'})">Gift Ideas</button>
-    <button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('family',{sub:'marriage',mtab:'reminders'})">Reminders</button>
+const tab = pageState.mtab || ‘notes’;
+let html = `<div class="tab-bar" style="padding-top:0">
+<button class="tab-btn ${tab==='notes'?'active':''}" onclick="pageState.mtab='notes';goPage('family',{sub:'marriage',mtab:'notes'})">Journal</button>
+<button class="tab-btn ${tab==='gifts'?'active':''}" onclick="pageState.mtab='gifts';goPage('family',{sub:'marriage',mtab:'gifts'})">Gift Ideas</button>
+<button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('family',{sub:'marriage',mtab:'reminders'})">Reminders</button>
+
   </div>`;
 
-  if (tab==='notes') {
-    const entries = DB.get('marriage_notes', []).slice().reverse();
-    html += `<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openMarriageNote()">+ Add</button></div>`;
-    if (entries.length===0) html+=`<div class="empty"><div class="empty-icon">♡</div>Start logging conversations</div>`;
-    entries.forEach(e=>{
-      html+=`<div class="log-entry">
-        <div class="card-row"><div class="log-date">${fmtDate(e.date)} · ${e.type||'Note'}</div><button class="btn btn-sm btn-ghost" onclick="deleteMarriageNote('${e.id}')">×</button></div>
-        <div class="log-text" style="margin-top:4px">${e.text}</div></div>`;
-    });
-    html+=`</div>`;
-  } else if (tab==='gifts') {
-    const gifts = DB.get('marriage_gifts', []);
-    html += `<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openAddGift('marriage')">+ Idea</button></div>`;
-    if (gifts.length===0) html+=`<div class="empty"><div class="empty-icon">🎁</div>No gift ideas yet</div>`;
-    gifts.forEach(g=>{
-      html+=`<div class="card"><div class="card-row"><div class="card-title">${g.text}</div><div style="display:flex;gap:6px">
-        <button class="btn btn-sm ${g.bought?'btn-or':'btn-ghost'}" onclick="toggleGift('marriage','${g.id}')">${g.bought?'Got it':'Buy'}</button>
-        <button class="btn btn-sm btn-ghost" onclick="deleteGift('marriage','${g.id}')">×</button>
-      </div></div>${g.notes?`<div class="card-sub" style="margin-top:4px">${g.notes}</div>`:''}</div>`;
-    });
-    html+=`</div>`;
-  } else {
-    html += renderRemindersTab('Marriage');
-  }
-  return html;
+if (tab===‘notes’) {
+const entries = DB.get(‘marriage_notes’, []).slice().reverse();
+html += `<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openMarriageNote()">+ Add</button></div>`;
+if (entries.length===0) html+=`<div class="empty"><div class="empty-icon">♡</div>Start logging conversations</div>`;
+entries.forEach(e=>{
+html+=`<div class="log-entry"> <div class="card-row"><div class="log-date">${fmtDate(e.date)} · ${e.type||'Note'}</div><button class="btn btn-sm btn-ghost" onclick="deleteMarriageNote('${e.id}')">×</button></div> <div class="log-text" style="margin-top:4px">${e.text}</div></div>`;
+});
+html+=`</div>`;
+} else if (tab===‘gifts’) {
+const gifts = DB.get(‘marriage_gifts’, []);
+html += `<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openAddGift('marriage')">+ Idea</button></div>`;
+if (gifts.length===0) html+=`<div class="empty"><div class="empty-icon">🎁</div>No gift ideas yet</div>`;
+gifts.forEach(g=>{
+html+=`<div class="card"><div class="card-row"><div class="card-title">${g.text}</div><div style="display:flex;gap:6px"> <button class="btn btn-sm ${g.bought?'btn-or':'btn-ghost'}" onclick="toggleGift('marriage','${g.id}')">${g.bought?'Got it':'Buy'}</button> <button class="btn btn-sm btn-ghost" onclick="deleteGift('marriage','${g.id}')">×</button> </div></div>${g.notes?`<div class="card-sub" style="margin-top:4px">${g.notes}</div>`:''}</div>`;
+});
+html+=`</div>`;
+} else {
+html += renderRemindersTab(‘Marriage’);
+}
+return html;
 }
 
 function renderParenting() {
-  const tab = pageState.ptab || 'notes';
-  const kids = DB.get('kids', ['Child 1','Child 2','Child 3']);
-  const kidIdx = pageState.kidIdx !== undefined ? pageState.kidIdx : 0;
-  const kid = kids[kidIdx];
+const tab = pageState.ptab || ‘notes’;
+const kids = DB.get(‘kids’, [‘Child 1’,‘Child 2’,‘Child 3’]);
+const kidIdx = pageState.kidIdx !== undefined ? pageState.kidIdx : 0;
+const kid = kids[kidIdx];
 
-  let html = `<div class="sec" style="padding-bottom:4px"><div style="display:flex;gap:6px;flex-wrap:wrap">`;
-  kids.forEach((k,i)=>{
-    html+=`<button class="btn btn-sm ${i===kidIdx?'btn-or':'btn-ghost'}" onclick="goPage('family',{sub:'parenting',kidIdx:${i},ptab:'${tab}'})">${k}</button>`;
-  });
-  html+=`<button class="btn btn-sm btn-ghost" onclick="openEditKids()">✎</button></div></div>`;
+let html = `<div class="sec" style="padding-bottom:4px"><div style="display:flex;gap:6px;flex-wrap:wrap">`;
+kids.forEach((k,i)=>{
+html+=`<button class="btn btn-sm ${i===kidIdx?'btn-or':'btn-ghost'}" onclick="goPage('family',{sub:'parenting',kidIdx:${i},ptab:'${tab}'})">${k}</button>`;
+});
+html+=`<button class="btn btn-sm btn-ghost" onclick="openEditKids()">✎</button></div></div>`;
 
-  html += `<div class="tab-bar" style="padding-top:8px">
-    <button class="tab-btn ${tab==='notes'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'notes'})">Notes</button>
-    <button class="tab-btn ${tab==='gifts'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'gifts'})">Gifts</button>
-    <button class="tab-btn ${tab==='sizes'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'sizes'})">Sizes</button>
-    <button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'reminders'})">Reminders</button>
+html += `<div class="tab-bar" style="padding-top:8px">
+<button class="tab-btn ${tab==='notes'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'notes'})">Notes</button>
+<button class="tab-btn ${tab==='gifts'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'gifts'})">Gifts</button>
+<button class="tab-btn ${tab==='sizes'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'sizes'})">Sizes</button>
+<button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'reminders'})">Reminders</button>
+
   </div>`;
 
-  const noteKey = `kid_notes_${kidIdx}`;
-  const giftKey = `kid_gifts_${kidIdx}`;
-  const sizeKey = `kid_sizes_${kidIdx}`;
+const noteKey = `kid_notes_${kidIdx}`;
+const giftKey = `kid_gifts_${kidIdx}`;
+const sizeKey = `kid_sizes_${kidIdx}`;
 
-  if (tab==='notes') {
-    const entries = DB.get(noteKey,[]).slice().reverse();
-    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openKidNote(${kidIdx})">+ Note</button></div>`;
-    if (entries.length===0) html+=`<div class="empty"><div class="empty-icon">◉</div>No notes for ${kid} yet</div>`;
-    entries.forEach(e=>{
-      html+=`<div class="log-entry">
-        <div class="card-row"><div class="log-date">${fmtDate(e.date)} · ${e.type||'Note'}</div><button class="btn btn-sm btn-ghost" onclick="deleteKidNote(${kidIdx},'${e.id}')">×</button></div>
-        <div class="log-text" style="margin-top:4px">${e.text}</div></div>`;
-    });
-    html+=`</div>`;
-  } else if (tab==='gifts') {
-    const gifts = DB.get(giftKey,[]);
-    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openAddGift('${giftKey}')">+ Idea</button></div>`;
-    if (gifts.length===0) html+=`<div class="empty"><div class="empty-icon">🎁</div>No gift ideas for ${kid}</div>`;
-    gifts.forEach(g=>{
-      html+=`<div class="card"><div class="card-row"><div class="card-title">${g.text}</div><div style="display:flex;gap:6px">
-        <button class="btn btn-sm ${g.bought?'btn-or':'btn-ghost'}" onclick="toggleGift('${giftKey}','${g.id}')">${g.bought?'Got it':'Buy'}</button>
-        <button class="btn btn-sm btn-ghost" onclick="deleteGift('${giftKey}','${g.id}')">×</button>
-      </div></div>${g.notes?`<div class="card-sub" style="margin-top:4px">${g.notes}</div>`:''}</div>`;
-    });
-    html+=`</div>`;
-  } else if (tab==='sizes') {
-    const sizes = DB.get(sizeKey, {});
-    const sizeFields = ['Shirt','Pants','Shoes','Jacket','Hat'];
-    html+=`<div class="sec"><div class="card">`;
-    sizeFields.forEach(f=>{
-      const key2 = f.toLowerCase();
-      html+=`<div class="exercise-row">
-        <div class="ex-name">${f}</div>
-        <input class="inp" style="width:90px;text-align:right;padding:4px 8px" value="${sizes[key2]||''}" placeholder="—"
-          onchange="updateKidSize(${kidIdx},'${key2}',this.value)">
-      </div>`;
-    });
-    html+=`</div></div>`;
-  } else {
-    html += renderRemindersTab(`Kid_${kidIdx}`);
-  }
-  return html;
+if (tab===‘notes’) {
+const entries = DB.get(noteKey,[]).slice().reverse();
+html+=`<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openKidNote(${kidIdx})">+ Note</button></div>`;
+if (entries.length===0) html+=`<div class="empty"><div class="empty-icon">◉</div>No notes for ${kid} yet</div>`;
+entries.forEach(e=>{
+html+=`<div class="log-entry"> <div class="card-row"><div class="log-date">${fmtDate(e.date)} · ${e.type||'Note'}</div><button class="btn btn-sm btn-ghost" onclick="deleteKidNote(${kidIdx},'${e.id}')">×</button></div> <div class="log-text" style="margin-top:4px">${e.text}</div></div>`;
+});
+html+=`</div>`;
+} else if (tab===‘gifts’) {
+const gifts = DB.get(giftKey,[]);
+html+=`<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openAddGift('${giftKey}')">+ Idea</button></div>`;
+if (gifts.length===0) html+=`<div class="empty"><div class="empty-icon">🎁</div>No gift ideas for ${kid}</div>`;
+gifts.forEach(g=>{
+html+=`<div class="card"><div class="card-row"><div class="card-title">${g.text}</div><div style="display:flex;gap:6px"> <button class="btn btn-sm ${g.bought?'btn-or':'btn-ghost'}" onclick="toggleGift('${giftKey}','${g.id}')">${g.bought?'Got it':'Buy'}</button> <button class="btn btn-sm btn-ghost" onclick="deleteGift('${giftKey}','${g.id}')">×</button> </div></div>${g.notes?`<div class="card-sub" style="margin-top:4px">${g.notes}</div>`:''}</div>`;
+});
+html+=`</div>`;
+} else if (tab===‘sizes’) {
+const sizes = DB.get(sizeKey, {});
+const sizeFields = [‘Shirt’,‘Pants’,‘Shoes’,‘Jacket’,‘Hat’];
+html+=`<div class="sec"><div class="card">`;
+sizeFields.forEach(f=>{
+const key2 = f.toLowerCase();
+html+=`<div class="exercise-row"> <div class="ex-name">${f}</div> <input class="inp" style="width:90px;text-align:right;padding:4px 8px" value="${sizes[key2]||''}" placeholder="—" onchange="updateKidSize(${kidIdx},'${key2}',this.value)"> </div>`;
+});
+html+=`</div></div>`;
+} else {
+html += renderRemindersTab(`Kid_${kidIdx}`);
+}
+return html;
 }
 
 function openMarriageNote() {
-  openModal(`
-    <div class="modal-title">Marriage Journal</div>
-    <div class="field"><label>Date</label><input class="inp" type="date" id="mn-date" value="${today()}"></div>
-    <div class="field"><label>Type</label>
-      <select class="inp" id="mn-type"><option>Conversation</option><option>Counseling Session</option><option>Date Night</option><option>Gratitude</option><option>Note</option></select>
-    </div>
-    <div class="field"><label>Notes</label><textarea class="inp" id="mn-text" placeholder="What did you talk about?"></textarea></div>
-
-```
-<button class="btn btn-or btn-full" onclick="saveMarriageNote()">Save</button>
-```
-
-`);
+openModal(`<div class="modal-title">Marriage Journal</div> <div class="field"><label>Date</label><input class="inp" type="date" id="mn-date" value="${today()}"></div> <div class="field"><label>Type</label> <select class="inp" id="mn-type"><option>Conversation</option><option>Counseling Session</option><option>Date Night</option><option>Gratitude</option><option>Note</option></select> </div> <div class="field"><label>Notes</label><textarea class="inp" id="mn-text" placeholder="What did you talk about?"></textarea></div> <button class="btn btn-or btn-full" onclick="saveMarriageNote()">Save</button>`);
 }
 function saveMarriageNote() {
 DB.push(‘marriage_notes’, {id:uid(),date:document.getElementById(‘mn-date’).value,type:document.getElementById(‘mn-type’).value,text:document.getElementById(‘mn-text’).value.trim()});
@@ -873,113 +830,76 @@ function saveKids(len) {
 const kids = Array.from({length:len},(_,i)=>document.getElementById(`kid-${i}`).value.trim()||`Child ${i+1}`);
 DB.set(‘kids’,kids); closeModal();
 }
-</script>
-
-<script>
 // ═══════════════════════════════════════════════════════
 // BIZ PAGE (AKB Pipeline + Customers + Content)
 // ═══════════════════════════════════════════════════════
 function renderBiz(scr) {
-  const sub = pageState.sub || 'pipeline';
-  let html = `<div class="pg-head"><div class="pg-title">Biz</div><div class="pg-sub">AKB · Pipeline · Content</div></div>`;
-  html += `<div class="tab-bar">
-    <button class="tab-btn ${sub==='pipeline'?'active':''}" onclick="goPage('biz',{sub:'pipeline'})">Pipeline</button>
-    <button class="tab-btn ${sub==='customers'?'active':''}" onclick="goPage('biz',{sub:'customers'})">Customers</button>
-    <button class="tab-btn ${sub==='content'?'active':''}" onclick="goPage('biz',{sub:'content'})">Content</button>
+const sub = pageState.sub || ‘pipeline’;
+let html = `<div class="pg-head"><div class="pg-title">Biz</div><div class="pg-sub">AKB · Pipeline · Content</div></div>`;
+html += `<div class="tab-bar">
+<button class="tab-btn ${sub==='pipeline'?'active':''}" onclick="goPage('biz',{sub:'pipeline'})">Pipeline</button>
+<button class="tab-btn ${sub==='customers'?'active':''}" onclick="goPage('biz',{sub:'customers'})">Customers</button>
+<button class="tab-btn ${sub==='content'?'active':''}" onclick="goPage('biz',{sub:'content'})">Content</button>
+
   </div>`;
 
-  if (sub==='pipeline') html += renderPipeline();
-  else if (sub==='customers') html += renderCustomers();
-  else html += renderContent();
+if (sub===‘pipeline’) html += renderPipeline();
+else if (sub===‘customers’) html += renderCustomers();
+else html += renderContent();
 
-  scr.innerHTML = html;
+scr.innerHTML = html;
 
-  // FAB
-  if (sub==='pipeline') scr.innerHTML += `<button class="fab" onclick="openAddContact()">+</button>`;
-  else if (sub==='customers') scr.innerHTML += `<button class="fab" onclick="openAddCustomer()">+</button>`;
+// FAB
+if (sub===‘pipeline’) scr.innerHTML += `<button class="fab" onclick="openAddContact()">+</button>`;
+else if (sub===‘customers’) scr.innerHTML += `<button class="fab" onclick="openAddCustomer()">+</button>`;
 }
 
 // ─── PIPELINE ───────────────────────────────────────────
 function renderPipeline() {
-  const ptab = pageState.ptab || 'contacts';
-  let html = `<div class="tab-bar" style="padding-top:0">
-    <button class="tab-btn ${ptab==='contacts'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'contacts'})">Contacts</button>
-    <button class="tab-btn ${ptab==='daily'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'daily'})">Daily Log</button>
-    <button class="tab-btn ${ptab==='reminders'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'reminders'})">Reminders</button>
+const ptab = pageState.ptab || ‘contacts’;
+let html = `<div class="tab-bar" style="padding-top:0">
+<button class="tab-btn ${ptab==='contacts'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'contacts'})">Contacts</button>
+<button class="tab-btn ${ptab==='daily'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'daily'})">Daily Log</button>
+<button class="tab-btn ${ptab==='reminders'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'reminders'})">Reminders</button>
+
   </div>`;
 
-  if (ptab==='contacts') {
-    const contacts = DB.get('pipeline_contacts',[]);
-    const filter = pageState.stageFilter || 'all';
-    const stages = [{id:'all',label:'All'},{id:'?',label:'? Maybe'},{id:'✓',label:'✓ Yes'},{id:'✗',label:'✗ No'}];
-    html += `<div class="sec"><div style="display:flex;gap:4px;margin-bottom:12px">`;
-    stages.forEach(s=>{
-      html+=`<button class="btn btn-sm ${filter===s.id?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'pipeline',ptab:'contacts',stageFilter:'${s.id}'})">${s.label}</button>`;
-    });
-    html+=`</div>`;
-    const filtered = filter==='all' ? contacts : contacts.filter(c=>c.stage===filter);
-    if (filtered.length===0) html+=`<div class="empty"><div class="empty-icon">◆</div>No contacts yet</div>`;
-    filtered.forEach(c=>{
-      const stageColor = c.stage==='✓'?'gr':c.stage==='✗'?'re':'ye';
-      html+=`<div class="contact-card" onclick="openContactDetail('${c.id}')">
-        <div class="contact-header">
-          <div class="contact-name">${c.name}</div>
-          <span class="pill pill-${stageColor}">${c.stage||'?'}</span>
-        </div>
-        <div class="contact-footer">
-          <span class="pill pill-gray">${c.platform||'IG'}</span>
-          ${c.dropSent?`<span class="pill pill-bl">Drop Sent</span>`:''}
-          ${c.reminder?`<div class="reminder-dot"></div><span style="font-size:10px;color:var(--ye)">${fmtDate(c.reminder)}</span>`:''}
-        </div>
-        ${c.notes?`<div class="contact-note">${c.notes.slice(0,80)}${c.notes.length>80?'…':''}</div>`:''}
-      </div>`;
-    });
-    html+=`</div>`;
-  } else if (ptab==='daily') {
-    const t = today();
-    const dayLog = DB.get(`pip_day_${t}`,{ig:0,bb:0,dtm:0});
-    html+=`<div class="sec"><div class="sec-lbl">Today's Activity</div><div class="stat-grid">
-      <div class="stat-card"><div class="stat-val" style="color:var(--or)">${dayLog.ig}</div><div class="stat-lbl">IG Convos</div>
-        <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('ig',-1)">−</button><button class="stat-btn" onclick="pipLog('ig',1)">+</button></div></div>
-      <div class="stat-card"><div class="stat-val" style="color:var(--bl)">${dayLog.bb}</div><div class="stat-lbl">Bumble Biz</div>
-        <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('bb',-1)">−</button><button class="stat-btn" onclick="pipLog('bb',1)">+</button></div></div>
-      <div class="stat-card"><div class="stat-val" style="color:var(--gr)">${dayLog.dtm}</div><div class="stat-lbl">Drop Msgs</div>
-        <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('dtm',-1)">−</button><button class="stat-btn" onclick="pipLog('dtm',1)">+</button></div></div>
-      <div class="stat-card"><div class="stat-val" style="color:var(--pu)">${dayLog.ig+dayLog.bb}</div><div class="stat-lbl">Total Convos</div></div>
-    </div></div>`;
-  } else {
-    html += renderRemindersTab('Pipeline');
-  }
-  return html;
+if (ptab===‘contacts’) {
+const contacts = DB.get(‘pipeline_contacts’,[]);
+const filter = pageState.stageFilter || ‘all’;
+const stages = [{id:‘all’,label:‘All’},{id:’?’,label:’? Maybe’},{id:‘✓’,label:‘✓ Yes’},{id:‘✗’,label:‘✗ No’}];
+html += `<div class="sec"><div style="display:flex;gap:4px;margin-bottom:12px">`;
+stages.forEach(s=>{
+html+=`<button class="btn btn-sm ${filter===s.id?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'pipeline',ptab:'contacts',stageFilter:'${s.id}'})">${s.label}</button>`;
+});
+html+=`</div>`;
+const filtered = filter===‘all’ ? contacts : contacts.filter(c=>c.stage===filter);
+if (filtered.length===0) html+=`<div class="empty"><div class="empty-icon">◆</div>No contacts yet</div>`;
+filtered.forEach(c=>{
+const stageColor = c.stage===‘✓’?‘gr’:c.stage===‘✗’?‘re’:‘ye’;
+html+=`<div class="contact-card" onclick="openContactDetail('${c.id}')"> <div class="contact-header"> <div class="contact-name">${c.name}</div> <span class="pill pill-${stageColor}">${c.stage||'?'}</span> </div> <div class="contact-footer"> <span class="pill pill-gray">${c.platform||'IG'}</span> ${c.dropSent?`<span class="pill pill-bl">Drop Sent</span>`:''} ${c.reminder?`<div class="reminder-dot"></div><span style="font-size:10px;color:var(--ye)">${fmtDate(c.reminder)}</span>`:''} </div> ${c.notes?`<div class="contact-note">${c.notes.slice(0,80)}${c.notes.length>80?’…’:’’}</div>`:''} </div>`;
+});
+html+=`</div>`;
+} else if (ptab===‘daily’) {
+const t = today();
+const dayLog = DB.get(`pip_day_${t}`,{ig:0,bb:0,dtm:0});
+html+=`<div class="sec"><div class="sec-lbl">Today's Activity</div><div class="stat-grid"> <div class="stat-card"><div class="stat-val" style="color:var(--or)">${dayLog.ig}</div><div class="stat-lbl">IG Convos</div> <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('ig',-1)">−</button><button class="stat-btn" onclick="pipLog('ig',1)">+</button></div></div> <div class="stat-card"><div class="stat-val" style="color:var(--bl)">${dayLog.bb}</div><div class="stat-lbl">Bumble Biz</div> <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('bb',-1)">−</button><button class="stat-btn" onclick="pipLog('bb',1)">+</button></div></div> <div class="stat-card"><div class="stat-val" style="color:var(--gr)">${dayLog.dtm}</div><div class="stat-lbl">Drop Msgs</div> <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('dtm',-1)">−</button><button class="stat-btn" onclick="pipLog('dtm',1)">+</button></div></div> <div class="stat-card"><div class="stat-val" style="color:var(--pu)">${dayLog.ig+dayLog.bb}</div><div class="stat-lbl">Total Convos</div></div> </div></div>`;
+} else {
+html += renderRemindersTab(‘Pipeline’);
+}
+return html;
 }
 
 function pipLog(field, delta) {
-  const t = today();
-  const key = `pip_day_${t}`;
-  const d = DB.get(key,{ig:0,bb:0,dtm:0});
-  d[field] = Math.max(0, (d[field]||0)+delta);
-  DB.set(key,d); render();
+const t = today();
+const key = `pip_day_${t}`;
+const d = DB.get(key,{ig:0,bb:0,dtm:0});
+d[field] = Math.max(0, (d[field]||0)+delta);
+DB.set(key,d); render();
 }
 
 function openAddContact() {
-  openModal(`
-    <div class="modal-title">New Contact</div>
-    <div class="field"><label>Name</label><input class="inp" id="nc-name" placeholder="Full name"></div>
-    <div class="field"><label>Platform</label>
-      <select class="inp" id="nc-platform"><option>IG</option><option>Bumble Biz</option><option>Other</option></select>
-    </div>
-    <div class="field"><label>Handle / Contact</label><input class="inp" id="nc-handle" placeholder="@username"></div>
-    <div class="field"><label>Initial Stage</label>
-      <select class="inp" id="nc-stage"><option value="?">? — Maybe</option><option value="✓">✓ — Yes</option><option value="✗">✗ — No</option></select>
-    </div>
-    <div class="field"><label>Notes</label><textarea class="inp" id="nc-notes" placeholder="First impressions, themes, signals..."></textarea></div>
-
-```
-<div class="field"><label>Reminder Date</label><input class="inp" type="date" id="nc-reminder"></div>
-<button class="btn btn-or btn-full" onclick="saveContact()">Add Contact</button>
-```
-
-`);
+openModal(`<div class="modal-title">New Contact</div> <div class="field"><label>Name</label><input class="inp" id="nc-name" placeholder="Full name"></div> <div class="field"><label>Platform</label> <select class="inp" id="nc-platform"><option>IG</option><option>Bumble Biz</option><option>Other</option></select> </div> <div class="field"><label>Handle / Contact</label><input class="inp" id="nc-handle" placeholder="@username"></div> <div class="field"><label>Initial Stage</label> <select class="inp" id="nc-stage"><option value="?">? — Maybe</option><option value="✓">✓ — Yes</option><option value="✗">✗ — No</option></select> </div> <div class="field"><label>Notes</label><textarea class="inp" id="nc-notes" placeholder="First impressions, themes, signals..."></textarea></div> <div class="field"><label>Reminder Date</label><input class="inp" type="date" id="nc-reminder"></div> <button class="btn btn-or btn-full" onclick="saveContact()">Add Contact</button>`);
 }
 
 function saveContact() {
@@ -1165,150 +1085,92 @@ function saveReminderFor(area, refId) {
 addReminder({text:document.getElementById(‘rem-text’).value.trim(),date:document.getElementById(‘rem-date’).value,area,refId});
 closeModal();
 }
-</script>
-
-<script>
 // ═══════════════════════════════════════════════════════
 // CONTENT HUB
 // ═══════════════════════════════════════════════════════
 function renderContent() {
-  const ctab = pageState.ctab || 'calendar';
-  let html = `<div class="tab-bar" style="padding-top:0">
-    <button class="tab-btn ${ctab==='calendar'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'calendar'})">Calendar</button>
-    <button class="tab-btn ${ctab==='filming'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'filming'})">Filming</button>
-    <button class="tab-btn ${ctab==='scripting'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'scripting'})">Scripting</button>
-    <button class="tab-btn ${ctab==='ideas'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'ideas'})">Ideas</button>
-    <button class="tab-btn ${ctab==='review'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'review'})">Review</button>
+const ctab = pageState.ctab || ‘calendar’;
+let html = `<div class="tab-bar" style="padding-top:0">
+<button class="tab-btn ${ctab==='calendar'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'calendar'})">Calendar</button>
+<button class="tab-btn ${ctab==='filming'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'filming'})">Filming</button>
+<button class="tab-btn ${ctab==='scripting'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'scripting'})">Scripting</button>
+<button class="tab-btn ${ctab==='ideas'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'ideas'})">Ideas</button>
+<button class="tab-btn ${ctab==='review'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'review'})">Review</button>
+
   </div>`;
 
-  if (ctab==='calendar') {
-    // posting schedule — list of scheduled posts
-    const posts = DB.get('content_posts',[]);
-    const pillarFilter = pageState.pillarFilter || 'all';
-    html += `<div class="sec"><div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px">
-      <button class="btn btn-sm ${pillarFilter==='all'?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'content',ctab:'calendar',pillarFilter:'all'})">All</button>`;
-    PILLARS.forEach(p=>{
-      html+=`<button class="btn btn-sm ${pillarFilter===p.id?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'content',ctab:'calendar',pillarFilter:'${p.id}'})">${p.icon} ${p.label}</button>`;
-    });
-    html+=`</div>`;
-    const filtered = pillarFilter==='all' ? posts : posts.filter(p=>p.pillar===pillarFilter);
-    const sorted = [...filtered].sort((a,b)=>a.date<b.date?-1:1);
-    if (sorted.length===0) html+=`<div class="empty"><div class="empty-icon">◆</div>No posts scheduled yet</div>`;
-    sorted.forEach(p=>{
-      const pl = PILLARS.find(x=>x.id===p.pillar);
-      const statusColor = p.status==='posted'?'gr':p.status==='filmed'?'bl':p.status==='scripted'?'pu':'gray';
-      html+=`<div class="contact-card" onclick="openEditPost('${p.id}')">
-        <div class="contact-header">
-          <div><div class="card-title">${p.title||'Untitled Post'}</div><div class="card-sub">${fmtDate(p.date)}</div></div>
-          <span class="pill pill-${statusColor}">${p.status||'Idea'}</span>
-        </div>
-        <div class="contact-footer">
-          ${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''}
-          ${p.format?`<span class="pill pill-gray">${p.format}</span>`:''}
-        </div>
-      </div>`;
-    });
-    html+=`</div>`;
-    // FAB for add post handled below
-    html+=`<div style="height:70px"></div>`;
-    // inject FAB via setTimeout workaround — we'll add it inline
-    setTimeout(()=>{
-      const scr2 = document.getElementById('screen');
-      if (scr2 && !document.getElementById('content-fab')) {
-        const fab = document.createElement('button');
-        fab.className='fab'; fab.id='content-fab'; fab.textContent='+'; fab.onclick=openAddPost;
-        scr2.appendChild(fab);
-      }
-    },10);
-  } else if (ctab==='filming') {
-    const filmDays = DB.get('filming_schedule',[]);
-    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddFilmDay()">+ Day</button></div>`;
-    if (filmDays.length===0) {
-      html+=`<div class="empty"><div class="empty-icon">◈</div>No filming days scheduled</div>`;
-    }
-    [...filmDays].sort((a,b)=>a.date<b.date?-1:1).forEach(d=>{
-      html+=`<div class="contact-card" onclick="openEditFilmDay('${d.id}')">
-        <div class="contact-header"><div class="card-title">${fmtDate(d.date)}</div><span class="pill pill-${d.type==='Edit'?'bl':d.type==='Post'?'gr':'or'}">${d.type||'Film'}</span></div>
-        ${d.notes?`<div class="contact-note">${d.notes}</div>`:''}
-      </div>`;
-    });
-    html+=`</div>`;
-  } else if (ctab==='scripting') {
-    const scripts = DB.get('content_scripts',[]);
-    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddScript()">+ Script</button></div>`;
-    if (scripts.length===0) html+=`<div class="empty"><div class="empty-icon">✦</div>No scripts yet</div>`;
-    scripts.slice().reverse().forEach(s=>{
-      const pl = PILLARS.find(x=>x.id===s.pillar);
-      html+=`<div class="contact-card" onclick="openViewScript('${s.id}')">
-        <div class="contact-header"><div class="card-title">${s.title||'Untitled'}</div><span class="pill pill-${s.status==='done'?'gr':'gray'}">${s.status||'Draft'}</span></div>
-        <div class="contact-footer">${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''}</div>
-      </div>`;
-    });
-    html+=`</div>`;
-  } else if (ctab==='ideas') {
-    const ideas = DB.get('content_ideas',[]);
-    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddIdea()">+ Idea</button></div>`;
-    if (ideas.length===0) html+=`<div class="empty"><div class="empty-icon">◉</div>No ideas yet</div>`;
-    ideas.slice().reverse().forEach(idea=>{
-      const pl = PILLARS.find(x=>x.id===idea.pillar);
-      html+=`<div class="contact-card" onclick="openEditIdea('${idea.id}')">
-        <div class="contact-header"><div class="card-title">${idea.text}</div>${idea.used?`<span class="pill pill-gr">Used</span>`:''}</div>
-        <div class="contact-footer">${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''}</div>
-      </div>`;
-    });
-    html+=`</div>`;
-  } else if (ctab==='review') {
-    const reviews = DB.get('content_reviews',[]).slice().reverse();
-    html+=`<div class="sec">
-      <div class="card" style="border-color:var(--ob);margin-bottom:12px">
-        <div class="card-title" style="color:var(--or)">Weekly Review Prompt</div>
-        <div style="font-size:12px;color:var(--t2);margin-top:8px;line-height:1.7">
-          1. What content performed best this week?<br>
-          2. Which pillar got the least coverage?<br>
-          3. What ideas came up you haven't scripted?<br>
-          4. Did you hit your filming/posting schedule?<br>
-          5. What's your priority for next week?
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div class="sec-lbl">Review Log</div>
-        <button class="btn btn-sm btn-or" onclick="openAddReview()">+ Review</button>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <span style="font-size:11px;color:var(--t2)">Set weekly reminder</span>
-        <button class="btn btn-sm btn-ghost" onclick="openAddReminderFor('Content','review','Weekly Review')">+ Reminder</button>
-      </div>`;
-    if (reviews.length===0) html+=`<div class="empty" style="padding:16px">No reviews yet</div>`;
-    reviews.forEach(r=>{
-      html+=`<div class="log-entry"><div class="log-date">${fmtDate(r.date)}</div><div class="log-text">${r.notes}</div></div>`;
-    });
-    html+=`</div>`;
-  }
+if (ctab===‘calendar’) {
+// posting schedule — list of scheduled posts
+const posts = DB.get(‘content_posts’,[]);
+const pillarFilter = pageState.pillarFilter || ‘all’;
+html += `<div class="sec"><div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px"> <button class="btn btn-sm ${pillarFilter==='all'?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'content',ctab:'calendar',pillarFilter:'all'})">All</button>`;
+PILLARS.forEach(p=>{
+html+=`<button class="btn btn-sm ${pillarFilter===p.id?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'content',ctab:'calendar',pillarFilter:'${p.id}'})">${p.icon} ${p.label}</button>`;
+});
+html+=`</div>`;
+const filtered = pillarFilter===‘all’ ? posts : posts.filter(p=>p.pillar===pillarFilter);
+const sorted = […filtered].sort((a,b)=>a.date<b.date?-1:1);
+if (sorted.length===0) html+=`<div class="empty"><div class="empty-icon">◆</div>No posts scheduled yet</div>`;
+sorted.forEach(p=>{
+const pl = PILLARS.find(x=>x.id===p.pillar);
+const statusColor = p.status===‘posted’?‘gr’:p.status===‘filmed’?‘bl’:p.status===‘scripted’?‘pu’:‘gray’;
+html+=`<div class="contact-card" onclick="openEditPost('${p.id}')"> <div class="contact-header"> <div><div class="card-title">${p.title||'Untitled Post'}</div><div class="card-sub">${fmtDate(p.date)}</div></div> <span class="pill pill-${statusColor}">${p.status||'Idea'}</span> </div> <div class="contact-footer"> ${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''} ${p.format?`<span class="pill pill-gray">${p.format}</span>`:''} </div> </div>`;
+});
+html+=`</div>`;
+// FAB for add post handled below
+html+=`<div style="height:70px"></div>`;
+// inject FAB via setTimeout workaround — we’ll add it inline
+setTimeout(()=>{
+const scr2 = document.getElementById(‘screen’);
+if (scr2 && !document.getElementById(‘content-fab’)) {
+const fab = document.createElement(‘button’);
+fab.className=‘fab’; fab.id=‘content-fab’; fab.textContent=’+’; fab.onclick=openAddPost;
+scr2.appendChild(fab);
+}
+},10);
+} else if (ctab===‘filming’) {
+const filmDays = DB.get(‘filming_schedule’,[]);
+html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddFilmDay()">+ Day</button></div>`;
+if (filmDays.length===0) {
+html+=`<div class="empty"><div class="empty-icon">◈</div>No filming days scheduled</div>`;
+}
+[…filmDays].sort((a,b)=>a.date<b.date?-1:1).forEach(d=>{
+html+=`<div class="contact-card" onclick="openEditFilmDay('${d.id}')"> <div class="contact-header"><div class="card-title">${fmtDate(d.date)}</div><span class="pill pill-${d.type==='Edit'?'bl':d.type==='Post'?'gr':'or'}">${d.type||'Film'}</span></div> ${d.notes?`<div class="contact-note">${d.notes}</div>`:''} </div>`;
+});
+html+=`</div>`;
+} else if (ctab===‘scripting’) {
+const scripts = DB.get(‘content_scripts’,[]);
+html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddScript()">+ Script</button></div>`;
+if (scripts.length===0) html+=`<div class="empty"><div class="empty-icon">✦</div>No scripts yet</div>`;
+scripts.slice().reverse().forEach(s=>{
+const pl = PILLARS.find(x=>x.id===s.pillar);
+html+=`<div class="contact-card" onclick="openViewScript('${s.id}')"> <div class="contact-header"><div class="card-title">${s.title||'Untitled'}</div><span class="pill pill-${s.status==='done'?'gr':'gray'}">${s.status||'Draft'}</span></div> <div class="contact-footer">${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''}</div> </div>`;
+});
+html+=`</div>`;
+} else if (ctab===‘ideas’) {
+const ideas = DB.get(‘content_ideas’,[]);
+html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddIdea()">+ Idea</button></div>`;
+if (ideas.length===0) html+=`<div class="empty"><div class="empty-icon">◉</div>No ideas yet</div>`;
+ideas.slice().reverse().forEach(idea=>{
+const pl = PILLARS.find(x=>x.id===idea.pillar);
+html+=`<div class="contact-card" onclick="openEditIdea('${idea.id}')"> <div class="contact-header"><div class="card-title">${idea.text}</div>${idea.used?`<span class="pill pill-gr">Used</span>`:''}</div> <div class="contact-footer">${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''}</div> </div>`;
+});
+html+=`</div>`;
+} else if (ctab===‘review’) {
+const reviews = DB.get(‘content_reviews’,[]).slice().reverse();
+html+=`<div class="sec"> <div class="card" style="border-color:var(--ob);margin-bottom:12px"> <div class="card-title" style="color:var(--or)">Weekly Review Prompt</div> <div style="font-size:12px;color:var(--t2);margin-top:8px;line-height:1.7"> 1. What content performed best this week?<br> 2. Which pillar got the least coverage?<br> 3. What ideas came up you haven't scripted?<br> 4. Did you hit your filming/posting schedule?<br> 5. What's your priority for next week? </div> </div> <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"> <div class="sec-lbl">Review Log</div> <button class="btn btn-sm btn-or" onclick="openAddReview()">+ Review</button> </div> <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"> <span style="font-size:11px;color:var(--t2)">Set weekly reminder</span> <button class="btn btn-sm btn-ghost" onclick="openAddReminderFor('Content','review','Weekly Review')">+ Reminder</button> </div>`;
+if (reviews.length===0) html+=`<div class="empty" style="padding:16px">No reviews yet</div>`;
+reviews.forEach(r=>{
+html+=`<div class="log-entry"><div class="log-date">${fmtDate(r.date)}</div><div class="log-text">${r.notes}</div></div>`;
+});
+html+=`</div>`;
+}
 
-  return html;
+return html;
 }
 
 function openAddPost() {
-  openModal(`
-    <div class="modal-title">Schedule Post</div>
-    <div class="field"><label>Title / Hook</label><input class="inp" id="po-title" placeholder="What's the post about?"></div>
-    <div class="field"><label>Date</label><input class="inp" type="date" id="po-date" value="${today()}"></div>
-    <div class="field"><label>Pillar</label><select class="inp" id="po-pillar">
-      ${PILLARS.map(p=>`<option value="${p.id}">${p.icon} ${p.label}</option>`).join('')}
-    </select></div>
-    <div class="field"><label>Format</label><select class="inp" id="po-format">
-      <option>Reel</option><option>Carousel</option><option>Story</option><option>Static</option>
-    </select></div>
-    <div class="field"><label>Status</label><select class="inp" id="po-status">
-      <option value="idea">Idea</option><option value="scripted">Scripted</option><option value="filmed">Filmed</option><option value="posted">Posted</option>
-    </select></div>
-    <div class="field"><label>Notes</label><textarea class="inp" id="po-notes" placeholder="Script notes, b-roll, caption ideas..."></textarea></div>
-
-```
-<button class="btn btn-or btn-full" onclick="savePost()">Save</button>
-```
-
-`);
+openModal(` <div class="modal-title">Schedule Post</div> <div class="field"><label>Title / Hook</label><input class="inp" id="po-title" placeholder="What's the post about?"></div> <div class="field"><label>Date</label><input class="inp" type="date" id="po-date" value="${today()}"></div> <div class="field"><label>Pillar</label><select class="inp" id="po-pillar"> ${PILLARS.map(p=>`<option value="${p.id}">${p.icon} ${p.label}</option>`).join('')} </select></div> <div class="field"><label>Format</label><select class="inp" id="po-format"> <option>Reel</option><option>Carousel</option><option>Story</option><option>Static</option> </select></div> <div class="field"><label>Status</label><select class="inp" id="po-status"> <option value="idea">Idea</option><option value="scripted">Scripted</option><option value="filmed">Filmed</option><option value="posted">Posted</option> </select></div> <div class="field"><label>Notes</label><textarea class="inp" id="po-notes" placeholder="Script notes, b-roll, caption ideas..."></textarea></div> <button class="btn btn-or btn-full" onclick="savePost()">Save</button> `);
 }
 
 function savePost() {
