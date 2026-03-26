@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Align">
+<meta name="theme-color" content="#080808">
+<title>Align Living</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;overscroll-behavior:none}
+body{height:100dvh;background:#080808;color:#e8e4dc;font-family:'DM Mono',monospace;-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+button,input,textarea,select{font-family:'DM Mono',monospace}
+:root{
+  --bg:#080808;--s1:#0f0f0f;--s2:#141414;--s3:#1a1a1a;
+  --b1:#1e1e1e;--b2:#282828;--b3:#333;
+  --tx:#e8e4dc;--t2:#999;--t3:#555;
+  --or:#f26419;--od:rgba(242,100,25,0.12);--ob:rgba(242,100,25,0.3);
+  --bl:#4a9eff;--bd:rgba(74,158,255,0.1);--bb:rgba(74,158,255,0.3);
+  --gr:#3ddc84;--gd:rgba(61,220,132,0.1);--gb:rgba(61,220,132,0.3);
+  --pu:#b06eff;--pd:rgba(176,110,255,0.1);--pb:rgba(176,110,255,0.3);
+  --ye:#f5c842;--yd:rgba(245,200,66,0.1);--yb:rgba(245,200,66,0.3);
+  --re:#ff4d4d;--rd:rgba(255,77,77,0.1);--rb:rgba(255,77,77,0.3);
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+  --nav:60px;
+}
+
+/* ── LAYOUT ── */
+#app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative}
+#screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(–nav) + var(–sb) + 16px)}
+#screen::-webkit-scrollbar{display:none}
+
+/* ── NAV ── */
+#nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(–nav) + var(–sb));padding-bottom:var(–sb);background:rgba(8,8,8,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(–b1);display:flex;align-items:flex-start;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:10px;gap:4px;border:none;background:none;color:var(–t3);cursor:pointer;transition:color 0.15s}
+.nav-btn.active{color:var(–or)}
+.nav-icon{font-size:20px;line-height:1}
+.nav-lbl{font-size:8px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500}
+
+/* ── PAGE HEADER ── */
+.pg-head{padding:calc(var(–st) + 20px) 20px 16px;flex-shrink:0}
+.pg-title{font-family:‘Syne’,sans-serif;font-size:26px;font-weight:800;letter-spacing:-0.02em}
+.pg-sub{font-size:10px;color:var(–t2);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+
+/* ── SECTION ── */
+.sec{padding:0 16px 8px}
+.sec-lbl{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(–t3);padding:16px 0 8px}
+
+/* ── CARD ── */
+.card{background:var(–s1);border:1px solid var(–b1);border-radius:12px;padding:14px 16px;margin-bottom:8px}
+.card-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-title{font-size:13px;font-weight:500}
+.card-sub{font-size:11px;color:var(–t2);margin-top:2px}
+
+/* ── PILL BADGE ── */
+.pill{display:inline-block;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:20px;font-weight:500}
+.pill-or{background:var(–od);color:var(–or);border:1px solid var(–ob)}
+.pill-bl{background:var(–bd);color:var(–bl);border:1px solid var(–bb)}
+.pill-gr{background:var(–gd);color:var(–gr);border:1px solid var(–gb)}
+.pill-pu{background:var(–pd);color:var(–pu);border:1px solid var(–pb)}
+.pill-ye{background:var(–yd);color:var(–ye);border:1px solid var(–yb)}
+.pill-re{background:var(–rd);color:var(–re);border:1px solid var(–rb)}
+.pill-gray{background:var(–s2);color:var(–t2);border:1px solid var(–b2)}
+
+/* ── BUTTON ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;padding:8px 14px;transition:opacity 0.15s}
+.btn:active{opacity:0.7}
+.btn-or{background:var(–or);color:#fff}
+.btn-ghost{background:var(–s2);color:var(–t2);border:1px solid var(–b2)}
+.btn-full{width:100%}
+.btn-sm{padding:5px 10px;font-size:11px}
+
+/* ── FAB ── */
+.fab{position:fixed;bottom:calc(var(–nav) + var(–sb) + 16px);right:20px;width:48px;height:48px;border-radius:50%;background:var(–or);color:#fff;font-size:22px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(242,100,25,0.4);z-index:99;transition:transform 0.15s}
+.fab:active{transform:scale(0.93)}
+
+/* ── INPUT ── */
+.inp{width:100%;background:var(–s2);border:1px solid var(–b2);border-radius:8px;padding:10px 12px;color:var(–tx);font-size:13px;outline:none;transition:border-color 0.15s}
+.inp:focus{border-color:var(–or)}
+.inp::placeholder{color:var(–t3)}
+textarea.inp{resize:none;min-height:70px;line-height:1.5}
+select.inp{cursor:pointer;-webkit-appearance:none}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(–t2);margin-bottom:6px}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:flex-end;backdrop-filter:blur(4px)}
+.modal-bg.hidden{display:none}
+.modal{background:var(–s1);border-radius:20px 20px 0 0;padding:20px 20px calc(20px + var(–sb));width:100%;max-width:480px;margin:0 auto;max-height:88dvh;overflow-y:auto}
+.modal::-webkit-scrollbar{display:none}
+.modal-handle{width:36px;height:4px;background:var(–b3);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-family:‘Syne’,sans-serif;font-size:18px;font-weight:800;margin-bottom:18px}
+
+/* ── STAT GRID ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.stat-card{background:var(–s1);border:1px solid var(–b1);border-radius:12px;padding:14px;position:relative}
+.stat-val{font-family:‘Syne’,sans-serif;font-size:28px;font-weight:800;line-height:1}
+.stat-lbl{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(–t2);margin-top:4px}
+.stat-ctrls{display:flex;gap:6px;margin-top:10px}
+.stat-btn{flex:1;height:28px;border-radius:6px;border:1px solid var(–b2);background:var(–s2);color:var(–t2);font-size:16px;cursor:pointer}
+.stat-btn:active{background:var(–b2)}
+
+/* ── HABIT DOTS ── */
+.habit-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(–b1)}
+.habit-row:last-child{border-bottom:none}
+.habit-name{font-size:12px}
+.habit-days{display:flex;gap:4px}
+.hday{width:22px;height:22px;border-radius:6px;background:var(–s2);border:1px solid var(–b1);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(–t3);cursor:pointer;transition:all 0.15s}
+.hday.done{background:var(–gd);border-color:var(–gb);color:var(–gr)}
+.hday.today{border-color:var(–or)}
+
+/* ── STREAK BADGE ── */
+.streak-badge{display:flex;align-items:center;gap:6px;background:var(–od);border:1px solid var(–ob);border-radius:10px;padding:8px 12px}
+.streak-num{font-family:‘Syne’,sans-serif;font-size:22px;font-weight:800;color:var(–or)}
+.streak-txt{font-size:10px;color:var(–t2);letter-spacing:0.08em;text-transform:uppercase}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{background:var(–s2);border-radius:4px;height:4px;overflow:hidden;margin-top:8px}
+.prog-fill{height:100%;border-radius:4px;transition:width 0.4s}
+
+/* ── PIPELINE STAGE DOTS ── */
+.stage-q{color:#f5c842}.stage-c{color:#3ddc84}.stage-x{color:#ff4d4d}
+
+/* ── WORKOUT ── */
+.day-tabs{display:flex;gap:6px;padding:0 16px 12px;overflow-x:auto}
+.day-tabs::-webkit-scrollbar{display:none}
+.day-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(–b2);background:var(–s2);color:var(–t2);font-size:11px;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.day-tab.active{background:var(–or);border-color:var(–or);color:#fff}
+.exercise-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(–b1)}
+.exercise-row:last-child{border-bottom:none}
+.ex-check{width:20px;height:20px;border-radius:6px;border:1.5px solid var(–b3);background:none;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.ex-check.done{background:var(–gr);border-color:var(–gr)}
+.ex-name{font-size:12px;flex:1}
+.ex-sets{font-size:10px;color:var(–t2);text-align:right;flex-shrink:0}
+
+/* ── LOG HISTORY ── */
+.log-entry{background:var(–s1);border:1px solid var(–b1);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.log-date{font-size:10px;color:var(–t2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+.log-text{font-size:12px;line-height:1.6;color:var(–tx)}
+
+/* ── CONTENT ── */
+.pillar-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:10px;border:1px solid var(–b2);background:var(–s2);color:var(–t2);cursor:pointer;transition:all 0.15s;margin:3px}
+.pillar-chip.active-faith{background:var(–pd);border-color:var(–pb);color:var(–pu)}
+.pillar-chip.active-fitness{background:var(–gd);border-color:var(–gb);color:var(–gr)}
+.pillar-chip.active-parenting{background:var(–bd);border-color:var(–bb);color:var(–bl)}
+.pillar-chip.active-marriage{background:var(–rd);border-color:var(–rb);color:var(–re)}
+.pillar-chip.active-entrepreneurship{background:var(–od);border-color:var(–ob);color:var(–or)}
+
+/* ── REMINDER BADGE ── */
+.reminder-dot{width:6px;height:6px;border-radius:50%;background:var(–ye);flex-shrink:0}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(–b1);margin:4px 0}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px 20px;color:var(–t3);font-size:12px}
+.empty-icon{font-size:32px;margin-bottom:12px}
+
+/* ── TODO ── */
+.todo-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(–b1)}
+.todo-item:last-child{border-bottom:none}
+.todo-check{width:20px;height:20px;border-radius:6px;border:1.5px solid var(–b3);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.15s}
+.todo-check.done{background:var(–gr);border-color:var(–gr)}
+.todo-text{font-size:12px;flex:1;line-height:1.5}
+.todo-text.done{text-decoration:line-through;color:var(–t3)}
+.todo-meta{font-size:10px;color:var(–t3);margin-top:2px}
+.todo-del{background:none;border:none;color:var(–t3);font-size:16px;cursor:pointer;padding:0 4px;flex-shrink:0}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:4px;padding:0 16px 12px;overflow-x:auto}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(–b2);background:var(–s2);color:var(–t2);font-size:11px;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.tab-btn.active{background:var(–s3);border-color:var(–b3);color:var(–tx)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fade-in{animation:fadeIn 0.2s ease both}
+
+/* ── CONTACT CARD ── */
+.contact-card{background:var(–s1);border:1px solid var(–b1);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s}
+.contact-card:active{border-color:var(–b3)}
+.contact-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.contact-name{font-size:13px;font-weight:500}
+.contact-note{font-size:11px;color:var(–t2);line-height:1.5;margin-top:4px}
+.contact-footer{display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+
+/* ── WEEK DOTS ── */
+.week-dots{display:flex;gap:5px;margin-bottom:16px}
+.wdot{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.wdot-lbl{font-size:8px;color:var(–t3);text-transform:uppercase;letter-spacing:0.08em}
+.wdot-circle{width:100%;aspect-ratio:1;border-radius:50%;background:var(–s2);border:1.5px solid transparent;display:flex;align-items:center;justify-content:center;font-family:‘Syne’,sans-serif;font-size:9px;font-weight:800}
+.wdot-circle.filled{background:var(–od);border-color:var(–ob);color:var(–or)}
+.wdot-circle.today-dot{border-color:var(–or)}
+</style>
+
+</head>
+<body>
+<div id="app">
+  <div id="screen"></div>
+  <nav id="nav">
+    <button class="nav-btn active" data-page="home" onclick="goPage('home')">
+      <span class="nav-icon">⬡</span>
+      <span class="nav-lbl">Home</span>
+    </button>
+    <button class="nav-btn" data-page="faith" onclick="goPage('faith')">
+      <span class="nav-icon">✦</span>
+      <span class="nav-lbl">Faith</span>
+    </button>
+    <button class="nav-btn" data-page="fitness" onclick="goPage('fitness')">
+      <span class="nav-icon">◈</span>
+      <span class="nav-lbl">Fitness</span>
+    </button>
+    <button class="nav-btn" data-page="family" onclick="goPage('family')">
+      <span class="nav-icon">◉</span>
+      <span class="nav-lbl">Family</span>
+    </button>
+    <button class="nav-btn" data-page="biz" onclick="goPage('biz')">
+      <span class="nav-icon">◆</span>
+      <span class="nav-lbl">Biz</span>
+    </button>
+  </nav>
+</div>
+
+<!-- MODALS -->
+
+<div id="modal-bg" class="modal-bg hidden" onclick="closeModal(event)">
+  <div class="modal" id="modal-inner" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div id="modal-content"></div>
+  </div>
+</div>
+<script>
+// ═══════════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════════
+const DB = {
+  get(k, def = null) {
+    try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : def; } catch { return def; }
+  },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  push(k, item) { const a = DB.get(k, []); a.push(item); DB.set(k, a); return a; },
+  update(k, id, patch) {
+    const a = DB.get(k, []); const i = a.findIndex(x => x.id === id);
+    if (i >= 0) { a[i] = { ...a[i], ...patch }; DB.set(k, a); } return a;
+  },
+  remove(k, id) { const a = DB.get(k, []).filter(x => x.id !== id); DB.set(k, a); return a; }
+};
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function today() { return new Date().toISOString().split(‘T’)[0]; }
+function fmtDate(d) {
+if (!d) return ‘’;
+const dt = new Date(d + ‘T00:00:00’);
+return dt.toLocaleDateString(‘en-CA’, { month: ‘short’, day: ‘numeric’, year: ‘numeric’ });
+}
+function fmtDateTime(ts) {
+if (!ts) return ‘’;
+return new Date(ts).toLocaleString(‘en-CA’, { month: ‘short’, day: ‘numeric’, hour: ‘numeric’, minute: ‘2-digit’ });
+}
+function weekDays() {
+const d = new Date(); d.setHours(0,0,0,0);
+const dow = (d.getDay() + 6) % 7; // Mon=0
+const mon = new Date(d); mon.setDate(d.getDate() - dow);
+return Array.from({ length: 7 }, (_, i) => {
+const dd = new Date(mon); dd.setDate(mon.getDate() + i);
+return dd.toISOString().split(‘T’)[0];
+});
+}
+
+// ═══════════════════════════════════════════════════════
+// REMINDER ENGINE — surfaces as home tasks
+// ═══════════════════════════════════════════════════════
+function getAllReminders() { return DB.get(‘reminders’, []); }
+function addReminder(r) { DB.push(‘reminders’, { id: uid(), …r, created: Date.now() }); }
+function deleteReminder(id) { DB.remove(‘reminders’, id); }
+function dueReminders() {
+const t = today();
+return getAllReminders().filter(r => r.date <= t && !r.dismissed);
+}
+function dismissReminder(id) { DB.update(‘reminders’, id, { dismissed: true }); }
+
+// ═══════════════════════════════════════════════════════
+// WORKOUT DATA
+// ═══════════════════════════════════════════════════════
+const WORKOUTS = {
+tue: {
+label: ‘Tue — Upper A’, tag: ‘Strength’,
+warmup: [‘Band pull-aparts 2×15’, ‘Wall slides 2×10’, ‘Shoulder CARs 2×5 each’, ‘Dead hang 2×30s’, ‘Thoracic rotations 10 each’],
+exercises: [
+{ name: ‘Bench Press’, sets: ‘4×5’, note: ‘Heavy — 3-4 RIR’ },
+{ name: ‘Barbell Row’, sets: ‘4×6’, note: ‘Control the eccentric’ },
+{ name: ‘Overhead Press’, sets: ‘3×8’ },
+{ name: ‘Weighted Pull-up’, sets: ‘3×6’, note: ‘Add weight if needed’ },
+{ name: ‘Incline DB Press’, sets: ‘3×10’ },
+{ name: ‘Cable Row’, sets: ‘3×12’ },
+{ name: ‘Tricep Dips’, sets: ‘3×10’ },
+{ name: ‘DB Curl’, sets: ‘3×12’ },
+]
+},
+thu: {
+label: ‘Thu — Lower A’, tag: ‘Strength’,
+warmup: [‘Hip circles 2×10 each’, ‘Glute bridges 2×15’, ‘Leg swings 2×10 each’, ‘Cossack squat 2×5 each’, ‘Hip flexor stretch 2×30s’],
+exercises: [
+{ name: ‘Back Squat’, sets: ‘4×5’, note: ‘Heavy — 3-4 RIR’ },
+{ name: ‘Romanian Deadlift’, sets: ‘3×8’ },
+{ name: ‘Leg Press’, sets: ‘3×10’ },
+{ name: ‘Nordic Curl’, sets: ‘3×6’, note: ‘Use band assist if needed’ },
+{ name: ‘Bulgarian Split Squat’, sets: ‘3×8 each’ },
+{ name: ‘Calf Raise’, sets: ‘4×15’ },
+{ name: ‘Ab Wheel’, sets: ‘3×10’ },
+]
+},
+sat: {
+label: ‘Sat — Upper B’, tag: ‘Hypertrophy’,
+warmup: [‘Band pull-aparts 2×15’, ‘Wall slides 2×10’, ‘Shoulder CARs 2×5 each’, ‘Dead hang 2×30s’, ‘Thoracic rotations 10 each’],
+exercises: [
+{ name: ‘DB Bench Press’, sets: ‘4×10’ },
+{ name: ‘Chest-Supported Row’, sets: ‘4×10’ },
+{ name: ‘Lateral Raises’, sets: ‘4×15’ },
+{ name: ‘Lat Pulldown’, sets: ‘4×10’ },
+{ name: ‘Cable Fly’, sets: ‘3×15’ },
+{ name: ‘Face Pulls’, sets: ‘3×15’ },
+{ name: ‘Skull Crushers’, sets: ‘3×12’ },
+{ name: ‘Hammer Curl’, sets: ‘3×12’ },
+]
+},
+sun: {
+label: ‘Sun — Lower B + Plyo’, tag: ‘Athletic’,
+warmup: [‘Hip circles 2×10 each’, ‘Glute bridges 2×15’, ‘Leg swings 2×10 each’, ‘High knees 2×20’, ‘Jump rope 3 min’],
+exercises: [
+{ name: ‘Box Jump’, sets: ‘4×5’, note: ‘Max height, reset each rep’ },
+{ name: ‘Front Squat’, sets: ‘3×6’, note: ‘Moderate weight, fast up’ },
+{ name: ‘Trap Bar Deadlift’, sets: ‘3×5’, note: ‘Explosive’ },
+{ name: ‘Lateral Bounds’, sets: ‘3×8 each’ },
+{ name: ‘Step-up’, sets: ‘3×10 each’ },
+{ name: ‘Depth Drop’, sets: ‘3×5’ },
+{ name: ‘Calf Jump’, sets: ‘3×15’, note: ‘Ankle stiffness’ },
+{ name: ‘Pallof Press’, sets: ‘3×12 each’ },
+]
+}
+};
+
+const WORKOUT_DAY_MAP = { 2: ‘tue’, 4: ‘thu’, 6: ‘sat’, 0: ‘sun’ }; // JS getDay()
+
+function todayWorkout() {
+const dow = new Date().getDay();
+return WORKOUT_DAY_MAP[dow] || null;
+}
+
+// ═══════════════════════════════════════════════════════
+// CONTENT PILLARS
+// ═══════════════════════════════════════════════════════
+const PILLARS = [
+{ id: ‘faith’, label: ‘Faith’, color: ‘pu’, icon: ‘✦’ },
+{ id: ‘fitness’, label: ‘Fitness’, color: ‘gr’, icon: ‘◈’ },
+{ id: ‘parenting’, label: ‘Parenting’, color: ‘bl’, icon: ‘◉’ },
+{ id: ‘marriage’, label: ‘Marriage’, color: ‘re’, icon: ‘♡’ },
+{ id: ‘entrepreneurship’, label: ‘Entrepreneurship’, color: ‘or’, icon: ‘◆’ },
+];
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+let currentPage = ‘home’;
+let pageState = {};
+
+function goPage(page, state = {}) {
+currentPage = page;
+pageState = state;
+document.querySelectorAll(’.nav-btn’).forEach(b => b.classList.toggle(‘active’, b.dataset.page === page));
+render();
+document.getElementById(‘screen’).scrollTop = 0;
+}
+
+function render() {
+const scr = document.getElementById(‘screen’);
+scr.innerHTML = ‘’;
+const pages = { home: renderHome, faith: renderFaith, fitness: renderFitness, family: renderFamily, biz: renderBiz };
+if (pages[currentPage]) pages[currentPage](scr);
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════
+function openModal(html) {
+document.getElementById(‘modal-content’).innerHTML = html;
+document.getElementById(‘modal-bg’).classList.remove(‘hidden’);
+}
+function closeModal(e) {
+if (!e || e.target === document.getElementById(‘modal-bg’)) {
+document.getElementById(‘modal-bg’).classList.add(‘hidden’);
+render();
+}
+}
+
+// ═══════════════════════════════════════════════════════
+// HOME PAGE
+// ═══════════════════════════════════════════════════════
+function renderHome(scr) {
+const t = today();
+const dt = new Date();
+const dayName = dt.toLocaleDateString(‘en-CA’, { weekday: ‘long’ });
+const dateStr = dt.toLocaleDateString(‘en-CA’, { month: ‘long’, day: ‘numeric’ });
+
+// gather due reminders → inject as tasks
+const due = dueReminders();
+due.forEach(r => {
+const tasks = DB.get(‘todos’, []);
+const already = tasks.find(x => x.reminderId === r.id);
+if (!already) {
+DB.push(‘todos’, { id: uid(), text: r.text, date: t, done: false, area: r.area || ‘General’, reminderId: r.id });
+}
+});
+
+// habits
+const habits = [
+{ id: ‘podcast’, label: ‘Podcast’ },
+{ id: ‘toam’, label: ‘TOAM Message’ },
+{ id: ‘reading’, label: ‘15-min Reading’ },
+];
+const habitLog = DB.get(‘habit_log’, {});
+const wdays = weekDays();
+const DAY_LBLS = [‘M’,‘T’,‘W’,‘T’,‘F’,‘S’,‘S’];
+
+// todos today
+let todos = DB.get(‘todos’, []);
+// auto-roll: move past-due incomplete todos to today
+todos = todos.map(td2 => {
+if (!td2.done && td2.date < t) return { …td2, date: t, rolledOver: true };
+return td2;
+});
+DB.set(‘todos’, todos);
+const todayTodos = todos.filter(x => x.date === t);
+
+// workout today
+const wkDay = todayWorkout();
+const wkData = wkDay ? WORKOUTS[wkDay] : null;
+
+let html = `<div class="pg-head"><div class="pg-title">${dayName}</div><div class="pg-sub">${dateStr}</div></div>`;
+
+// ── HABITS
+html += `<div class="sec"><div class="sec-lbl">Daily Habits</div><div class="card">`;
+habits.forEach(h => {
+const key = `${t}_${h.id}`;
+const done = !!habitLog[key];
+html += `<div class="habit-row"> <div class="habit-name">${h.label}</div> <div style="display:flex;align-items:center;gap:8px"> <div class="habit-days">`;
+wdays.forEach((wd, i) => {
+const wk = `${wd}_${h.id}`;
+const wdone = !!habitLog[wk];
+const isT = wd === t;
+html += `<div class="hday${wdone?' done':''}${isT?' today':''}">${DAY_LBLS[i]}</div>`;
+});
+html += `</div> <button class="btn btn-sm ${done?'btn-or':'btn-ghost'}" onclick="toggleHabit('${h.id}','${t}')">${done?'✓':'Log'}</button> </div></div>`;
+});
+html += `</div></div>`;
+
+// ── TODAY’S WORKOUT QUICK-VIEW
+if (wkData) {
+html += `<div class="sec"><div class="sec-lbl">Today's Session</div> <div class="card" style="cursor:pointer" onclick="goPage('fitness',{tab:'log'})"> <div class="card-row"><span class="card-title">${wkData.label}</span><span class="pill pill-gr">${wkData.tag}</span></div> <div class="card-sub" style="margin-top:6px">${wkData.exercises.length} exercises · Tap to log</div> </div></div>`;
+}
+
+// ── TO-DO LIST
+html += `<div class="sec"><div style="display:flex;align-items:center;justify-content:space-between"><div class="sec-lbl">Tasks Today</div><button class="btn btn-sm btn-ghost" onclick="openAddTodo()">+ Add</button></div>`;
+if (todayTodos.length === 0) {
+html += `<div class="empty"><div class="empty-icon">✓</div>Nothing on the list</div>`;
+} else {
+html += `<div class="card">`;
+todayTodos.forEach(td2 => {
+html += `<div class="todo-item"> <div class="todo-check${td2.done?' done':''}" onclick="toggleTodo('${td2.id}')">${td2.done?'✓':''}</div> <div style="flex:1"> <div class="todo-text${td2.done?' done':''}">${td2.text}</div> <div class="todo-meta">${td2.area}${td2.rolledOver?' · rolled over':''}</div> </div> <button class="todo-del" onclick="deleteTodo('${td2.id}')">×</button> </div>`;
+});
+html += `</div>`;
+}
+html += `</div>`;
+
+// ── DUE REMINDERS
+if (due.length > 0) {
+html += `<div class="sec"><div class="sec-lbl">Reminders Due</div>`;
+due.forEach(r => {
+html += `<div class="card" style="border-color:var(--yb)"> <div class="card-row"> <div><div class="card-title">${r.text}</div><div class="card-sub">${r.area} · ${fmtDate(r.date)}</div></div> <button class="btn btn-sm btn-ghost" onclick="dismissReminder('${r.id}');render()">Done</button> </div></div>`;
+});
+html += `</div>`;
+}
+
+scr.innerHTML = html;
+}
+
+function toggleHabit(id, date) {
+const log = DB.get(‘habit_log’, {});
+const key = `${date}_${id}`;
+if (log[key]) delete log[key]; else log[key] = true;
+DB.set(‘habit_log’, log);
+render();
+}
+
+function toggleTodo(id) {
+const todos = DB.get(‘todos’, []);
+const i = todos.findIndex(x => x.id === id);
+if (i >= 0) { todos[i].done = !todos[i].done; DB.set(‘todos’, todos); }
+render();
+}
+
+function deleteTodo(id) { DB.remove(‘todos’, id); render(); }
+
+function openAddTodo() {
+openModal(`<div class="modal-title">Add Task</div> <div class="field"><label>Task</label><input class="inp" id="td-text" placeholder="What needs to happen?"></div> <div class="field"><label>Area</label> <select class="inp" id="td-area"> <option>General</option><option>Faith</option><option>Fitness</option> <option>Parenting</option><option>Marriage</option><option>AKB</option><option>Content</option> </select> </div> <div class="field"><label>Date</label><input class="inp" type="date" id="td-date" value="${today()}"></div> <button class="btn btn-or btn-full" onclick="saveTodo()">Add Task</button>`);
+}
+
+function saveTodo() {
+const text = document.getElementById(‘td-text’).value.trim();
+if (!text) return;
+DB.push(‘todos’, { id: uid(), text, area: document.getElementById(‘td-area’).value, date: document.getElementById(‘td-date’).value, done: false });
+closeModal();
+}
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// FAITH PAGE
+// ═══════════════════════════════════════════════════════
+function renderFaith(scr) {
+  const tab = pageState.tab || 'log';
+  const entries = DB.get('faith_log', []).slice().reverse();
+  const streak = calcFaithStreak();
+
+  let html = `<div class="pg-head"><div class="pg-title">Faith</div><div class="pg-sub">Bible · Prayer · Growth</div></div>`;
+  html += `<div class="tab-bar">
+    <button class="tab-btn ${tab==='log'?'active':''}" onclick="goPage('faith',{tab:'log'})">Log</button>
+    <button class="tab-btn ${tab==='history'?'active':''}" onclick="goPage('faith',{tab:'history'})">History</button>
+    <button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('faith',{tab:'reminders'})">Reminders</button>
+  </div>`;
+
+  if (tab === 'log') {
+    const today_done = entries.find(e => e.date === today());
+    html += `<div class="sec">
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        <div class="streak-badge"><span class="streak-num">${streak}</span><div class="streak-txt">Day<br>Streak</div></div>
+        <div style="flex:1"></div>
+        <button class="btn btn-or" onclick="openFaithEntry()">${today_done ? '✓ Edit Today' : '+ Log Today'}</button>
+      </div>`;
+    // week dots
+    const wdays = weekDays(); const DAY_LBLS=['M','T','W','T','F','S','S'];
+    html += `<div class="week-dots">`;
+    wdays.forEach((wd,i)=>{
+      const has = entries.find(e=>e.date===wd);
+      const isT = wd===today();
+      html+=`<div class="wdot"><div class="wdot-lbl">${DAY_LBLS[i]}</div><div class="wdot-circle${has?' filled':''}${isT&&!has?' today-dot':''}">${has?'✓':''}</div></div>`;
+    });
+    html += `</div>`;
+    if (today_done) {
+      html += `<div class="card"><div class="log-date">Today · ${today_done.book}</div><div class="log-text">${today_done.notes || 'No notes recorded.'}</div></div>`;
+    }
+    html += `</div>`;
+  } else if (tab === 'history') {
+    html += `<div class="sec">`;
+    if (entries.length === 0) html += `<div class="empty"><div class="empty-icon">✦</div>No entries yet</div>`;
+    entries.forEach(e => {
+      html += `<div class="log-entry"><div class="log-date">${fmtDate(e.date)} · ${e.book || ''}</div><div class="log-text">${e.notes || '—'}</div></div>`;
+    });
+    html += `</div>`;
+  } else if (tab === 'reminders') {
+    html += renderRemindersTab('Faith');
+  }
+
+  scr.innerHTML = html;
+  if (tab === 'log') scr.innerHTML += `<button class="fab" onclick="openFaithEntry()">+</button>`;
+}
+
+function calcFaithStreak() {
+  const entries = DB.get('faith_log', []).map(e=>e.date).sort((a,b)=>b.localeCompare(a));
+  let streak = 0, cursor = new Date(today()+'T00:00:00');
+  for (let i=0;i<365;i++) {
+    const k = cursor.toISOString().split('T')[0];
+    if (entries.includes(k)) { streak++; cursor.setDate(cursor.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+function openFaithEntry() {
+  const existing = DB.get('faith_log',[]).find(e=>e.date===today()) || {};
+  openModal(`
+    <div class="modal-title">Bible Reading</div>
+    <div class="field"><label>Date</label><input class="inp" type="date" id="fe-date" value="${existing.date||today()}"></div>
+    <div class="field"><label>Book / Chapter</label><input class="inp" id="fe-book" placeholder="e.g. Proverbs 4" value="${existing.book||''}"></div>
+    <div class="field"><label>Takeaways / Notes</label><textarea class="inp" id="fe-notes" placeholder="What stood out today?">${existing.notes||''}</textarea></div>
+
+```
+<button class="btn btn-or btn-full" onclick="saveFaithEntry('${existing.id||''}')">Save</button>
+```
+
+`);
+}
+
+function saveFaithEntry(existingId) {
+const entry = {
+id: existingId || uid(),
+date: document.getElementById(‘fe-date’).value,
+book: document.getElementById(‘fe-book’).value.trim(),
+notes: document.getElementById(‘fe-notes’).value.trim(),
+};
+let log = DB.get(‘faith_log’, []);
+if (existingId) log = log.map(e => e.id === existingId ? entry : e);
+else { log = log.filter(e => e.date !== entry.date); log.push(entry); }
+DB.set(‘faith_log’, log);
+closeModal();
+}
+
+// ═══════════════════════════════════════════════════════
+// FITNESS PAGE
+// ═══════════════════════════════════════════════════════
+function renderFitness(scr) {
+const tab = pageState.tab || ‘today’;
+const wkDay = pageState.day || todayWorkout() || ‘tue’;
+const wk = WORKOUTS[wkDay];
+
+let html = `<div class="pg-head"><div class="pg-title">Fitness</div><div class="pg-sub">Training · Warmup · History</div></div>`;
+html += `<div class="tab-bar">
+<button class="tab-btn ${tab==='today'?'active':''}" onclick="goPage('fitness',{tab:'today',day:'${wkDay}'})">Session</button>
+<button class="tab-btn ${tab==='warmup'?'active':''}" onclick="goPage('fitness',{tab:'warmup',day:'${wkDay}'})">Warmup</button>
+<button class="tab-btn ${tab==='log'?'active':''}" onclick="goPage('fitness',{tab:'log'})">History</button>
+
+  </div>`;
+
+// day picker
+html += `<div class="day-tabs">`;
+Object.entries(WORKOUTS).forEach(([k,v]) => {
+html += `<button class="day-tab ${k===wkDay?'active':''}" onclick="goPage('fitness',{tab:'${tab}',day:'${k}'})">${v.label.split('—')[0].trim()}</button>`;
+});
+html += `</div>`;
+
+if (tab === ‘today’ || tab === ‘warmup’) {
+const sessionKey = `workout_session_${today()}_${wkDay}`;
+let session = DB.get(sessionKey, {});
+const list = tab===‘today’ ? wk.exercises : wk.warmup.map((w,i)=>({name:w,sets:’’,isWarmup:true,id:‘w’+i}));
+
+```
+html += `<div class="sec"><div class="sec-lbl">${wk.label} · ${tab==='today'?'Exercises':'Warmup'}</div><div class="card">`;
+if (tab==='today') {
+  wk.exercises.forEach((ex,i) => {
+    const exId = `ex_${i}`;
+    const done = !!session[exId];
+    html += `<div class="exercise-row">
+      <div class="ex-check${done?' done':''}" onclick="toggleExercise('${sessionKey}','${exId}')">${done?'✓':''}</div>
+      <div style="flex:1"><div class="ex-name">${ex.name}</div>${ex.note?`<div style="font-size:10px;color:var(--t2)">${ex.note}</div>`:''}</div>
+      <div class="ex-sets">${ex.sets}</div>
+    </div>`;
+  });
+} else {
+  wk.warmup.forEach((w,i) => {
+    const exId = `wu_${i}`;
+    const done = !!session[exId];
+    html += `<div class="exercise-row">
+      <div class="ex-check${done?' done':''}" onclick="toggleExercise('${sessionKey}','${exId}')">${done?'✓':''}</div>
+      <div class="ex-name">${w}</div>
+    </div>`;
+  });
+}
+const total = tab==='today'?wk.exercises.length:wk.warmup.length;
+const doneCount = Object.keys(session).filter(k2=>(tab==='today'?k2.startsWith('ex_'):k2.startsWith('wu_'))).length;
+html += `</div>
+  <div class="prog-wrap"><div class="prog-fill" style="width:${Math.round(doneCount/total*100)}%;background:var(--gr)"></div></div>
+  <div style="font-size:10px;color:var(--t2);text-align:right;margin-top:4px">${doneCount}/${total} complete</div>`;
+if (tab==='today' && doneCount===total && total>0) {
+  html += `<button class="btn btn-or btn-full" style="margin-top:12px" onclick="finishWorkout('${wkDay}')">Finish & Log Session</button>`;
+}
+html += `</div>`;
+```
+
+} else if (tab === ‘log’) {
+const history = DB.get(‘workout_history’, []).slice().reverse();
+html += `<div class="sec">`;
+if (history.length===0) html += `<div class="empty"><div class="empty-icon">◈</div>No sessions logged yet</div>`;
+history.forEach(s => {
+html += `<div class="log-entry"><div class="log-date">${fmtDate(s.date)} · ${WORKOUTS[s.day]?.label||s.day}</div> <div class="log-text">${s.notes||'Session complete'}</div></div>`;
+});
+html += `</div>`;
+}
+
+scr.innerHTML = html;
+}
+
+function toggleExercise(sessionKey, exId) {
+const s = DB.get(sessionKey, {});
+if (s[exId]) delete s[exId]; else s[exId] = true;
+DB.set(sessionKey, s);
+render();
+}
+
+function finishWorkout(day) {
+openModal(`<div class="modal-title">Log Session</div> <div class="field"><label>Notes (optional)</label><textarea class="inp" id="wl-notes" placeholder="How did it feel? Any PRs?"></textarea></div> <button class="btn btn-or btn-full" onclick="saveWorkoutLog('${day}')">Save to History</button>`);
+}
+
+function saveWorkoutLog(day) {
+DB.push(‘workout_history’, { id: uid(), date: today(), day, notes: document.getElementById(‘wl-notes’).value.trim() });
+closeModal();
+}
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// FAMILY PAGE (Marriage + Parenting)
+// ═══════════════════════════════════════════════════════
+function renderFamily(scr) {
+  const sub = pageState.sub || 'marriage';
+
+  let html = `<div class="pg-head"><div class="pg-title">Family</div><div class="pg-sub">Marriage · Parenting</div></div>`;
+  html += `<div class="tab-bar">
+    <button class="tab-btn ${sub==='marriage'?'active':''}" onclick="goPage('family',{sub:'marriage'})">Marriage</button>
+    <button class="tab-btn ${sub==='parenting'?'active':''}" onclick="goPage('family',{sub:'parenting'})">Parenting</button>
+  </div>`;
+
+  if (sub === 'marriage') {
+    html += renderMarriage();
+  } else {
+    html += renderParenting();
+  }
+
+  scr.innerHTML = html;
+}
+
+function renderMarriage() {
+  const tab = pageState.mtab || 'notes';
+  let html = `<div class="tab-bar" style="padding-top:0">
+    <button class="tab-btn ${tab==='notes'?'active':''}" onclick="pageState.mtab='notes';goPage('family',{sub:'marriage',mtab:'notes'})">Journal</button>
+    <button class="tab-btn ${tab==='gifts'?'active':''}" onclick="pageState.mtab='gifts';goPage('family',{sub:'marriage',mtab:'gifts'})">Gift Ideas</button>
+    <button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('family',{sub:'marriage',mtab:'reminders'})">Reminders</button>
+  </div>`;
+
+  if (tab==='notes') {
+    const entries = DB.get('marriage_notes', []).slice().reverse();
+    html += `<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openMarriageNote()">+ Add</button></div>`;
+    if (entries.length===0) html+=`<div class="empty"><div class="empty-icon">♡</div>Start logging conversations</div>`;
+    entries.forEach(e=>{
+      html+=`<div class="log-entry">
+        <div class="card-row"><div class="log-date">${fmtDate(e.date)} · ${e.type||'Note'}</div><button class="btn btn-sm btn-ghost" onclick="deleteMarriageNote('${e.id}')">×</button></div>
+        <div class="log-text" style="margin-top:4px">${e.text}</div></div>`;
+    });
+    html+=`</div>`;
+  } else if (tab==='gifts') {
+    const gifts = DB.get('marriage_gifts', []);
+    html += `<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openAddGift('marriage')">+ Idea</button></div>`;
+    if (gifts.length===0) html+=`<div class="empty"><div class="empty-icon">🎁</div>No gift ideas yet</div>`;
+    gifts.forEach(g=>{
+      html+=`<div class="card"><div class="card-row"><div class="card-title">${g.text}</div><div style="display:flex;gap:6px">
+        <button class="btn btn-sm ${g.bought?'btn-or':'btn-ghost'}" onclick="toggleGift('marriage','${g.id}')">${g.bought?'Got it':'Buy'}</button>
+        <button class="btn btn-sm btn-ghost" onclick="deleteGift('marriage','${g.id}')">×</button>
+      </div></div>${g.notes?`<div class="card-sub" style="margin-top:4px">${g.notes}</div>`:''}</div>`;
+    });
+    html+=`</div>`;
+  } else {
+    html += renderRemindersTab('Marriage');
+  }
+  return html;
+}
+
+function renderParenting() {
+  const tab = pageState.ptab || 'notes';
+  const kids = DB.get('kids', ['Child 1','Child 2','Child 3']);
+  const kidIdx = pageState.kidIdx !== undefined ? pageState.kidIdx : 0;
+  const kid = kids[kidIdx];
+
+  let html = `<div class="sec" style="padding-bottom:4px"><div style="display:flex;gap:6px;flex-wrap:wrap">`;
+  kids.forEach((k,i)=>{
+    html+=`<button class="btn btn-sm ${i===kidIdx?'btn-or':'btn-ghost'}" onclick="goPage('family',{sub:'parenting',kidIdx:${i},ptab:'${tab}'})">${k}</button>`;
+  });
+  html+=`<button class="btn btn-sm btn-ghost" onclick="openEditKids()">✎</button></div></div>`;
+
+  html += `<div class="tab-bar" style="padding-top:8px">
+    <button class="tab-btn ${tab==='notes'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'notes'})">Notes</button>
+    <button class="tab-btn ${tab==='gifts'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'gifts'})">Gifts</button>
+    <button class="tab-btn ${tab==='sizes'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'sizes'})">Sizes</button>
+    <button class="tab-btn ${tab==='reminders'?'active':''}" onclick="goPage('family',{sub:'parenting',kidIdx:${kidIdx},ptab:'reminders'})">Reminders</button>
+  </div>`;
+
+  const noteKey = `kid_notes_${kidIdx}`;
+  const giftKey = `kid_gifts_${kidIdx}`;
+  const sizeKey = `kid_sizes_${kidIdx}`;
+
+  if (tab==='notes') {
+    const entries = DB.get(noteKey,[]).slice().reverse();
+    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openKidNote(${kidIdx})">+ Note</button></div>`;
+    if (entries.length===0) html+=`<div class="empty"><div class="empty-icon">◉</div>No notes for ${kid} yet</div>`;
+    entries.forEach(e=>{
+      html+=`<div class="log-entry">
+        <div class="card-row"><div class="log-date">${fmtDate(e.date)} · ${e.type||'Note'}</div><button class="btn btn-sm btn-ghost" onclick="deleteKidNote(${kidIdx},'${e.id}')">×</button></div>
+        <div class="log-text" style="margin-top:4px">${e.text}</div></div>`;
+    });
+    html+=`</div>`;
+  } else if (tab==='gifts') {
+    const gifts = DB.get(giftKey,[]);
+    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end"><button class="btn btn-sm btn-or" onclick="openAddGift('${giftKey}')">+ Idea</button></div>`;
+    if (gifts.length===0) html+=`<div class="empty"><div class="empty-icon">🎁</div>No gift ideas for ${kid}</div>`;
+    gifts.forEach(g=>{
+      html+=`<div class="card"><div class="card-row"><div class="card-title">${g.text}</div><div style="display:flex;gap:6px">
+        <button class="btn btn-sm ${g.bought?'btn-or':'btn-ghost'}" onclick="toggleGift('${giftKey}','${g.id}')">${g.bought?'Got it':'Buy'}</button>
+        <button class="btn btn-sm btn-ghost" onclick="deleteGift('${giftKey}','${g.id}')">×</button>
+      </div></div>${g.notes?`<div class="card-sub" style="margin-top:4px">${g.notes}</div>`:''}</div>`;
+    });
+    html+=`</div>`;
+  } else if (tab==='sizes') {
+    const sizes = DB.get(sizeKey, {});
+    const sizeFields = ['Shirt','Pants','Shoes','Jacket','Hat'];
+    html+=`<div class="sec"><div class="card">`;
+    sizeFields.forEach(f=>{
+      const key2 = f.toLowerCase();
+      html+=`<div class="exercise-row">
+        <div class="ex-name">${f}</div>
+        <input class="inp" style="width:90px;text-align:right;padding:4px 8px" value="${sizes[key2]||''}" placeholder="—"
+          onchange="updateKidSize(${kidIdx},'${key2}',this.value)">
+      </div>`;
+    });
+    html+=`</div></div>`;
+  } else {
+    html += renderRemindersTab(`Kid_${kidIdx}`);
+  }
+  return html;
+}
+
+function openMarriageNote() {
+  openModal(`
+    <div class="modal-title">Marriage Journal</div>
+    <div class="field"><label>Date</label><input class="inp" type="date" id="mn-date" value="${today()}"></div>
+    <div class="field"><label>Type</label>
+      <select class="inp" id="mn-type"><option>Conversation</option><option>Counseling Session</option><option>Date Night</option><option>Gratitude</option><option>Note</option></select>
+    </div>
+    <div class="field"><label>Notes</label><textarea class="inp" id="mn-text" placeholder="What did you talk about?"></textarea></div>
+
+```
+<button class="btn btn-or btn-full" onclick="saveMarriageNote()">Save</button>
+```
+
+`);
+}
+function saveMarriageNote() {
+DB.push(‘marriage_notes’, {id:uid(),date:document.getElementById(‘mn-date’).value,type:document.getElementById(‘mn-type’).value,text:document.getElementById(‘mn-text’).value.trim()});
+closeModal();
+}
+function deleteMarriageNote(id) { DB.remove(‘marriage_notes’,id); render(); }
+
+function openKidNote(kidIdx) {
+openModal(`<div class="modal-title">Add Note</div> <div class="field"><label>Date</label><input class="inp" type="date" id="kn-date" value="${today()}"></div> <div class="field"><label>Type</label> <select class="inp" id="kn-type"><option>Conversation</option><option>Milestone</option><option>School</option><option>Health</option><option>Note</option></select> </div> <div class="field"><label>Notes</label><textarea class="inp" id="kn-text" placeholder="What happened?"></textarea></div> <button class="btn btn-or btn-full" onclick="saveKidNote(${kidIdx})">Save</button>`);
+}
+function saveKidNote(kidIdx) {
+DB.push(`kid_notes_${kidIdx}`, {id:uid(),date:document.getElementById(‘kn-date’).value,type:document.getElementById(‘kn-type’).value,text:document.getElementById(‘kn-text’).value.trim()});
+closeModal();
+}
+function deleteKidNote(kidIdx, id) { DB.remove(`kid_notes_${kidIdx}`,id); render(); }
+
+function updateKidSize(kidIdx, field, val) {
+const s = DB.get(`kid_sizes_${kidIdx}`,{});
+s[field] = val; DB.set(`kid_sizes_${kidIdx}`,s);
+}
+
+function openAddGift(storageKey) {
+openModal(`<div class="modal-title">Gift Idea</div> <div class="field"><label>Idea</label><input class="inp" id="gi-text" placeholder="What's the idea?"></div> <div class="field"><label>Notes</label><input class="inp" id="gi-notes" placeholder="Where to get it, price, etc."></div> <button class="btn btn-or btn-full" onclick="saveGift('${storageKey}')">Save</button>`);
+}
+function saveGift(key) {
+DB.push(key,{id:uid(),text:document.getElementById(‘gi-text’).value.trim(),notes:document.getElementById(‘gi-notes’).value.trim(),bought:false});
+closeModal();
+}
+function toggleGift(key,id) { DB.update(key,id,{bought:!DB.get(key,[]).find(g=>g.id===id)?.bought}); render(); }
+function deleteGift(key,id) { DB.remove(key,id); render(); }
+
+function openEditKids() {
+const kids = DB.get(‘kids’,[‘Child 1’,‘Child 2’,‘Child 3’]);
+openModal(` <div class="modal-title">Edit Names</div> ${kids.map((k,i)=>`<div class="field"><label>Child ${i+1}</label><input class="inp" id="kid-${i}" value="${k}"></div>`).join('')} <button class="btn btn-or btn-full" onclick="saveKids(${kids.length})">Save</button> `);
+}
+function saveKids(len) {
+const kids = Array.from({length:len},(_,i)=>document.getElementById(`kid-${i}`).value.trim()||`Child ${i+1}`);
+DB.set(‘kids’,kids); closeModal();
+}
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// BIZ PAGE (AKB Pipeline + Customers + Content)
+// ═══════════════════════════════════════════════════════
+function renderBiz(scr) {
+  const sub = pageState.sub || 'pipeline';
+  let html = `<div class="pg-head"><div class="pg-title">Biz</div><div class="pg-sub">AKB · Pipeline · Content</div></div>`;
+  html += `<div class="tab-bar">
+    <button class="tab-btn ${sub==='pipeline'?'active':''}" onclick="goPage('biz',{sub:'pipeline'})">Pipeline</button>
+    <button class="tab-btn ${sub==='customers'?'active':''}" onclick="goPage('biz',{sub:'customers'})">Customers</button>
+    <button class="tab-btn ${sub==='content'?'active':''}" onclick="goPage('biz',{sub:'content'})">Content</button>
+  </div>`;
+
+  if (sub==='pipeline') html += renderPipeline();
+  else if (sub==='customers') html += renderCustomers();
+  else html += renderContent();
+
+  scr.innerHTML = html;
+
+  // FAB
+  if (sub==='pipeline') scr.innerHTML += `<button class="fab" onclick="openAddContact()">+</button>`;
+  else if (sub==='customers') scr.innerHTML += `<button class="fab" onclick="openAddCustomer()">+</button>`;
+}
+
+// ─── PIPELINE ───────────────────────────────────────────
+function renderPipeline() {
+  const ptab = pageState.ptab || 'contacts';
+  let html = `<div class="tab-bar" style="padding-top:0">
+    <button class="tab-btn ${ptab==='contacts'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'contacts'})">Contacts</button>
+    <button class="tab-btn ${ptab==='daily'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'daily'})">Daily Log</button>
+    <button class="tab-btn ${ptab==='reminders'?'active':''}" onclick="goPage('biz',{sub:'pipeline',ptab:'reminders'})">Reminders</button>
+  </div>`;
+
+  if (ptab==='contacts') {
+    const contacts = DB.get('pipeline_contacts',[]);
+    const filter = pageState.stageFilter || 'all';
+    const stages = [{id:'all',label:'All'},{id:'?',label:'? Maybe'},{id:'✓',label:'✓ Yes'},{id:'✗',label:'✗ No'}];
+    html += `<div class="sec"><div style="display:flex;gap:4px;margin-bottom:12px">`;
+    stages.forEach(s=>{
+      html+=`<button class="btn btn-sm ${filter===s.id?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'pipeline',ptab:'contacts',stageFilter:'${s.id}'})">${s.label}</button>`;
+    });
+    html+=`</div>`;
+    const filtered = filter==='all' ? contacts : contacts.filter(c=>c.stage===filter);
+    if (filtered.length===0) html+=`<div class="empty"><div class="empty-icon">◆</div>No contacts yet</div>`;
+    filtered.forEach(c=>{
+      const stageColor = c.stage==='✓'?'gr':c.stage==='✗'?'re':'ye';
+      html+=`<div class="contact-card" onclick="openContactDetail('${c.id}')">
+        <div class="contact-header">
+          <div class="contact-name">${c.name}</div>
+          <span class="pill pill-${stageColor}">${c.stage||'?'}</span>
+        </div>
+        <div class="contact-footer">
+          <span class="pill pill-gray">${c.platform||'IG'}</span>
+          ${c.dropSent?`<span class="pill pill-bl">Drop Sent</span>`:''}
+          ${c.reminder?`<div class="reminder-dot"></div><span style="font-size:10px;color:var(--ye)">${fmtDate(c.reminder)}</span>`:''}
+        </div>
+        ${c.notes?`<div class="contact-note">${c.notes.slice(0,80)}${c.notes.length>80?'…':''}</div>`:''}
+      </div>`;
+    });
+    html+=`</div>`;
+  } else if (ptab==='daily') {
+    const t = today();
+    const dayLog = DB.get(`pip_day_${t}`,{ig:0,bb:0,dtm:0});
+    html+=`<div class="sec"><div class="sec-lbl">Today's Activity</div><div class="stat-grid">
+      <div class="stat-card"><div class="stat-val" style="color:var(--or)">${dayLog.ig}</div><div class="stat-lbl">IG Convos</div>
+        <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('ig',-1)">−</button><button class="stat-btn" onclick="pipLog('ig',1)">+</button></div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--bl)">${dayLog.bb}</div><div class="stat-lbl">Bumble Biz</div>
+        <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('bb',-1)">−</button><button class="stat-btn" onclick="pipLog('bb',1)">+</button></div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--gr)">${dayLog.dtm}</div><div class="stat-lbl">Drop Msgs</div>
+        <div class="stat-ctrls"><button class="stat-btn" onclick="pipLog('dtm',-1)">−</button><button class="stat-btn" onclick="pipLog('dtm',1)">+</button></div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--pu)">${dayLog.ig+dayLog.bb}</div><div class="stat-lbl">Total Convos</div></div>
+    </div></div>`;
+  } else {
+    html += renderRemindersTab('Pipeline');
+  }
+  return html;
+}
+
+function pipLog(field, delta) {
+  const t = today();
+  const key = `pip_day_${t}`;
+  const d = DB.get(key,{ig:0,bb:0,dtm:0});
+  d[field] = Math.max(0, (d[field]||0)+delta);
+  DB.set(key,d); render();
+}
+
+function openAddContact() {
+  openModal(`
+    <div class="modal-title">New Contact</div>
+    <div class="field"><label>Name</label><input class="inp" id="nc-name" placeholder="Full name"></div>
+    <div class="field"><label>Platform</label>
+      <select class="inp" id="nc-platform"><option>IG</option><option>Bumble Biz</option><option>Other</option></select>
+    </div>
+    <div class="field"><label>Handle / Contact</label><input class="inp" id="nc-handle" placeholder="@username"></div>
+    <div class="field"><label>Initial Stage</label>
+      <select class="inp" id="nc-stage"><option value="?">? — Maybe</option><option value="✓">✓ — Yes</option><option value="✗">✗ — No</option></select>
+    </div>
+    <div class="field"><label>Notes</label><textarea class="inp" id="nc-notes" placeholder="First impressions, themes, signals..."></textarea></div>
+
+```
+<div class="field"><label>Reminder Date</label><input class="inp" type="date" id="nc-reminder"></div>
+<button class="btn btn-or btn-full" onclick="saveContact()">Add Contact</button>
+```
+
+`);
+}
+
+function saveContact() {
+const c = {id:uid(),name:document.getElementById(‘nc-name’).value.trim(),platform:document.getElementById(‘nc-platform’).value,
+handle:document.getElementById(‘nc-handle’).value.trim(),stage:document.getElementById(‘nc-stage’).value,
+notes:document.getElementById(‘nc-notes’).value.trim(),reminder:document.getElementById(‘nc-reminder’).value,
+dropSent:false,created:today(),history:[]};
+if (!c.name) return;
+if (c.reminder) addReminder({text:`Follow up with ${c.name}`,date:c.reminder,area:‘Pipeline’});
+DB.push(‘pipeline_contacts’,c);
+closeModal();
+}
+
+function openContactDetail(id) {
+const contacts = DB.get(‘pipeline_contacts’,[]);
+const c = contacts.find(x=>x.id===id);
+if (!c) return;
+const hist = c.history||[];
+openModal(` <div class="modal-title">${c.name}</div> <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"> <span class="pill pill-gray">${c.platform}</span> <span class="pill pill-${c.stage==='✓'?'gr':c.stage==='✗'?'re':'ye'}">${c.stage||'?'}</span> ${c.dropSent?`<span class="pill pill-bl">Drop Sent</span>`:''} </div> ${c.handle?`<div class="card-sub" style="margin-bottom:10px">${c.handle}</div>`:''} <div class="field"><label>Stage</label> <select class="inp" id="cd-stage"> <option value="?" ${c.stage==='?'?'selected':''}>? — Maybe</option> <option value="✓" ${c.stage==='✓'?'selected':''}>✓ — Yes</option> <option value="✗" ${c.stage==='✗'?'selected':''}>✗ — No</option> </select> </div> <div class="field"><label>Notes</label><textarea class="inp" id="cd-notes">${c.notes||''}</textarea></div> <div style="display:flex;gap:6px;margin-bottom:10px"> <button class="btn btn-sm ${c.dropSent?'btn-or':'btn-ghost'} btn-full" onclick="toggleDrop('${id}')">${c.dropSent?'Drop Sent ✓':'Mark Drop Sent'}</button> </div> <div class="field"><label>Add to History</label><input class="inp" id="cd-hist" placeholder="What happened in this convo?"></div> <div class="field"><label>Set Reminder</label><input class="inp" type="date" id="cd-reminder" value="${c.reminder||''}"></div> <div style="display:flex;gap:8px"> <button class="btn btn-or" style="flex:1" onclick="updateContact('${id}')">Save</button> <button class="btn btn-ghost btn-sm" onclick="deleteContact('${id}')">Delete</button> </div> ${hist.length>0?`<div class="sec-lbl" style="margin-top:16px">History</div>${hist.slice().reverse().map(h=>`<div class="log-entry"><div class="log-date">${fmtDate(h.date)}</div><div class="log-text">${h.text}</div></div>`).join(’’)}`:''} `);
+}
+
+function updateContact(id) {
+const stage = document.getElementById(‘cd-stage’).value;
+const notes = document.getElementById(‘cd-notes’).value.trim();
+const reminder = document.getElementById(‘cd-reminder’).value;
+const histText = document.getElementById(‘cd-hist’).value.trim();
+const contacts = DB.get(‘pipeline_contacts’,[]);
+const i = contacts.findIndex(x=>x.id===id);
+if (i<0) return;
+const c = contacts[i];
+c.stage=stage; c.notes=notes; c.reminder=reminder;
+if (histText) { c.history = c.history||[]; c.history.push({date:today(),text:histText}); }
+if (reminder) addReminder({text:`Follow up with ${c.name}`,date:reminder,area:‘Pipeline’});
+DB.set(‘pipeline_contacts’,contacts);
+closeModal();
+}
+
+function toggleDrop(id) {
+const contacts = DB.get(‘pipeline_contacts’,[]);
+const i = contacts.findIndex(x=>x.id===id);
+if (i>=0) { contacts[i].dropSent = !contacts[i].dropSent; DB.set(‘pipeline_contacts’,contacts); }
+openContactDetail(id);
+}
+
+function deleteContact(id) {
+if (confirm(‘Delete this contact?’)) { DB.remove(‘pipeline_contacts’,id); closeModal(); }
+}
+
+// ─── CUSTOMERS ──────────────────────────────────────────
+function renderCustomers() {
+const customers = DB.get(‘customers’,[]);
+if (pageState.custId) return renderCustomerDetail(pageState.custId);
+let html = `<div class="sec">`;
+if (customers.length===0) html+=`<div class="empty"><div class="empty-icon">◉</div>No customers yet</div>`;
+customers.forEach(c=>{
+const lastReach = c.reachouts && c.reachouts.length>0 ? c.reachouts[c.reachouts.length-1].date : null;
+html+=`<div class="contact-card" onclick="goPage('biz',{sub:'customers',custId:'${c.id}'})"> <div class="contact-header"><div class="contact-name">${c.name}</div>${c.reminder?`<div class="reminder-dot"></div>`:''}</div> <div class="contact-footer"> ${c.contact?`<span class="pill pill-gray">${c.contact}</span>`:''} ${lastReach?`<span style="font-size:10px;color:var(--t2)">Last: ${fmtDate(lastReach)}</span>`:''} </div> ${c.notes?`<div class="contact-note">${c.notes.slice(0,60)}${c.notes.length>60?’…’:’’}</div>`:''} </div>`;
+});
+html+=`</div>`;
+return html;
+}
+
+function renderCustomerDetail(id) {
+const c = DB.get(‘customers’,[]).find(x=>x.id===id);
+if (!c) return `<div class="empty">Not found</div>`;
+const reachouts = c.reachouts||[];
+const samples = c.samples||[];
+let html = `<div class="sec"> <button class="btn btn-ghost btn-sm" onclick="goPage('biz',{sub:'customers'})">← Back</button> <div style="margin:14px 0 6px"><div class="pg-title" style="font-size:20px">${c.name}</div> ${c.contact?`<div class="card-sub">${c.contact}</div>`:’’}</div>
+<div style="display:flex;gap:6px;margin-bottom:14px">
+<button class="btn btn-sm btn-or" onclick="openEditCustomer('${id}')">Edit</button>
+<button class="btn btn-sm btn-ghost" onclick="deleteCustomer('${id}')">Delete</button>
+</div>
+
+```
+<div class="sec-lbl">Notes</div>
+<div class="card" style="margin-bottom:12px"><div class="log-text">${c.notes||'No notes yet.'}</div></div>
+
+<div style="display:flex;justify-content:space-between;align-items:center">
+  <div class="sec-lbl">Reach-Outs</div>
+  <button class="btn btn-sm btn-or" onclick="openAddReachout('${id}')">+ Log</button>
+</div>`;
+```
+
+if (reachouts.length===0) html+=`<div class="empty" style="padding:16px">No reach-outs logged</div>`;
+reachouts.slice().reverse().forEach(r=>{
+html+=`<div class="log-entry"><div class="log-date">${fmtDate(r.date)}</div><div class="log-text">${r.note||'Reached out'}</div></div>`;
+});
+
+html+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+<div class="sec-lbl">Samples Tried</div>
+<button class="btn btn-sm btn-or" onclick="openAddSample('${id}')">+ Add</button>
+
+  </div>`;
+  if (samples.length===0) html+=`<div class="empty" style="padding:16px">No samples logged</div>`;
+  samples.forEach(s=>{
+    html+=`<div class="card" style="margin-bottom:6px">
+      <div class="card-row"><div class="card-title">${s.name}</div><span class="pill pill-${s.liked?'gr':'gray'}">${s.liked?'Liked':'Tried'}</span></div>
+      ${s.note?`<div class="card-sub" style="margin-top:4px">${s.note}</div>`:''}
+      <div class="card-sub">${fmtDate(s.date)}</div></div>`;
+  });
+
+html+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+<div class="sec-lbl">Reminders</div>
+<button class="btn btn-sm btn-or" onclick="openAddReminderFor('Customers','${id}','${c.name}')">+ Set</button>
+
+  </div>`;
+  const custReminders = getAllReminders().filter(r=>r.refId===id&&!r.dismissed);
+  custReminders.forEach(r=>{
+    html+=`<div class="card" style="border-color:var(--yb);margin-bottom:6px"><div class="card-row">
+      <div><div class="card-title">${r.text}</div><div class="card-sub">${fmtDate(r.date)}</div></div>
+      <button class="btn btn-sm btn-ghost" onclick="deleteReminder('${r.id}');render()">×</button>
+    </div></div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+function openAddCustomer() {
+openModal(`<div class="modal-title">New Customer</div> <div class="field"><label>Name</label><input class="inp" id="cu-name"></div> <div class="field"><label>Contact / Phone</label><input class="inp" id="cu-contact"></div> <div class="field"><label>Notes</label><textarea class="inp" id="cu-notes" placeholder="Background, goals, interests..."></textarea></div> <div class="field"><label>Reminder Date</label><input class="inp" type="date" id="cu-reminder"></div> <button class="btn btn-or btn-full" onclick="saveCustomer()">Add Customer</button>`);
+}
+
+function saveCustomer() {
+const name = document.getElementById(‘cu-name’).value.trim();
+if (!name) return;
+const reminder = document.getElementById(‘cu-reminder’).value;
+const c = {id:uid(),name,contact:document.getElementById(‘cu-contact’).value.trim(),
+notes:document.getElementById(‘cu-notes’).value.trim(),reminder,reachouts:[],samples:[]};
+if (reminder) addReminder({text:`Follow up with ${name}`,date:reminder,area:‘Customers’,refId:c.id});
+DB.push(‘customers’,c);
+closeModal();
+}
+
+function openEditCustomer(id) {
+const c = DB.get(‘customers’,[]).find(x=>x.id===id);
+if (!c) return;
+openModal(`<div class="modal-title">Edit Customer</div> <div class="field"><label>Name</label><input class="inp" id="ce-name" value="${c.name}"></div> <div class="field"><label>Contact</label><input class="inp" id="ce-contact" value="${c.contact||''}"></div> <div class="field"><label>Notes</label><textarea class="inp" id="ce-notes">${c.notes||''}</textarea></div> <button class="btn btn-or btn-full" onclick="updateCustomer('${id}')">Save</button>`);
+}
+
+function updateCustomer(id) {
+DB.update(‘customers’,id,{name:document.getElementById(‘ce-name’).value.trim(),contact:document.getElementById(‘ce-contact’).value.trim(),notes:document.getElementById(‘ce-notes’).value.trim()});
+closeModal();
+}
+
+function deleteCustomer(id) {
+if (confirm(‘Delete this customer?’)) { DB.remove(‘customers’,id); goPage(‘biz’,{sub:‘customers’}); }
+}
+
+function openAddReachout(custId) {
+openModal(`<div class="modal-title">Log Reach-Out</div> <div class="field"><label>Date</label><input class="inp" type="date" id="ro-date" value="${today()}"></div> <div class="field"><label>Note</label><textarea class="inp" id="ro-note" placeholder="What did you talk about?"></textarea></div> <button class="btn btn-or btn-full" onclick="saveReachout('${custId}')">Save</button>`);
+}
+
+function saveReachout(custId) {
+const customers = DB.get(‘customers’,[]);
+const i = customers.findIndex(x=>x.id===custId);
+if (i<0) return;
+customers[i].reachouts = customers[i].reachouts||[];
+customers[i].reachouts.push({date:document.getElementById(‘ro-date’).value,note:document.getElementById(‘ro-note’).value.trim()});
+DB.set(‘customers’,customers);
+goPage(‘biz’,{sub:‘customers’,custId});
+document.getElementById(‘modal-bg’).classList.add(‘hidden’);
+}
+
+function openAddSample(custId) {
+openModal(`<div class="modal-title">Log Sample</div> <div class="field"><label>Product / Sample Name</label><input class="inp" id="sp-name"></div> <div class="field"><label>Date Tried</label><input class="inp" type="date" id="sp-date" value="${today()}"></div> <div class="field"><label>Feedback</label><select class="inp" id="sp-liked"><option value="0">Neutral / No feedback</option><option value="1">Liked it</option></select></div> <div class="field"><label>Notes</label><input class="inp" id="sp-note" placeholder="Any reactions or comments?"></div> <button class="btn btn-or btn-full" onclick="saveSample('${custId}')">Save</button>`);
+}
+
+function saveSample(custId) {
+const customers = DB.get(‘customers’,[]);
+const i = customers.findIndex(x=>x.id===custId);
+if (i<0) return;
+customers[i].samples = customers[i].samples||[];
+customers[i].samples.push({name:document.getElementById(‘sp-name’).value.trim(),date:document.getElementById(‘sp-date’).value,liked:document.getElementById(‘sp-liked’).value===‘1’,note:document.getElementById(‘sp-note’).value.trim()});
+DB.set(‘customers’,customers);
+goPage(‘biz’,{sub:‘customers’,custId});
+document.getElementById(‘modal-bg’).classList.add(‘hidden’);
+}
+
+function openAddReminderFor(area, refId, name) {
+openModal(`<div class="modal-title">Set Reminder</div> <div class="field"><label>Reminder</label><input class="inp" id="rem-text" value="Follow up with ${name}"></div> <div class="field"><label>Date</label><input class="inp" type="date" id="rem-date" value="${today()}"></div> <button class="btn btn-or btn-full" onclick="saveReminderFor('${area}','${refId}')">Set Reminder</button>`);
+}
+
+function saveReminderFor(area, refId) {
+addReminder({text:document.getElementById(‘rem-text’).value.trim(),date:document.getElementById(‘rem-date’).value,area,refId});
+closeModal();
+}
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONTENT HUB
+// ═══════════════════════════════════════════════════════
+function renderContent() {
+  const ctab = pageState.ctab || 'calendar';
+  let html = `<div class="tab-bar" style="padding-top:0">
+    <button class="tab-btn ${ctab==='calendar'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'calendar'})">Calendar</button>
+    <button class="tab-btn ${ctab==='filming'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'filming'})">Filming</button>
+    <button class="tab-btn ${ctab==='scripting'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'scripting'})">Scripting</button>
+    <button class="tab-btn ${ctab==='ideas'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'ideas'})">Ideas</button>
+    <button class="tab-btn ${ctab==='review'?'active':''}" onclick="goPage('biz',{sub:'content',ctab:'review'})">Review</button>
+  </div>`;
+
+  if (ctab==='calendar') {
+    // posting schedule — list of scheduled posts
+    const posts = DB.get('content_posts',[]);
+    const pillarFilter = pageState.pillarFilter || 'all';
+    html += `<div class="sec"><div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px">
+      <button class="btn btn-sm ${pillarFilter==='all'?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'content',ctab:'calendar',pillarFilter:'all'})">All</button>`;
+    PILLARS.forEach(p=>{
+      html+=`<button class="btn btn-sm ${pillarFilter===p.id?'btn-or':'btn-ghost'}" onclick="goPage('biz',{sub:'content',ctab:'calendar',pillarFilter:'${p.id}'})">${p.icon} ${p.label}</button>`;
+    });
+    html+=`</div>`;
+    const filtered = pillarFilter==='all' ? posts : posts.filter(p=>p.pillar===pillarFilter);
+    const sorted = [...filtered].sort((a,b)=>a.date<b.date?-1:1);
+    if (sorted.length===0) html+=`<div class="empty"><div class="empty-icon">◆</div>No posts scheduled yet</div>`;
+    sorted.forEach(p=>{
+      const pl = PILLARS.find(x=>x.id===p.pillar);
+      const statusColor = p.status==='posted'?'gr':p.status==='filmed'?'bl':p.status==='scripted'?'pu':'gray';
+      html+=`<div class="contact-card" onclick="openEditPost('${p.id}')">
+        <div class="contact-header">
+          <div><div class="card-title">${p.title||'Untitled Post'}</div><div class="card-sub">${fmtDate(p.date)}</div></div>
+          <span class="pill pill-${statusColor}">${p.status||'Idea'}</span>
+        </div>
+        <div class="contact-footer">
+          ${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''}
+          ${p.format?`<span class="pill pill-gray">${p.format}</span>`:''}
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+    // FAB for add post handled below
+    html+=`<div style="height:70px"></div>`;
+    // inject FAB via setTimeout workaround — we'll add it inline
+    setTimeout(()=>{
+      const scr2 = document.getElementById('screen');
+      if (scr2 && !document.getElementById('content-fab')) {
+        const fab = document.createElement('button');
+        fab.className='fab'; fab.id='content-fab'; fab.textContent='+'; fab.onclick=openAddPost;
+        scr2.appendChild(fab);
+      }
+    },10);
+  } else if (ctab==='filming') {
+    const filmDays = DB.get('filming_schedule',[]);
+    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddFilmDay()">+ Day</button></div>`;
+    if (filmDays.length===0) {
+      html+=`<div class="empty"><div class="empty-icon">◈</div>No filming days scheduled</div>`;
+    }
+    [...filmDays].sort((a,b)=>a.date<b.date?-1:1).forEach(d=>{
+      html+=`<div class="contact-card" onclick="openEditFilmDay('${d.id}')">
+        <div class="contact-header"><div class="card-title">${fmtDate(d.date)}</div><span class="pill pill-${d.type==='Edit'?'bl':d.type==='Post'?'gr':'or'}">${d.type||'Film'}</span></div>
+        ${d.notes?`<div class="contact-note">${d.notes}</div>`:''}
+      </div>`;
+    });
+    html+=`</div>`;
+  } else if (ctab==='scripting') {
+    const scripts = DB.get('content_scripts',[]);
+    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddScript()">+ Script</button></div>`;
+    if (scripts.length===0) html+=`<div class="empty"><div class="empty-icon">✦</div>No scripts yet</div>`;
+    scripts.slice().reverse().forEach(s=>{
+      const pl = PILLARS.find(x=>x.id===s.pillar);
+      html+=`<div class="contact-card" onclick="openViewScript('${s.id}')">
+        <div class="contact-header"><div class="card-title">${s.title||'Untitled'}</div><span class="pill pill-${s.status==='done'?'gr':'gray'}">${s.status||'Draft'}</span></div>
+        <div class="contact-footer">${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  } else if (ctab==='ideas') {
+    const ideas = DB.get('content_ideas',[]);
+    html+=`<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm btn-or" onclick="openAddIdea()">+ Idea</button></div>`;
+    if (ideas.length===0) html+=`<div class="empty"><div class="empty-icon">◉</div>No ideas yet</div>`;
+    ideas.slice().reverse().forEach(idea=>{
+      const pl = PILLARS.find(x=>x.id===idea.pillar);
+      html+=`<div class="contact-card" onclick="openEditIdea('${idea.id}')">
+        <div class="contact-header"><div class="card-title">${idea.text}</div>${idea.used?`<span class="pill pill-gr">Used</span>`:''}</div>
+        <div class="contact-footer">${pl?`<span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span>`:''}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  } else if (ctab==='review') {
+    const reviews = DB.get('content_reviews',[]).slice().reverse();
+    html+=`<div class="sec">
+      <div class="card" style="border-color:var(--ob);margin-bottom:12px">
+        <div class="card-title" style="color:var(--or)">Weekly Review Prompt</div>
+        <div style="font-size:12px;color:var(--t2);margin-top:8px;line-height:1.7">
+          1. What content performed best this week?<br>
+          2. Which pillar got the least coverage?<br>
+          3. What ideas came up you haven't scripted?<br>
+          4. Did you hit your filming/posting schedule?<br>
+          5. What's your priority for next week?
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="sec-lbl">Review Log</div>
+        <button class="btn btn-sm btn-or" onclick="openAddReview()">+ Review</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:11px;color:var(--t2)">Set weekly reminder</span>
+        <button class="btn btn-sm btn-ghost" onclick="openAddReminderFor('Content','review','Weekly Review')">+ Reminder</button>
+      </div>`;
+    if (reviews.length===0) html+=`<div class="empty" style="padding:16px">No reviews yet</div>`;
+    reviews.forEach(r=>{
+      html+=`<div class="log-entry"><div class="log-date">${fmtDate(r.date)}</div><div class="log-text">${r.notes}</div></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  return html;
+}
+
+function openAddPost() {
+  openModal(`
+    <div class="modal-title">Schedule Post</div>
+    <div class="field"><label>Title / Hook</label><input class="inp" id="po-title" placeholder="What's the post about?"></div>
+    <div class="field"><label>Date</label><input class="inp" type="date" id="po-date" value="${today()}"></div>
+    <div class="field"><label>Pillar</label><select class="inp" id="po-pillar">
+      ${PILLARS.map(p=>`<option value="${p.id}">${p.icon} ${p.label}</option>`).join('')}
+    </select></div>
+    <div class="field"><label>Format</label><select class="inp" id="po-format">
+      <option>Reel</option><option>Carousel</option><option>Story</option><option>Static</option>
+    </select></div>
+    <div class="field"><label>Status</label><select class="inp" id="po-status">
+      <option value="idea">Idea</option><option value="scripted">Scripted</option><option value="filmed">Filmed</option><option value="posted">Posted</option>
+    </select></div>
+    <div class="field"><label>Notes</label><textarea class="inp" id="po-notes" placeholder="Script notes, b-roll, caption ideas..."></textarea></div>
+
+```
+<button class="btn btn-or btn-full" onclick="savePost()">Save</button>
+```
+
+`);
+}
+
+function savePost() {
+DB.push(‘content_posts’,{id:uid(),title:document.getElementById(‘po-title’).value.trim(),date:document.getElementById(‘po-date’).value,
+pillar:document.getElementById(‘po-pillar’).value,format:document.getElementById(‘po-format’).value,
+status:document.getElementById(‘po-status’).value,notes:document.getElementById(‘po-notes’).value.trim()});
+closeModal();
+}
+
+function openEditPost(id) {
+const p = DB.get(‘content_posts’,[]).find(x=>x.id===id);
+if (!p) return;
+openModal(` <div class="modal-title">Edit Post</div> <div class="field"><label>Title / Hook</label><input class="inp" id="pe-title" value="${p.title||''}"></div> <div class="field"><label>Date</label><input class="inp" type="date" id="pe-date" value="${p.date||today()}"></div> <div class="field"><label>Pillar</label><select class="inp" id="pe-pillar"> ${PILLARS.map(pl=>`<option value=”${pl.id}” ${pl.id===p.pillar?‘selected’:’’}>${pl.icon} ${pl.label}</option>`).join('')} </select></div> <div class="field"><label>Format</label><select class="inp" id="pe-format"> ${['Reel','Carousel','Story','Static'].map(f=>`<option ${f===p.format?‘selected’:’’}>${f}</option>`).join('')} </select></div> <div class="field"><label>Status</label><select class="inp" id="pe-status"> ${[['idea','Idea'],['scripted','Scripted'],['filmed','Filmed'],['posted','Posted']].map(([v,l])=>`<option value=”${v}” ${v===p.status?‘selected’:’’}>${l}</option>`).join('')} </select></div> <div class="field"><label>Notes</label><textarea class="inp" id="pe-notes">${p.notes||''}</textarea></div> <div style="display:flex;gap:8px"> <button class="btn btn-or" style="flex:1" onclick="updatePost('${id}')">Save</button> <button class="btn btn-ghost btn-sm" onclick="deletePost('${id}')">Delete</button> </div> `);
+}
+
+function updatePost(id) {
+DB.update(‘content_posts’,id,{title:document.getElementById(‘pe-title’).value.trim(),date:document.getElementById(‘pe-date’).value,
+pillar:document.getElementById(‘pe-pillar’).value,format:document.getElementById(‘pe-format’).value,
+status:document.getElementById(‘pe-status’).value,notes:document.getElementById(‘pe-notes’).value.trim()});
+closeModal();
+}
+function deletePost(id) { if(confirm(‘Delete post?’)){DB.remove(‘content_posts’,id);closeModal();} }
+
+function openAddFilmDay() {
+openModal(`<div class="modal-title">Filming Day</div> <div class="field"><label>Date</label><input class="inp" type="date" id="fd-date" value="${today()}"></div> <div class="field"><label>Type</label><select class="inp" id="fd-type"><option>Film</option><option>Edit</option><option>Post</option></select></div> <div class="field"><label>Notes</label><textarea class="inp" id="fd-notes" placeholder="What are you filming/editing?"></textarea></div> <button class="btn btn-or btn-full" onclick="saveFilmDay()">Save</button>`);
+}
+function saveFilmDay() {
+DB.push(‘filming_schedule’,{id:uid(),date:document.getElementById(‘fd-date’).value,type:document.getElementById(‘fd-type’).value,notes:document.getElementById(‘fd-notes’).value.trim()});
+closeModal();
+}
+function openEditFilmDay(id) {
+const d = DB.get(‘filming_schedule’,[]).find(x=>x.id===id);
+if (!d) return;
+openModal(` <div class="modal-title">Edit Day</div> <div class="field"><label>Date</label><input class="inp" type="date" id="fd2-date" value="${d.date}"></div> <div class="field"><label>Type</label><select class="inp" id="fd2-type"> ${['Film','Edit','Post'].map(t=>`<option ${t===d.type?‘selected’:’’}>${t}</option>`).join('')} </select></div> <div class="field"><label>Notes</label><textarea class="inp" id="fd2-notes">${d.notes||''}</textarea></div> <div style="display:flex;gap:8px"> <button class="btn btn-or" style="flex:1" onclick="updateFilmDay('${id}')">Save</button> <button class="btn btn-ghost btn-sm" onclick="deleteFilmDay('${id}')">Delete</button> </div> `);
+}
+function updateFilmDay(id){DB.update(‘filming_schedule’,id,{date:document.getElementById(‘fd2-date’).value,type:document.getElementById(‘fd2-type’).value,notes:document.getElementById(‘fd2-notes’).value.trim()});closeModal();}
+function deleteFilmDay(id){if(confirm(‘Delete?’)){DB.remove(‘filming_schedule’,id);closeModal();}}
+
+function openAddScript() {
+openModal(` <div class="modal-title">New Script</div> <div class="field"><label>Title</label><input class="inp" id="sc-title" placeholder="What's the reel about?"></div> <div class="field"><label>Pillar</label><select class="inp" id="sc-pillar"> ${PILLARS.map(p=>`<option value="${p.id}">${p.icon} ${p.label}</option>`).join('')} </select></div> <div class="field"><label>Hook</label><input class="inp" id="sc-hook" placeholder="Opening line..."></div> <div class="field"><label>Script / Outline</label><textarea class="inp" id="sc-body" style="min-height:120px" placeholder="Write it out or outline it..."></textarea></div> <div class="field"><label>Status</label><select class="inp" id="sc-status"><option value="draft">Draft</option><option value="done">Ready to Film</option></select></div> <button class="btn btn-or btn-full" onclick="saveScript()">Save Script</button> `);
+}
+function saveScript(){
+DB.push(‘content_scripts’,{id:uid(),title:document.getElementById(‘sc-title’).value.trim(),pillar:document.getElementById(‘sc-pillar’).value,
+hook:document.getElementById(‘sc-hook’).value.trim(),body:document.getElementById(‘sc-body’).value.trim(),status:document.getElementById(‘sc-status’).value});
+closeModal();
+}
+function openViewScript(id){
+const s=DB.get(‘content_scripts’,[]).find(x=>x.id===id);
+if(!s)return;
+const pl=PILLARS.find(x=>x.id===s.pillar);
+openModal(` <div class="modal-title">${s.title||'Script'}</div> ${pl?`<div style="margin-bottom:12px"><span class="pill pill-${pl.color}">${pl.icon} ${pl.label}</span></div>`:''} ${s.hook?`<div class="field"><label>Hook</label><div class="card"><div class="log-text">${s.hook}</div></div></div>`:''} <div class="field"><label>Script</label><div class="card"><div class="log-text" style="white-space:pre-wrap">${s.body||'No script yet.'}</div></div></div> <div style="display:flex;gap:8px"> <button class="btn btn-${s.status==='done'?'or':'ghost'} btn-sm" onclick="toggleScriptStatus('${s.id}')">${s.status==='done'?'✓ Ready':'Mark Ready'}</button> <button class="btn btn-ghost btn-sm" onclick="deleteScript('${s.id}')">Delete</button> </div> `);
+}
+function toggleScriptStatus(id){const s=DB.get(‘content_scripts’,[]).find(x=>x.id===id);DB.update(‘content_scripts’,id,{status:s?.status===‘done’?‘draft’:‘done’});openViewScript(id);}
+function deleteScript(id){if(confirm(‘Delete script?’)){DB.remove(‘content_scripts’,id);closeModal();}}
+
+function openAddIdea(){
+openModal(` <div class="modal-title">Content Idea</div> <div class="field"><label>Idea</label><input class="inp" id="id-text" placeholder="What's the concept?"></div> <div class="field"><label>Pillar</label><select class="inp" id="id-pillar"> ${PILLARS.map(p=>`<option value="${p.id}">${p.icon} ${p.label}</option>`).join('')} </select></div> <button class="btn btn-or btn-full" onclick="saveIdea()">Save Idea</button> `);
+}
+function saveIdea(){DB.push(‘content_ideas’,{id:uid(),text:document.getElementById(‘id-text’).value.trim(),pillar:document.getElementById(‘id-pillar’).value,used:false});closeModal();}
+function openEditIdea(id){
+const idea=DB.get(‘content_ideas’,[]).find(x=>x.id===id);
+if(!idea)return;
+openModal(`<div class="modal-title">Edit Idea</div> <div class="field"><label>Idea</label><input class="inp" id="ie-text" value="${idea.text}"></div> <div style="display:flex;gap:8px;margin-top:8px"> <button class="btn btn-${idea.used?'or':'ghost'} btn-sm" onclick="toggleIdeaUsed('${id}')">${idea.used?'✓ Used':'Mark Used'}</button> <button class="btn btn-ghost btn-sm" onclick="deleteIdea('${id}')">Delete</button> <button class="btn btn-or" style="flex:1;margin-left:auto" onclick="updateIdea('${id}')">Save</button> </div>`);
+}
+function updateIdea(id){DB.update(‘content_ideas’,id,{text:document.getElementById(‘ie-text’).value.trim()});closeModal();}
+function toggleIdeaUsed(id){const idea=DB.get(‘content_ideas’,[]).find(x=>x.id===id);DB.update(‘content_ideas’,id,{used:!idea?.used});openEditIdea(id);}
+function deleteIdea(id){if(confirm(‘Delete idea?’)){DB.remove(‘content_ideas’,id);closeModal();}}
+
+function openAddReview(){
+openModal(`<div class="modal-title">Weekly Review</div> <div class="field"><label>Week of</label><input class="inp" type="date" id="rv-date" value="${today()}"></div> <div class="field"><label>Notes</label><textarea class="inp" id="rv-notes" style="min-height:120px" placeholder="Best performers, gaps, priorities, ideas..."></textarea></div> <button class="btn btn-or btn-full" onclick="saveReview()">Save Review</button>`);
+}
+function saveReview(){DB.push(‘content_reviews’,{id:uid(),date:document.getElementById(‘rv-date’).value,notes:document.getElementById(‘rv-notes’).value.trim()});closeModal();}
+
+// ═══════════════════════════════════════════════════════
+// REMINDERS TAB (reusable)
+// ═══════════════════════════════════════════════════════
+function renderRemindersTab(area) {
+const all = getAllReminders().filter(r=>r.area===area&&!r.dismissed);
+let html = `<div class="sec"><div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+<button class="btn btn-sm btn-or" onclick="openAddReminderFor('${area}','','')">+ Reminder</button>
+
+  </div>`;
+  if (all.length===0) html+=`<div class="empty"><div class="empty-icon" style="font-size:20px">⏰</div>No reminders set</div>`;
+  all.forEach(r=>{
+    const overdue = r.date < today();
+    html+=`<div class="card" style="border-color:${overdue?'var(--rb)':'var(--yb)'}">
+      <div class="card-row">
+        <div><div class="card-title">${r.text}</div><div class="card-sub">${fmtDate(r.date)}${overdue?' · Overdue':''}</div></div>
+        <button class="btn btn-sm btn-ghost" onclick="deleteReminder('${r.id}');render()">×</button>
+      </div></div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+render();
+</script>
+
+</body>
+</html>
