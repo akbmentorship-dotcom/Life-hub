@@ -6,152 +6,155 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Align">
-<meta name="theme-color" content="#f5f0e8">
+<meta name="theme-color" content="#e8ddd0">
 <title>Align Living</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%;overscroll-behavior:none}
-body{height:100dvh;background:#f5f0e8;color:#1a1a1a;font-family:'DM Mono',monospace;-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
-button,input,textarea,select{font-family:'DM Mono',monospace}
+body{height:100dvh;background:#e8ddd0;color:#1a1610;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+button,input,textarea,select{font-family:'Inter',sans-serif}
 :root{
-  --bg:#f5f0e8;
-  --s1:#ede8df;
-  --s2:#e8e2d8;
-  --b1:#fff;
-  --b2:#faf7f2;
-  --tx:#1a1a1a;
-  --t2:#555;
-  --t3:#999;
-  --or:#e8500a;
-  --od:rgba(232,80,10,0.10);
-  --ob:rgba(232,80,10,0.25);
-  --bl:#1a6fd4;
-  --bd:rgba(26,111,212,0.10);
-  --gr:#1a9e52;
-  --gd:rgba(26,158,82,0.10);
-  --pu:#7c3aed;
-  --pd:rgba(124,58,237,0.10);
-  --ye:#c47d00;
-  --yd:rgba(196,125,0,0.10);
-  --re:#d42020;
-  --rd:rgba(212,32,32,0.10);
-  --st:env(safe-area-inset-top,0px);
-  --sb:env(safe-area-inset-bottom,0px);
-  --nav:60px;
+  --bg:#e8ddd0;--s1:#dfd3c3;--s2:#d4c5b0;--b1:#f2ebe0;
+  --tx:#1a1610;--t2:#6b5e4e;--t3:#a8967e;--ac:#1a1610;
+  --ad:rgba(26,22,16,0.08);--ab:rgba(26,22,16,0.20);
+  --or:#c45c1a;--od:rgba(196,92,26,0.10);--ob:rgba(196,92,26,0.25);
+  --bl:#2a5fa8;--bd:rgba(42,95,168,0.10);
+  --gr:#2a7a42;--gd:rgba(42,122,66,0.10);
+  --pu:#6b3fa0;--pd:rgba(107,63,160,0.10);
+  --ye:#9a6b10;--yd:rgba(154,107,16,0.10);
+  --re:#b83030;--rd:rgba(184,48,48,0.10);
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--nav:58px;
 }
 #app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative;background:var(--bg)}
-#screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav) + var(--sb) + 12px)}
+#screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav) + var(--sb) + 8px)}
 #screen::-webkit-scrollbar{display:none}
-#nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(--nav) + var(--sb));padding-bottom:var(--sb);background:rgba(245,240,232,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--s2);display:flex;align-items:flex-start;padding-top:6px;z-index:100}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;cursor:pointer;transition:opacity .15s}
+#nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(--nav) + var(--sb));padding-bottom:var(--sb);background:rgba(232,221,208,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--s2);display:flex;align-items:flex-start;padding-top:6px;z-index:100}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;cursor:pointer}
 .nav-item.active .nav-icon{color:var(--or)}
-.nav-item.active .nav-label{color:var(--or)}
-.nav-icon{font-size:20px;line-height:1}
-.nav-label{font-size:9px;color:var(--t2);letter-spacing:.05em;text-transform:uppercase;font-weight:500}
-.page{display:none;padding:0}
+.nav-item.active .nav-label{color:var(--or);font-weight:700}
+.nav-icon{font-size:18px;line-height:1;color:var(--t2)}
+.nav-label{font-size:8px;color:var(--t2);letter-spacing:.05em;text-transform:uppercase;font-weight:500}
+.page{display:none}
 .page.active{display:block}
-#page-home{display:none;height:calc(100dvh - var(--nav) - var(--sb));padding:0 16px 12px;flex-direction:column;gap:10px;overflow:hidden;}
+#page-home{display:none;height:calc(100dvh - var(--nav) - var(--sb));padding:0 14px 10px;flex-direction:column;gap:8px;overflow:hidden}
 #page-home.active{display:flex}
-.home-header{padding-top:calc(var(--st) + 14px);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
-.home-greeting{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--tx);line-height:1.1}
-.home-date{font-size:11px;color:var(--t2);margin-top:3px}
-.home-streak-pill{background:var(--od);border:1px solid var(--ob);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--or);font-weight:500;cursor:pointer;white-space:nowrap}
-.pillar-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;gap:8px;flex-shrink:0;}
-.pillar-tile{background:var(--b1);border:1px solid var(--s2);border-radius:14px;padding:12px 14px;cursor:pointer;transition:transform .12s,box-shadow .12s;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
-.pillar-tile:active{transform:scale(.97)}
-.pillar-tile.span2{grid-column:span 2}
-.pillar-icon{font-size:22px;line-height:1}
-.pillar-name{font-size:12px;font-weight:700;color:var(--tx);letter-spacing:.02em}
-.pillar-sub{font-size:10px;color:var(--t2)}
-.pillar-bar{height:3px;border-radius:2px;background:var(--s2);margin-top:4px;overflow:hidden}
-.pillar-bar-fill{height:100%;border-radius:2px;transition:width .4s}
-.stats-row{display:flex;gap:8px;flex-shrink:0}
-.stat-card{flex:1;background:var(--b1);border:1px solid var(--s2);border-radius:12px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-.stat-num{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--or)}
-.stat-label{font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
-.review-banner{background:linear-gradient(135deg,var(--or) 0%,#c43d00 100%);border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;flex-shrink:0;box-shadow:0 2px 8px rgba(232,80,10,.25);}
+.home-header{padding-top:calc(var(--st) + 12px);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0}
+.home-greeting{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--tx);line-height:1.1}
+.home-date{font-size:10px;color:var(--t2);margin-top:2px}
+.home-streak-pill{background:var(--ad);border:1px solid var(--ab);border-radius:20px;padding:4px 11px;font-size:10px;color:var(--tx);font-weight:700;cursor:pointer;white-space:nowrap}
+.review-banner{background:var(--tx);border-radius:12px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;flex-shrink:0}
 .review-banner.hidden{display:none}
-.review-banner-text{color:#fff}
-.review-banner-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800}
-.review-banner-sub{font-size:10px;opacity:.85;margin-top:2px}
-.review-banner-arrow{color:#fff;font-size:20px;opacity:.8}
-.section-scroll{padding:0 16px;padding-top:calc(var(--st) + 16px)}
-.page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--tx);margin-bottom:14px}
-.card{background:var(--b1);border:1px solid var(--s2);border-radius:16px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-.card-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:6px}
-.card-sub{font-size:11px;color:var(--t2);margin-bottom:10px}
-.pipeline-stage{margin-bottom:18px}
-.stage-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.stage-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.prospect-card{background:var(--b1);border:1px solid var(--s2);border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:transform .1s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.review-banner-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:800;color:var(--bg)}
+.review-banner-sub{font-size:9px;color:rgba(232,221,208,.7);margin-top:1px}
+.review-banner-arrow{color:var(--bg);font-size:18px;opacity:.7}
+.reach-row{display:flex;gap:8px;flex-shrink:0}
+.reach-card{flex:1;background:var(--b1);border:1px solid var(--s2);border-radius:12px;padding:10px 12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.reach-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);margin-bottom:4px}
+.reach-num-row{display:flex;align-items:center;justify-content:space-between}
+.reach-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--tx)}
+.reach-goal{font-size:10px;color:var(--t3)}
+.reach-btn{background:var(--tx);color:var(--bg);border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:transform .1s}
+.reach-btn:active{transform:scale(.93)}
+.home-lists{display:flex;gap:8px;flex:1;min-height:0}
+.home-list-col{flex:1;background:var(--b1);border:1px solid var(--s2);border-radius:12px;padding:10px;overflow:hidden;display:flex;flex-direction:column}
+.home-list-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:7px;flex-shrink:0}
+.home-list-title span{float:right;font-weight:400;color:var(--t3)}
+.check-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2);cursor:pointer}
+.check-item:last-child{border-bottom:none}
+.check-circle{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--s2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
+.check-circle.done{background:var(--tx);border-color:var(--tx);color:var(--bg)}
+.check-text{font-size:11px;color:var(--tx);transition:color .15s}
+.check-text.done{color:var(--t3);text-decoration:line-through}
+.section-scroll{padding:0 14px;padding-top:calc(var(--st) + 14px)}
+.page-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--tx);margin-bottom:14px}
+.card{background:var(--b1);border:1px solid var(--s2);border-radius:14px;padding:13px 15px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.card-title{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.tabs{display:flex;background:var(--s1);border-radius:11px;padding:3px;margin-bottom:13px;gap:2px}
+.tab{flex:1;padding:6px;text-align:center;font-size:10px;font-weight:600;color:var(--t2);border-radius:8px;cursor:pointer;transition:all .15s}
+.tab.active{background:var(--b1);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:9px;cursor:pointer;font-weight:600;transition:transform .1s,opacity .1s}
+.btn:active{transform:scale(.96);opacity:.85}
+.btn-primary{background:var(--tx);color:var(--bg);padding:11px 18px;font-size:13px;width:100%;border-radius:11px;margin-top:8px}
+.btn-ghost{background:var(--s1);color:var(--tx);padding:9px 14px;font-size:12px}
+.btn-danger{background:var(--rd);color:var(--re);padding:8px 14px;font-size:12px}
+.input-group{margin-bottom:11px}
+.input-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);margin-bottom:5px}
+.inp{width:100%;background:var(--s1);border:1px solid var(--s2);border-radius:9px;padding:9px 11px;font-size:13px;color:var(--tx);outline:none;transition:border-color .15s}
+.inp:focus{border-color:var(--ac)}
+.inp::placeholder{color:var(--t3)}
+textarea.inp{resize:none;min-height:75px}
+select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a8967e'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+.modal-overlay{position:fixed;inset:0;background:rgba(26,22,16,.4);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + var(--sb));width:100%;max-width:480px;max-height:88dvh;overflow-y:auto;transform:translateY(100%);transition:transform .25s cubic-bezier(.32,0,.2,1)}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal::-webkit-scrollbar{display:none}
+.modal-handle{width:34px;height:4px;background:var(--s2);border-radius:2px;margin:0 auto 15px}
+.modal-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:800;margin-bottom:15px;color:var(--tx)}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px}
+.chip{background:var(--s1);border:1px solid var(--s2);border-radius:20px;padding:4px 11px;font-size:10px;color:var(--t2);cursor:pointer;transition:all .15s}
+.chip.active{background:var(--tx);border-color:var(--tx);color:var(--bg);font-weight:600}
+.stage-badge{display:inline-block;font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:20px}
+.prospect-card{background:var(--b1);border:1px solid var(--s2);border-radius:13px;padding:11px 13px;margin-bottom:7px;cursor:pointer;transition:transform .1s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .prospect-card:active{transform:scale(.98)}
 .prospect-name{font-size:13px;font-weight:700;color:var(--tx)}
 .prospect-meta{font-size:10px;color:var(--t2);margin-top:2px}
-.prospect-last{font-size:11px;color:var(--t2);margin-top:6px;padding-top:6px;border-top:1px solid var(--s2)}
-.stage-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:20px;margin-top:5px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:10px;cursor:pointer;font-weight:600;transition:transform .1s,opacity .1s}
-.btn:active{transform:scale(.96);opacity:.85}
-.btn-primary{background:var(--or);color:#fff;padding:11px 18px;font-size:13px;width:100%;border-radius:12px;margin-top:8px}
-.btn-ghost{background:var(--s1);color:var(--tx);padding:9px 14px;font-size:12px}
-.btn-danger{background:var(--rd);color:var(--re);padding:8px 14px;font-size:12px}
-.input-group{margin-bottom:12px}
-.input-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);margin-bottom:5px}
-.inp{width:100%;background:var(--s1);border:1px solid var(--s2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--tx);outline:none;transition:border-color .15s}
-.inp:focus{border-color:var(--or)}
-.inp::placeholder{color:var(--t3)}
-textarea.inp{resize:none;min-height:80px}
-select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--bg);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + var(--sb));width:100%;max-width:480px;max-height:88dvh;overflow-y:auto;transform:translateY(100%);transition:transform .25s cubic-bezier(.32,0,.2,1)}
-.modal-overlay.open .modal{transform:translateY(0)}
-.modal::-webkit-scrollbar{display:none}
-.modal-handle{width:36px;height:4px;background:var(--s2);border-radius:2px;margin:0 auto 16px}
-.modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:16px;color:var(--tx)}
-.review-section{margin-bottom:18px}
-.review-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--or);margin-bottom:8px}
-.review-person-row{background:var(--b1);border:1px solid var(--s2);border-radius:12px;padding:10px 12px;margin-bottom:6px}
-.review-person-name{font-size:13px;font-weight:700;color:var(--tx)}
-.review-person-meta{font-size:11px;color:var(--t2);margin-top:2px}
-.review-person-last{font-size:11px;color:var(--t3);margin-top:5px;border-top:1px solid var(--s2);padding-top:5px;font-style:italic}
-.review-empty{font-size:12px;color:var(--t3);font-style:italic;padding:8px 0}
-.review-summary-box{background:var(--od);border:1px solid var(--ob);border-radius:12px;padding:12px 14px;margin-bottom:16px}
-.review-summary-text{font-size:12px;color:var(--tx);line-height:1.6}
-.faith-streak-ring{width:80px;height:80px;position:relative;margin:0 auto 10px}
+.prospect-last{font-size:10px;color:var(--t2);margin-top:5px;padding-top:5px;border-top:1px solid var(--s2)}
+.pipeline-stage{margin-bottom:16px}
+.stage-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t2);margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.stage-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.empty{text-align:center;padding:28px 16px;color:var(--t3);font-size:12px}
+.empty-icon{font-size:28px;margin-bottom:7px}
+#toast{position:fixed;top:calc(var(--st) + 10px);left:50%;transform:translateX(-50%) translateY(-80px);background:var(--tx);color:var(--bg);padding:9px 18px;border-radius:20px;font-size:11px;z-index:300;transition:transform .3s cubic-bezier(.32,0,.2,1);white-space:nowrap;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
+.faith-streak-ring{width:72px;height:72px;position:relative;margin:0 auto 8px}
 .faith-ring-svg{transform:rotate(-90deg)}
 .faith-ring-bg{fill:none;stroke:var(--s2);stroke-width:6}
-.faith-ring-fill{fill:none;stroke:var(--or);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .4s}
-.faith-streak-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--or)}
-.habit-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--s2)}
+.faith-ring-fill{fill:none;stroke:var(--tx);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .4s}
+.faith-streak-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--tx)}
+.habit-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--s2)}
 .habit-row:last-child{border-bottom:none}
-.habit-name{font-size:12px;color:var(--tx);font-weight:600}
-.habit-dots{display:flex;gap:6px}
-.habit-dot{width:22px;height:22px;border-radius:50%;background:var(--s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:background .15s,transform .1s;border:none}
-.habit-dot.done{background:var(--or);color:#fff}
+.habit-name{font-size:11px;color:var(--tx);font-weight:600}
+.habit-dots{display:flex;gap:5px}
+.habit-dot{width:20px;height:20px;border-radius:50%;background:var(--s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:background .15s,transform .1s;border:none}
+.habit-dot.done{background:var(--tx);color:var(--bg)}
 .habit-dot:active{transform:scale(.88)}
-.workout-day{background:var(--b1);border:1px solid var(--s2);border-radius:14px;padding:14px;margin-bottom:10px}
-.workout-day-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:4px}
-.workout-day-sub{font-size:11px;color:var(--t2);margin-bottom:10px}
-.exercise-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--s2)}
+.exercise-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--s2)}
 .exercise-row:last-child{border-bottom:none}
-.exercise-name{font-size:12px;color:var(--tx)}
-.exercise-sets{font-size:11px;color:var(--t2)}
-.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.chip{background:var(--s1);border:1px solid var(--s2);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--t2);cursor:pointer;transition:all .15s}
-.chip.active{background:var(--od);border-color:var(--ob);color:var(--or);font-weight:600}
-.tabs{display:flex;background:var(--s1);border-radius:12px;padding:3px;margin-bottom:14px;gap:2px}
-.tab{flex:1;padding:7px;text-align:center;font-size:11px;font-weight:600;color:var(--t2);border-radius:9px;cursor:pointer;transition:all .15s}
-.tab.active{background:var(--b1);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.empty{text-align:center;padding:32px 16px;color:var(--t3);font-size:12px}
-.empty-icon{font-size:32px;margin-bottom:8px}
-#toast{position:fixed;top:calc(var(--st) + 12px);left:50%;transform:translateX(-50%) translateY(-80px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:20px;font-size:12px;z-index:300;transition:transform .3s cubic-bezier(.32,0,.2,1);white-space:nowrap;pointer-events:none}
-#toast.show{transform:translateX(-50%) translateY(0)}
-.faith-bg{background:var(--od);border-color:var(--ob)}
-.fitness-bg{background:var(--bd);border-color:rgba(26,111,212,.25)}
-.parenting-bg{background:var(--gd);border-color:rgba(26,158,82,.25)}
-.marriage-bg{background:var(--pd);border-color:rgba(124,58,237,.25)}
-.biz-bg{background:var(--yd);border-color:rgba(196,125,0,.25)}
+.exercise-name{font-size:11px;color:var(--tx)}
+.exercise-sets{font-size:10px;color:var(--t2)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.cal-day-head{text-align:center;font-size:9px;font-weight:700;color:var(--t2);text-transform:uppercase;padding-bottom:4px}
+.cal-cell{aspect-ratio:1;border-radius:8px;background:var(--s1);border:1px solid var(--s2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-size:8px;font-weight:700;color:var(--t3)}
+.cal-cell.film{background:rgba(42,95,168,.15);border-color:rgba(42,95,168,.3);color:var(--bl)}
+.cal-cell.edit{background:rgba(107,63,160,.15);border-color:rgba(107,63,160,.3);color:var(--pu)}
+.cal-cell.post{background:rgba(42,122,66,.15);border-color:rgba(42,122,66,.3);color:var(--gr)}
+.cal-cell.today{border-color:var(--tx);border-width:2px}
+.cal-cell-num{font-size:11px;font-weight:800;color:var(--tx);line-height:1}
+.cal-cell-type{font-size:7px;text-transform:uppercase;letter-spacing:.04em;margin-top:1px}
+.content-legend{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--t2)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.upcoming-item{background:var(--b1);border:1px solid var(--s2);border-radius:11px;padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px}
+.upcoming-date{font-family:'Playfair Display',serif;font-size:14px;font-weight:800;color:var(--tx);min-width:28px;text-align:center}
+.upcoming-month{font-size:8px;color:var(--t2);text-align:center}
+.upcoming-info{flex:1}
+.upcoming-title{font-size:12px;font-weight:700;color:var(--tx)}
+.upcoming-type{font-size:10px;color:var(--t2);margin-top:1px}
+.type-pill{font-size:8px;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:20px;letter-spacing:.05em}
+.type-film{background:rgba(42,95,168,.15);color:var(--bl)}
+.type-edit{background:rgba(107,63,160,.15);color:var(--pu)}
+.type-post{background:rgba(42,122,66,.15);color:var(--gr)}
+.review-section{margin-bottom:16px}
+.review-section-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--or);margin-bottom:7px}
+.review-person-row{background:var(--b1);border:1px solid var(--s2);border-radius:11px;padding:9px 11px;margin-bottom:5px}
+.review-person-name{font-size:12px;font-weight:700;color:var(--tx)}
+.review-person-meta{font-size:10px;color:var(--t2);margin-top:2px}
+.review-person-last{font-size:10px;color:var(--t3);margin-top:4px;border-top:1px solid var(--s2);padding-top:4px;font-style:italic}
+.review-empty{font-size:11px;color:var(--t3);font-style:italic;padding:6px 0}
+.review-summary-box{background:var(--ad);border:1px solid var(--ab);border-radius:11px;padding:11px 13px;margin-bottom:14px}
+.review-summary-text{font-size:11px;color:var(--tx);line-height:1.6}
 </style>
 </head>
 <body>
@@ -165,56 +168,44 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
         </div>
         <div class="home-streak-pill" id="streak-pill" onclick="navTo('faith')">🔥 0 days</div>
       </div>
-      <div class="review-banner" id="review-banner" onclick="openWeeklyReview()">
-        <div class="review-banner-text">
-          <div class="review-banner-title">📋 Weekly Review Ready</div>
-          <div class="review-banner-sub" id="review-banner-sub">See who you talked to this week</div>
+      <div class="review-banner hidden" id="review-banner" onclick="openWeeklyReview()">
+        <div>
+          <div class="review-banner-title">📋 Weekly Review</div>
+          <div class="review-banner-sub" id="review-banner-sub">Time to review your week</div>
         </div>
         <div class="review-banner-arrow">›</div>
       </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" id="home-prospects">0</div><div class="stat-label">Active Prospects</div></div>
-        <div class="stat-card"><div class="stat-num" id="home-drop">0</div><div class="stat-label">Drop Msgs Sent</div></div>
-        <div class="stat-card"><div class="stat-num" id="home-faith">0</div><div class="stat-label">Faith Streak</div></div>
-      </div>
-      <div class="pillar-grid">
-        <div class="pillar-tile faith-bg" onclick="navTo('faith')">
-          <div class="pillar-icon">✝️</div>
-          <div class="pillar-name faith-accent">Faith</div>
-          <div class="pillar-sub" id="home-faith-sub">Bible + prayer</div>
-          <div class="pillar-bar"><div class="pillar-bar-fill" id="faith-bar" style="background:var(--or);width:0%"></div></div>
-        </div>
-        <div class="pillar-tile fitness-bg" onclick="navTo('fitness')">
-          <div class="pillar-icon">💪</div>
-          <div class="pillar-name" style="color:var(--bl)">Fitness</div>
-          <div class="pillar-sub" id="home-fitness-sub">Workout log</div>
-          <div class="pillar-bar"><div class="pillar-bar-fill" id="fitness-bar" style="background:var(--bl);width:0%"></div></div>
-        </div>
-        <div class="pillar-tile parenting-bg" onclick="navTo('parenting')">
-          <div class="pillar-icon">👨‍👩‍👧</div>
-          <div class="pillar-name" style="color:var(--gr)">Parenting</div>
-          <div class="pillar-sub">3 kids</div>
-          <div class="pillar-bar"><div class="pillar-bar-fill" id="parenting-bar" style="background:var(--gr);width:0%"></div></div>
-        </div>
-        <div class="pillar-tile marriage-bg" onclick="navTo('marriage')">
-          <div class="pillar-icon">💍</div>
-          <div class="pillar-name" style="color:var(--pu)">Marriage</div>
-          <div class="pillar-sub">With Kyra</div>
-          <div class="pillar-bar"><div class="pillar-bar-fill" id="marriage-bar" style="background:var(--pu);width:0%"></div></div>
-        </div>
-        <div class="pillar-tile biz-bg span2" onclick="navTo('biz')">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start">
-            <div>
-              <div class="pillar-icon">🏗️</div>
-              <div class="pillar-name" style="color:var(--ye)">Entrepreneurship</div>
-              <div class="pillar-sub">AKB pipeline + customers</div>
-            </div>
-            <div style="text-align:right">
-              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--ye)" id="home-biz-prospects">0</div>
-              <div style="font-size:9px;color:var(--t2)">active</div>
-            </div>
+      <div class="reach-row">
+        <div class="reach-card">
+          <div class="reach-label">Instagram</div>
+          <div class="reach-num-row">
+            <div><div class="reach-num" id="ig-count">0</div><div class="reach-goal">/ <span id="ig-goal">3</span> today</div></div>
+            <button class="reach-btn" onclick="increment('ig')">+ ADD</button>
           </div>
-          <div class="pillar-bar"><div class="pillar-bar-fill" id="biz-bar" style="background:var(--ye);width:0%"></div></div>
+        </div>
+        <div class="reach-card">
+          <div class="reach-label">Bumble Biz</div>
+          <div class="reach-num-row">
+            <div><div class="reach-num" id="bb-count">0</div><div class="reach-goal">/ <span id="bb-goal">3</span> today</div></div>
+            <button class="reach-btn" onclick="increment('bb')">+ ADD</button>
+          </div>
+        </div>
+      </div>
+      <div class="home-list-col" style="flex-shrink:0;border-radius:12px;background:var(--b1);border:1px solid var(--s2);padding:10px 12px">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input class="inp" id="quick-task-input" placeholder="Add a task..." style="flex:1;padding:8px 11px;font-size:12px" onkeydown="if(event.key==='Enter')addQuickTask()">
+          <button class="reach-btn" onclick="addQuickTask()" style="padding:8px 14px;font-size:12px;border-radius:8px">Add</button>
+        </div>
+        <div id="quick-task-list"></div>
+      </div>
+      <div class="home-lists">
+        <div class="home-list-col">
+          <div class="home-list-title">Admin <span id="admin-score"></span></div>
+          <div id="admin-list"></div>
+        </div>
+        <div class="home-list-col">
+          <div class="home-list-title">Habits <span id="habits-score"></span></div>
+          <div id="habits-list"></div>
         </div>
       </div>
     </div>
@@ -222,30 +213,19 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
       <div class="page-title">✝️ Faith</div>
       <div class="card" style="text-align:center">
         <div class="faith-streak-ring">
-          <svg class="faith-ring-svg" width="80" height="80" viewBox="0 0 80 80">
-            <circle class="faith-ring-bg" cx="40" cy="40" r="34"/>
-            <circle class="faith-ring-fill" id="faith-ring" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+          <svg class="faith-ring-svg" width="72" height="72" viewBox="0 0 72 72">
+            <circle class="faith-ring-bg" cx="36" cy="36" r="30"/>
+            <circle class="faith-ring-fill" id="faith-ring" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
           </svg>
           <div class="faith-streak-num" id="faith-streak-num">0</div>
         </div>
-        <div style="font-size:11px;color:var(--t2)">Day streak</div>
+        <div style="font-size:10px;color:var(--t2)">Day streak</div>
       </div>
       <div class="card">
         <div class="card-title">Daily Habits</div>
-        <div id="faith-habits">
-          <div class="habit-row" id="habit-bible">
-            <span class="habit-name">📖 Bible Reading</span>
-            <div class="habit-dots" id="dots-bible"></div>
-          </div>
-          <div class="habit-row" id="habit-prayer">
-            <span class="habit-name">🙏 Prayer</span>
-            <div class="habit-dots" id="dots-prayer"></div>
-          </div>
-          <div class="habit-row" id="habit-gratitude">
-            <span class="habit-name">✍️ Gratitude</span>
-            <div class="habit-dots" id="dots-gratitude"></div>
-          </div>
-        </div>
+        <div class="habit-row"><span class="habit-name">📖 Bible Reading</span><div class="habit-dots" id="dots-bible"></div></div>
+        <div class="habit-row"><span class="habit-name">🙏 Prayer</span><div class="habit-dots" id="dots-prayer"></div></div>
+        <div class="habit-row"><span class="habit-name">✍️ Gratitude</span><div class="habit-dots" id="dots-gratitude"></div></div>
       </div>
       <div class="card">
         <div class="card-title">Notes</div>
@@ -272,13 +252,13 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
           <div id="fit-exercises"></div>
           <div class="input-group" style="margin-top:10px">
             <div class="input-label">Notes</div>
-            <textarea class="inp" id="fit-notes" rows="2" placeholder="How it felt, PRs, etc."></textarea>
+            <textarea class="inp" id="fit-notes" rows="2" placeholder="How it felt, PRs, energy level..."></textarea>
           </div>
           <button class="btn btn-primary" onclick="logWorkout()">Log Session</button>
         </div>
       </div>
       <div id="fit-history" style="display:none">
-        <div id="fit-history-list"><div class="empty"><div class="empty-icon">📊</div>No sessions logged yet</div></div>
+        <div id="fit-history-list"><div class="empty"><div class="empty-icon">📊</div>No sessions yet</div></div>
       </div>
     </div>
     <div id="page-parenting" class="page section-scroll">
@@ -294,7 +274,7 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
       <div class="page-title">💍 Marriage</div>
       <div class="tabs">
         <div class="tab active" onclick="marriageTab('log',this)">Log</div>
-        <div class="tab" onclick="marriageTab('gifts',this)">Gift Ideas</div>
+        <div class="tab" onclick="marriageTab('gifts',this)">Gifts</div>
         <div class="tab" onclick="marriageTab('notes',this)">Notes</div>
       </div>
       <div id="marriage-content"></div>
@@ -304,36 +284,19 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
       <div class="tabs">
         <div class="tab active" onclick="bizTab('pipeline',this)">Pipeline</div>
         <div class="tab" onclick="bizTab('customers',this)">Customers</div>
+        <div class="tab" onclick="bizTab('content',this)">Content</div>
         <div class="tab" onclick="bizTab('stats',this)">Stats</div>
       </div>
       <div id="biz-content"></div>
     </div>
   </div>
   <div id="nav">
-    <div class="nav-item active" id="nav-home" onclick="navTo('home')">
-      <div class="nav-icon">⚡</div>
-      <div class="nav-label">Home</div>
-    </div>
-    <div class="nav-item" id="nav-faith" onclick="navTo('faith')">
-      <div class="nav-icon">✝️</div>
-      <div class="nav-label">Faith</div>
-    </div>
-    <div class="nav-item" id="nav-fitness" onclick="navTo('fitness')">
-      <div class="nav-icon">💪</div>
-      <div class="nav-label">Fitness</div>
-    </div>
-    <div class="nav-item" id="nav-parenting" onclick="navTo('parenting')">
-      <div class="nav-icon">👨‍👩‍👧</div>
-      <div class="nav-label">Kids</div>
-    </div>
-    <div class="nav-item" id="nav-marriage" onclick="navTo('marriage')">
-      <div class="nav-icon">💍</div>
-      <div class="nav-label">Marriage</div>
-    </div>
-    <div class="nav-item" id="nav-biz" onclick="navTo('biz')">
-      <div class="nav-icon">🏗️</div>
-      <div class="nav-label">AKB</div>
-    </div>
+    <div class="nav-item active" id="nav-home" onclick="navTo('home')"><div class="nav-icon">⚡</div><div class="nav-label">Home</div></div>
+    <div class="nav-item" id="nav-faith" onclick="navTo('faith')"><div class="nav-icon">✝️</div><div class="nav-label">Faith</div></div>
+    <div class="nav-item" id="nav-fitness" onclick="navTo('fitness')"><div class="nav-icon">💪</div><div class="nav-label">Fitness</div></div>
+    <div class="nav-item" id="nav-parenting" onclick="navTo('parenting')"><div class="nav-icon">👨‍👩‍👧</div><div class="nav-label">Kids</div></div>
+    <div class="nav-item" id="nav-marriage" onclick="navTo('marriage')"><div class="nav-icon">💍</div><div class="nav-label">Marriage</div></div>
+    <div class="nav-item" id="nav-biz" onclick="navTo('biz')"><div class="nav-icon">🏗️</div><div class="nav-label">AKB</div></div>
   </div>
 </div>
 <div class="modal-overlay" id="prospect-modal" onclick="closeModal('prospect-modal')">
@@ -357,19 +320,22 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
     <div id="customer-modal-body"></div>
   </div>
 </div>
+<div class="modal-overlay" id="content-modal" onclick="closeModal('content-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="content-modal-title">Add Content Day</div>
+    <div id="content-modal-body"></div>
+  </div>
+</div>
 <div id="toast"></div>
 <script>
 const db={
   get:(k,d=null)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d}catch{return d}},
-  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.warn(e)}},
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 };
 function save(k,v){db.set(k,v)}
 function load(k,d){return db.get(k,d)}
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
-}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 let currentPage='home';
 function navTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -378,66 +344,157 @@ function navTo(page){
   document.getElementById('nav-'+page).classList.add('active');
   document.getElementById('screen').scrollTop=0;
   currentPage=page;
-  if(page==='biz')renderBiz();
+  if(page==='home')renderHome();
+  if(page==='faith')renderFaith();
+  if(page==='fitness')renderFitHistory();
   if(page==='parenting')renderKid(0);
   if(page==='marriage')renderMarriage('log');
-  if(page==='fitness')renderFitHistory();
-  if(page==='faith')renderFaith();
-  if(page==='home')renderHome();
+  if(page==='biz'){bizActiveTab='pipeline';renderBiz();}
 }
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;')}
+function getWeekKey(){
+  const now=new Date();
+  const d=new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));
+  const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);
+  const yr=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return d.getUTCFullYear()+'-W'+Math.ceil(((d-yr)/86400000+1)/7);
+}
+function isFriday(){return new Date().getDay()===5}
+function todayKey(){return new Date().toDateString()}
+const ADMIN_ITEMS=['Responded to all messages','Requested resources','Checked calendar','Sent meeting links'];
+const HABIT_ITEMS=['2 Bible Chapters','Read a book','Audio','Workout'];
 function renderHome(){
   const now=new Date();
   const h=now.getHours();
-  let gr='Good morning';
-  if(h>=12&&h<17)gr='Good afternoon';
-  else if(h>=17)gr='Good evening';
+  let gr=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
   document.getElementById('home-greeting').textContent=gr+', Austin';
   document.getElementById('home-date').textContent=now.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'});
   const streak=load('faith-streak',0);
   document.getElementById('streak-pill').textContent='🔥 '+streak+' days';
-  document.getElementById('home-faith').textContent=streak;
   const prospects=load('prospects',[]);
   const active=prospects.filter(p=>p.stage!=='x'&&p.stage!=='partner').length;
-  document.getElementById('home-prospects').textContent=active;
-  document.getElementById('home-biz-prospects').textContent=active;
-  const drops=load('weekly-drops',{week:'',count:0});
-  const wk=getWeekKey();
-  const dropCount=drops.week===wk?drops.count:0;
-  document.getElementById('home-drop').textContent=dropCount;
-  checkReviewBanner();
-}
-function checkReviewBanner(){
+  const today=todayKey();
+  const reach=load('reach-today',{date:'',ig:0,bb:0,igGoal:3,bbGoal:3});
+  if(reach.date!==today){reach.date=today;reach.ig=0;reach.bb=0;save('reach-today',reach);}
+  document.getElementById('ig-count').textContent=reach.ig;
+  document.getElementById('bb-count').textContent=reach.bb;
+  document.getElementById('ig-goal').textContent=reach.igGoal||3;
+  document.getElementById('bb-goal').textContent=reach.bbGoal||3;
   const banner=document.getElementById('review-banner');
-  const lastDismiss=load('review-dismissed','');
+  const dismissed=load('review-dismissed','');
   const wk=getWeekKey();
-  if(lastDismiss===wk){
-    banner.classList.add('hidden');
-  } else {
+  if(isFriday()&&dismissed!==wk){
     banner.classList.remove('hidden');
-    const prospects=load('prospects',[]);
-    const thisWeek=getWeeklyProspects(prospects);
-    document.getElementById('review-banner-sub').textContent=thisWeek.touched.length+' conversations active this week';
+    const{touched}=getWeeklyProspects(prospects);
+    document.getElementById('review-banner-sub').textContent=touched.length+' conversations to review';
+  } else {
+    banner.classList.add('hidden');
+  }
+  renderAdminList();
+  renderHabitsList();
+  renderQuickTasks();
+}
+function increment(type){
+  const today=todayKey();
+  const reach=load('reach-today',{date:today,ig:0,bb:0,igGoal:3,bbGoal:3});
+  if(reach.date!==today){reach.date=today;reach.ig=0;reach.bb=0;}
+  reach[type]++;
+  save('reach-today',reach);
+  document.getElementById(type+'-count').textContent=reach[type];
+  if(type==='ig'){
+    const wk=getWeekKey();
+    const drops=load('weekly-drops',{week:'',count:0});
+    if(drops.week===wk)drops.count++;else{drops.week=wk;drops.count=1;}
+    save('weekly-drops',drops);
   }
 }
-function getWeekKey(){
-  const now=new Date();
-  const d=new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));
-  const day=d.getUTCDay()||7;
-  d.setUTCDate(d.getUTCDate()+4-day);
-  const yr=new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  return d.getUTCFullYear()+'-W'+Math.ceil(((d-yr)/86400000+1)/7);
+function renderAdminList(){
+  const today=todayKey();
+  const done=load('admin-done-'+today,[]);
+  const list=document.getElementById('admin-list');
+  list.innerHTML=ADMIN_ITEMS.map((item,i)=>`
+    <div class="check-item" onclick="toggleAdmin(${i})">
+      <div class="check-circle${done.includes(i)?' done':''}">${done.includes(i)?'✓':''}</div>
+      <span class="check-text${done.includes(i)?' done':''}">${item}</span>
+    </div>`).join('');
+  document.getElementById('admin-score').textContent=done.length+'/'+ADMIN_ITEMS.length;
+}
+function toggleAdmin(i){
+  const today=todayKey();
+  const done=load('admin-done-'+today,[]);
+  const pos=done.indexOf(i);
+  if(pos===-1)done.push(i);else done.splice(pos,1);
+  save('admin-done-'+today,done);
+  renderAdminList();
+}
+function renderHabitsList(){
+  const today=todayKey();
+  const done=load('habits-done-'+today,[]);
+  const list=document.getElementById('habits-list');
+  list.innerHTML=HABIT_ITEMS.map((item,i)=>`
+    <div class="check-item" onclick="toggleHabitHome(${i})">
+      <div class="check-circle${done.includes(i)?' done':''}">${done.includes(i)?'✓':''}</div>
+      <span class="check-text${done.includes(i)?' done':''}">${item}</span>
+    </div>`).join('');
+  document.getElementById('habits-score').textContent=done.length+'/'+HABIT_ITEMS.length;
+}
+function toggleHabitHome(i){
+  const today=todayKey();
+  const done=load('habits-done-'+today,[]);
+  const pos=done.indexOf(i);
+  if(pos===-1)done.push(i);else done.splice(pos,1);
+  save('habits-done-'+today,done);
+  renderHabitsList();
+  if(done.length===HABIT_ITEMS.length){
+    const streak=load('faith-streak',0);
+    const lastDate=load('faith-last-date','');
+    const todayStr=new Date().toDateString();
+    if(lastDate!==todayStr){save('faith-streak',streak+1);save('faith-last-date',todayStr);}
+  }
+}
+function addQuickTask(){
+  const inp=document.getElementById('quick-task-input');
+  const text=inp.value.trim();
+  if(!text)return;
+  const tasks=load('quick-tasks',[]);
+  tasks.unshift({id:'t'+Date.now(),text,done:false,addedAt:new Date().toISOString()});
+  save('quick-tasks',tasks);
+  inp.value='';
+  renderQuickTasks();
+}
+function toggleQuickTask(id){
+  const tasks=load('quick-tasks',[]);
+  const t=tasks.find(x=>x.id===id);
+  if(t)t.done=!t.done;
+  save('quick-tasks',tasks);
+  renderQuickTasks();
+}
+function deleteQuickTask(id){
+  save('quick-tasks',load('quick-tasks',[]).filter(x=>x.id!==id));
+  renderQuickTasks();
+}
+function renderQuickTasks(){
+  const tasks=load('quick-tasks',[]);
+  const container=document.getElementById('quick-task-list');
+  if(!container)return;
+  const all=[...tasks.filter(t=>!t.done),...tasks.filter(t=>t.done)].slice(0,12);
+  if(!all.length){container.innerHTML=`<div style="font-size:11px;color:var(--t3);text-align:center;padding:8px 0">No tasks — you're clear</div>`;return;}
+  container.innerHTML=all.map(t=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)" class="check-item" onclick="toggleQuickTask('${t.id}')">
+      <div class="check-circle${t.done?' done':''}">${t.done?'✓':''}</div>
+      <span class="check-text${t.done?' done':''}" style="flex:1;font-size:12px">${esc(t.text)}</span>
+      <button style="background:none;border:none;color:var(--t3);font-size:14px;cursor:pointer;padding:0 2px;line-height:1" onclick="event.stopPropagation();deleteQuickTask('${t.id}')">×</button>
+    </div>`).join('');
 }
 function getWeeklyProspects(prospects){
-  const now=new Date();
-  const weekAgo=new Date(now-7*24*60*60*1000);
+  const now=new Date(),weekAgo=new Date(now-7*24*60*60*1000);
   const touched=[],newOnes=[],movedStage=[],drops=[];
   prospects.forEach(p=>{
     const added=p.addedAt?new Date(p.addedAt):null;
     const lastNote=p.notes&&p.notes.length?new Date(p.notes[p.notes.length-1].date):null;
-    const recent=lastNote&&lastNote>=weekAgo;
-    const addedRecent=added&&added>=weekAgo;
+    const recent=lastNote&&lastNote>=weekAgo,addedRecent=added&&added>=weekAgo;
     if(recent||addedRecent){touched.push(p);if(addedRecent)newOnes.push(p);}
     if(p.dropSentAt&&new Date(p.dropSentAt)>=weekAgo)drops.push(p);
     if(p.stageChangedAt&&new Date(p.stageChangedAt)>=weekAgo)movedStage.push(p);
@@ -445,58 +502,61 @@ function getWeeklyProspects(prospects){
   return{touched,newOnes,movedStage,drops};
 }
 function openWeeklyReview(){
-  const prospects=load('prospects',[]);
-  const customers=load('customers',[]);
-  const now=new Date();
-  const weekAgo=new Date(now-7*24*60*60*1000);
-  const{touched,newOnes,movedStage,drops}=getWeeklyProspects(prospects);
-  const drops_data=load('weekly-drops',{week:'',count:0});
+  const prospects=load('prospects',[]),customers=load('customers',[]);
+  const now=new Date(),weekAgo=new Date(now-7*24*60*60*1000);
+  const{touched,newOnes,movedStage}=getWeeklyProspects(prospects);
   const wk=getWeekKey();
-  const dropCount=drops_data.week===wk?drops_data.count:0;
-  const newCustomers=customers.filter(c=>c.addedAt&&new Date(c.addedAt)>=weekAgo);
-  let html=`<div class="review-summary-box"><div class="review-summary-text"><strong>Week of ${weekAgo.toLocaleDateString('en-CA',{month:'short',day:'numeric'})} – ${now.toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</strong><br>${touched.length} conversation${touched.length!==1?'s':''} touched &nbsp;·&nbsp; ${newOnes.length} new prospect${newOnes.length!==1?'s':''} &nbsp;·&nbsp; ${dropCount} drop message${dropCount!==1?'s':''} sent</div></div>`;
-  if(touched.length>0){
-    html+=`<div class="review-section"><div class="review-section-title">Active Conversations This Week</div>`;
+  const drops=load('weekly-drops',{week:'',count:0});
+  const dropCount=drops.week===wk?drops.count:0;
+  const newCust=customers.filter(c=>c.addedAt&&new Date(c.addedAt)>=weekAgo);
+  let html=`<div class="review-summary-box"><div class="review-summary-text">
+    <strong>Week of ${weekAgo.toLocaleDateString('en-CA',{month:'short',day:'numeric'})} – ${now.toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</strong><br>
+    ${touched.length} conversation${touched.length!==1?'s':''} &nbsp;·&nbsp; ${newOnes.length} new prospect${newOnes.length!==1?'s':''} &nbsp;·&nbsp; ${dropCount} drop msg${dropCount!==1?'s':''} sent
+  </div></div>`;
+  if(touched.length){
+    html+=`<div class="review-section"><div class="review-section-title">Conversations This Week</div>`;
     touched.forEach(p=>{
-      const stageLabel=stageInfo(p.stage);
-      const lastNote=p.notes&&p.notes.length?p.notes[p.notes.length-1]:'';
-      html+=`<div class="review-person-row"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="review-person-name">${esc(p.name)}</div><span class="stage-badge" style="background:${stageInfo(p.stage).bg};color:${stageInfo(p.stage).color}">${stageLabel.label}</span></div><div class="review-person-meta">${p.platform||'IG'} ${p.dropSent?'· Drop sent ✓':''}</div>${lastNote?`<div class="review-person-last">${esc(lastNote.text)}</div>`:''}</div>`;
+      const si=stageInfo(p.stage);
+      const ln=p.notes&&p.notes.length?p.notes[p.notes.length-1]:'';
+      html+=`<div class="review-person-row">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="review-person-name">${esc(p.name)}</div>
+          <span class="stage-badge" style="background:${si.bg};color:${si.color}">${si.label}</span>
+        </div>
+        <div class="review-person-meta">${p.platform||'IG'}${p.dropSent?' · Drop ✓':''}</div>
+        ${ln?`<div class="review-person-last">${esc(ln.text)}</div>`:''}
+      </div>`;
     });
     html+=`</div>`;
   } else {
     html+=`<div class="review-section"><div class="review-section-title">Conversations</div><div class="review-empty">No conversations logged this week</div></div>`;
   }
-  if(movedStage.length>0){
-    html+=`<div class="review-section"><div class="review-section-title">Stage Moves</div>`;
-    movedStage.forEach(p=>{html+=`<div class="review-person-row"><div class="review-person-name">${esc(p.name)}</div><div class="review-person-meta">Moved to: ${stageInfo(p.stage).label}</div></div>`;});
-    html+=`</div>`;
-  }
-  if(newCustomers.length>0){
+  if(newCust.length){
     html+=`<div class="review-section"><div class="review-section-title">New Customers</div>`;
-    newCustomers.forEach(c=>{html+=`<div class="review-person-row"><div class="review-person-name">${esc(c.name)}</div><div class="review-person-meta">Added ${new Date(c.addedAt).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div></div>`;});
+    newCust.forEach(c=>{html+=`<div class="review-person-row"><div class="review-person-name">${esc(c.name)}</div></div>`;});
     html+=`</div>`;
   }
-  html+=`<div class="review-section"><div class="review-section-title">Reflection</div><textarea class="inp" id="review-reflection" rows="3" placeholder="What's working? What needs attention next week?" oninput="save('review-reflection-'+getWeekKey(),this.value)">${load('review-reflection-'+wk,'')}</textarea></div><button class="btn btn-primary" onclick="dismissReview()">Done — Dismiss Until Next Week</button>`;
+  html+=`<div class="review-section"><div class="review-section-title">Reflection</div>
+    <textarea class="inp" rows="3" placeholder="What worked? What needs attention next week?" oninput="save('review-reflection-${wk}',this.value)">${load('review-reflection-'+wk,'')}</textarea>
+  </div>
+  <button class="btn btn-primary" onclick="dismissReview()">Done — See You Next Friday</button>`;
   document.getElementById('review-modal-body').innerHTML=html;
   openModal('review-modal');
 }
 function dismissReview(){
   save('review-dismissed',getWeekKey());
   closeModal('review-modal');
-  checkReviewBanner();
-  toast('Review saved. See you next week.');
+  document.getElementById('review-banner').classList.add('hidden');
+  toast('Review saved.');
 }
-const HABITS=['bible','prayer','gratitude'];
+const FAITH_HABITS=['bible','prayer','gratitude'];
 const DAYS=['M','T','W','T','F','S','S'];
 function renderFaith(){
   const streak=load('faith-streak',0);
   document.getElementById('faith-streak-num').textContent=streak;
-  const pct=Math.min(streak/30,1);
-  const circ=213.6;
+  const circ=188.5,pct=Math.min(streak/30,1);
   document.getElementById('faith-ring').style.strokeDashoffset=circ-(circ*pct);
-  document.getElementById('home-faith').textContent=streak;
-  document.getElementById('streak-pill').textContent='🔥 '+streak+' days';
-  HABITS.forEach(h=>{
+  FAITH_HABITS.forEach(h=>{
     const data=load('habit-'+h,{days:[]});
     const dots=document.getElementById('dots-'+h);
     dots.innerHTML='';
@@ -505,34 +565,18 @@ function renderFaith(){
       const d=document.createElement('button');
       d.className='habit-dot'+(done?' done':'');
       d.textContent=done?'✓':DAYS[i];
-      d.onclick=(()=>{const idx=i;return()=>toggleHabit(h,idx);})();
+      d.onclick=(()=>{const idx=i;return()=>toggleFaithHabit(h,idx);})();
       dots.appendChild(d);
     }
   });
   document.getElementById('faith-notes').value=load('faith-notes','');
 }
-function toggleHabit(habit,dayIdx){
+function toggleFaithHabit(habit,dayIdx){
   const data=load('habit-'+habit,{days:[]});
   const pos=data.days.indexOf(dayIdx);
-  if(pos===-1)data.days.push(dayIdx);
-  else data.days.splice(pos,1);
+  if(pos===-1)data.days.push(dayIdx);else data.days.splice(pos,1);
   save('habit-'+habit,data);
-  updateStreak();
   renderFaith();
-}
-function updateStreak(){
-  const todayAll=HABITS.every(h=>{
-    const data=load('habit-'+h,{days:[]});
-    const today=new Date().getDay();
-    const idx=today===0?6:today-1;
-    return data.days.includes(idx);
-  });
-  if(todayAll){
-    const streak=load('faith-streak',0);
-    const lastDate=load('faith-last-date','');
-    const todayStr=new Date().toDateString();
-    if(lastDate!==todayStr){save('faith-streak',streak+1);save('faith-last-date',todayStr);}
-  }
 }
 const workoutDays={
   'Upper A':[{n:'Bench Press',s:'4×6-8'},{n:'Barbell Row',s:'4×6-8'},{n:'OHP',s:'3×8-10'},{n:'Pull-Ups',s:'3×AMRAP'},{n:'Dips',s:'3×10-12'}],
@@ -545,8 +589,7 @@ const workoutDays={
 let selectedWorkoutDay='';
 function selectDay(day,el){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  selectedWorkoutDay=day;
+  el.classList.add('active');selectedWorkoutDay=day;
   const ex=workoutDays[day]||[];
   document.getElementById('fit-exercises').innerHTML=ex.map(e=>`<div class="exercise-row"><span class="exercise-name">${e.n}</span><span class="exercise-sets">${e.s}</span></div>`).join('');
 }
@@ -559,33 +602,29 @@ function fitTab(tab,el){
 }
 function logWorkout(){
   if(!selectedWorkoutDay){toast('Select a workout type first');return;}
-  const notes=document.getElementById('fit-notes').value;
   const sessions=load('workout-sessions',[]);
-  sessions.unshift({day:selectedWorkoutDay,notes,date:new Date().toISOString()});
+  sessions.unshift({day:selectedWorkoutDay,notes:document.getElementById('fit-notes').value,date:new Date().toISOString()});
   save('workout-sessions',sessions);
   document.getElementById('fit-notes').value='';
-  toast('Session logged!');
-  renderFitHistory();
+  toast('Session logged!');renderFitHistory();
 }
 function renderFitHistory(){
   const sessions=load('workout-sessions',[]);
-  const container=document.getElementById('fit-history-list');
-  if(!sessions.length){container.innerHTML='<div class="empty"><div class="empty-icon">📊</div>No sessions logged yet</div>';return;}
-  container.innerHTML=sessions.slice(0,20).map(s=>`<div class="card"><div class="card-title">${s.day}</div><div style="font-size:11px;color:var(--t2)">${new Date(s.date).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})}</div>${s.notes?`<div style="font-size:12px;color:var(--t2);margin-top:6px">${esc(s.notes)}</div>`:''}</div>`).join('');
+  const c=document.getElementById('fit-history-list');
+  if(!sessions.length){c.innerHTML='<div class="empty"><div class="empty-icon">📊</div>No sessions yet</div>';return;}
+  c.innerHTML=sessions.slice(0,20).map(s=>`<div class="card"><div class="card-title">${s.day}</div><div style="font-size:10px;color:var(--t2)">${new Date(s.date).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})}</div>${s.notes?`<div style="font-size:11px;color:var(--t2);margin-top:5px">${esc(s.notes)}</div>`:''}</div>`).join('');
 }
 let currentKid=0;
 const kidDefaults=['Kid 1','Kid 2','Kid 3'];
 function kidTab(idx,el){
   document.querySelectorAll('#page-parenting .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  currentKid=idx;
-  renderKid(idx);
+  el.classList.add('active');currentKid=idx;renderKid(idx);
 }
 function renderKid(idx){
-  const kid=load('kid-'+idx,{name:kidDefaults[idx],notes:[],giftIdeas:[],sizes:{}});
+  const kid=load('kid-'+idx,{name:kidDefaults[idx],notes:'',giftIdeas:[],sizes:{}});
   document.getElementById('kid-content').innerHTML=`
     <div class="card">
-      <div class="input-group"><div class="input-label">Name</div><input class="inp" value="${esc(kid.name)}" placeholder="Child's name" onchange="updateKidName(${idx},this.value)"></div>
+      <div class="input-group"><div class="input-label">Name</div><input class="inp" value="${esc(kid.name)}" onchange="updateKidName(${idx},this.value)"></div>
       <div class="input-group"><div class="input-label">Clothing Sizes</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <input class="inp" placeholder="Shirt" value="${esc(kid.sizes.shirt||'')}" onchange="updateKidSize(${idx},'shirt',this.value)">
@@ -597,120 +636,104 @@ function renderKid(idx){
     </div>
     <div class="card">
       <div class="card-title">Gift Ideas</div>
-      <div id="kid-gifts-${idx}">${(kid.giftIdeas||[]).map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--s2)"><span style="font-size:12px;flex:1">${esc(g)}</span><button class="btn btn-danger" style="padding:4px 8px;font-size:10px" onclick="removeKidGift(${idx},${i})">✕</button></div>`).join('')}</div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input class="inp" id="kid-gift-input-${idx}" placeholder="Add gift idea..." style="flex:1">
-        <button class="btn btn-ghost" onclick="addKidGift(${idx})">Add</button>
-      </div>
+      <div>${(kid.giftIdeas||[]).map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px;flex:1">${esc(g)}</span><button class="btn btn-danger" style="padding:3px 8px;font-size:10px" onclick="removeKidGift(${idx},${i})">✕</button></div>`).join('')}</div>
+      <div style="display:flex;gap:8px;margin-top:8px"><input class="inp" id="kid-gift-input-${idx}" placeholder="Add gift idea..." style="flex:1"><button class="btn btn-ghost" onclick="addKidGift(${idx})">Add</button></div>
     </div>
-    <div class="card">
-      <div class="card-title">Notes & Conversations</div>
-      <textarea class="inp" rows="4" placeholder="Things we talked about, milestones, moments..." oninput="updateKidNotes(${idx},this.value)">${esc(kid.notes||'')}</textarea>
-    </div>`;
+    <div class="card"><div class="card-title">Notes</div><textarea class="inp" rows="4" placeholder="Milestones, conversations, moments..." oninput="updateKidNotes(${idx},this.value)">${esc(kid.notes||'')}</textarea></div>`;
 }
-function updateKidName(idx,val){const k=load('kid-'+idx,{name:kidDefaults[idx]});k.name=val;save('kid-'+idx,k)}
-function updateKidSize(idx,field,val){const k=load('kid-'+idx,{sizes:{}});k.sizes=k.sizes||{};k.sizes[field]=val;save('kid-'+idx,k)}
-function updateKidNotes(idx,val){const k=load('kid-'+idx,{});k.notes=val;save('kid-'+idx,k)}
+function updateKidName(idx,v){const k=load('kid-'+idx,{});k.name=v;save('kid-'+idx,k)}
+function updateKidSize(idx,f,v){const k=load('kid-'+idx,{sizes:{}});k.sizes=k.sizes||{};k.sizes[f]=v;save('kid-'+idx,k)}
+function updateKidNotes(idx,v){const k=load('kid-'+idx,{});k.notes=v;save('kid-'+idx,k)}
 function addKidGift(idx){
   const inp=document.getElementById('kid-gift-input-'+idx);
   if(!inp.value.trim())return;
-  const k=load('kid-'+idx,{giftIdeas:[]});
-  k.giftIdeas=k.giftIdeas||[];
-  k.giftIdeas.push(inp.value.trim());
-  save('kid-'+idx,k);
-  renderKid(idx);
+  const k=load('kid-'+idx,{giftIdeas:[]});k.giftIdeas=k.giftIdeas||[];k.giftIdeas.push(inp.value.trim());
+  save('kid-'+idx,k);renderKid(idx);
 }
 function removeKidGift(idx,i){const k=load('kid-'+idx,{giftIdeas:[]});k.giftIdeas.splice(i,1);save('kid-'+idx,k);renderKid(idx);}
 function marriageTab(tab,el){
   document.querySelectorAll('#page-marriage .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderMarriage(tab);
+  el.classList.add('active');renderMarriage(tab);
 }
 function renderMarriage(tab){
-  const marriage=load('marriage',{log:[],gifts:[],notes:''});
+  const marriage=load('marriage',{log:[],gifts:[]});
   let html='';
   if(tab==='log'){
-    html=`<div class="card"><div class="card-title">Log an Entry</div>
+    html=`<div class="card">
       <div class="input-group"><div class="input-label">Type</div>
         <select class="inp" id="marriage-type"><option>Date night</option><option>Conversation</option><option>Counseling</option><option>Conflict resolved</option><option>Gratitude moment</option><option>Other</option></select>
       </div>
-      <div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="marriage-log-note" rows="3" placeholder="What happened, what was discussed..."></textarea></div>
+      <div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="marriage-log-note" rows="3" placeholder="What happened..."></textarea></div>
       <button class="btn btn-primary" onclick="addMarriageLog()">Log Entry</button></div>
-    <div id="marriage-log-list">${(marriage.log||[]).slice(0,20).map(e=>`<div class="card"><div class="card-title">${esc(e.type)}</div><div style="font-size:11px;color:var(--t2)">${new Date(e.date).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})}</div><div style="font-size:12px;color:var(--t2);margin-top:6px">${esc(e.note)}</div></div>`).join('')||'<div class="empty"><div class="empty-icon">💍</div>No entries yet</div>'}</div>`;
+    <div>${(marriage.log||[]).slice(0,20).map(e=>`<div class="card"><div class="card-title">${esc(e.type)}</div><div style="font-size:10px;color:var(--t2)">${new Date(e.date).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})}</div><div style="font-size:11px;color:var(--t2);margin-top:5px">${esc(e.note)}</div></div>`).join('')||'<div class="empty"><div class="empty-icon">💍</div>No entries yet</div>'}</div>`;
   } else if(tab==='gifts'){
     html=`<div class="card"><div class="card-title">Gift Ideas for Kyra</div>
-      <div id="marriage-gifts">${(marriage.gifts||[]).map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--s2)"><span style="font-size:12px;flex:1">${esc(g)}</span><button class="btn btn-danger" style="padding:4px 8px;font-size:10px" onclick="removeMarriageGift(${i})">✕</button></div>`).join('')}</div>
-      <div style="display:flex;gap:8px;margin-top:8px"><input class="inp" id="marriage-gift-input" placeholder="Add gift idea..." style="flex:1"><button class="btn btn-ghost" onclick="addMarriageGift()">Add</button></div>
+      <div>${(marriage.gifts||[]).map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px;flex:1">${esc(g)}</span><button class="btn btn-danger" style="padding:3px 8px;font-size:10px" onclick="removeMarriageGift(${i})">✕</button></div>`).join('')}</div>
+      <div style="display:flex;gap:8px;margin-top:8px"><input class="inp" id="marriage-gift-input" placeholder="Add idea..." style="flex:1"><button class="btn btn-ghost" onclick="addMarriageGift()">Add</button></div>
     </div>`;
   } else {
-    html=`<div class="card"><div class="card-title">Notes & Intentions</div><textarea class="inp" rows="6" placeholder="Things to work on, counseling notes, reflections..." oninput="save('marriage-notes',this.value)">${esc(load('marriage-notes',''))}</textarea></div>`;
+    html=`<div class="card"><textarea class="inp" rows="6" placeholder="Counseling notes, things to work on, intentions..." oninput="save('marriage-notes',this.value)">${esc(load('marriage-notes',''))}</textarea></div>`;
   }
   document.getElementById('marriage-content').innerHTML=html;
 }
 function addMarriageLog(){
-  const type=document.getElementById('marriage-type').value;
-  const note=document.getElementById('marriage-log-note').value;
-  if(!note.trim()&&type!=='Date night'){toast('Add a note first');return;}
-  const marriage=load('marriage',{log:[],gifts:[]});
-  marriage.log=marriage.log||[];
-  marriage.log.unshift({type,note,date:new Date().toISOString()});
-  save('marriage',marriage);
-  toast('Logged!');
-  renderMarriage('log');
+  const type=document.getElementById('marriage-type').value,note=document.getElementById('marriage-log-note').value;
+  const m=load('marriage',{log:[],gifts:[]});m.log=m.log||[];m.log.unshift({type,note,date:new Date().toISOString()});
+  save('marriage',m);toast('Logged!');renderMarriage('log');
 }
 function addMarriageGift(){
-  const inp=document.getElementById('marriage-gift-input');
-  if(!inp.value.trim())return;
-  const marriage=load('marriage',{log:[],gifts:[]});
-  marriage.gifts=marriage.gifts||[];
-  marriage.gifts.push(inp.value.trim());
-  save('marriage',marriage);
-  renderMarriage('gifts');
+  const inp=document.getElementById('marriage-gift-input');if(!inp.value.trim())return;
+  const m=load('marriage',{log:[],gifts:[]});m.gifts=m.gifts||[];m.gifts.push(inp.value.trim());
+  save('marriage',m);renderMarriage('gifts');
 }
-function removeMarriageGift(i){const marriage=load('marriage',{log:[],gifts:[]});marriage.gifts.splice(i,1);save('marriage',marriage);renderMarriage('gifts');}
+function removeMarriageGift(i){const m=load('marriage',{log:[],gifts:[]});m.gifts.splice(i,1);save('marriage',m);renderMarriage('gifts');}
 const STAGES=[
-  {id:'signal',label:'Signal',color:'#1a6fd4',bg:'rgba(26,111,212,.12)'},
-  {id:'initial',label:'Initial Convo',color:'#c47d00',bg:'rgba(196,125,0,.12)'},
-  {id:'observation',label:'Observing',color:'#7c3aed',bg:'rgba(124,58,237,.12)'},
-  {id:'invitation',label:'Invited',color:'#e8500a',bg:'rgba(232,80,10,.12)'},
-  {id:'vetting',label:'Vetting',color:'#1a9e52',bg:'rgba(26,158,82,.12)'},
-  {id:'partner',label:'Partner ✓',color:'#1a9e52',bg:'rgba(26,158,82,.18)'},
-  {id:'x',label:'Not a Fit',color:'#999',bg:'rgba(0,0,0,.06)'},
+  {id:'signal',label:'Signal',color:'#2a5fa8',bg:'rgba(42,95,168,.12)'},
+  {id:'initial',label:'Initial Convo',color:'#9a6b10',bg:'rgba(154,107,16,.12)'},
+  {id:'observation',label:'Observing',color:'#6b3fa0',bg:'rgba(107,63,160,.12)'},
+  {id:'invitation',label:'Invited',color:'#c45c1a',bg:'rgba(196,92,26,.12)'},
+  {id:'vetting',label:'Vetting',color:'#2a7a42',bg:'rgba(42,122,66,.12)'},
+  {id:'partner',label:'Partner ✓',color:'#2a7a42',bg:'rgba(42,122,66,.18)'},
+  {id:'x',label:'Not a Fit',color:'#a8967e',bg:'rgba(0,0,0,.06)'},
 ];
 function stageInfo(id){return STAGES.find(s=>s.id===id)||STAGES[0]}
 let bizActiveTab='pipeline';
 function bizTab(tab,el){
   document.querySelectorAll('#page-biz .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  bizActiveTab=tab;
-  renderBiz();
+  el.classList.add('active');bizActiveTab=tab;renderBiz();
 }
 function renderBiz(){
   if(bizActiveTab==='pipeline')renderPipeline();
   else if(bizActiveTab==='customers')renderCustomers();
+  else if(bizActiveTab==='content')renderContent();
   else renderBizStats();
 }
 function renderPipeline(){
   const prospects=load('prospects',[]);
-  const activeStages=STAGES.filter(s=>s.id!=='x'&&s.id!=='partner');
-  const others=STAGES.filter(s=>s.id==='partner'||s.id==='x');
   let html=`<button class="btn btn-primary" onclick="openAddProspect()" style="margin-bottom:12px">+ Add Prospect</button>`;
-  activeStages.forEach(stage=>{
+  STAGES.filter(s=>s.id!=='x'&&s.id!=='partner').forEach(stage=>{
     const inStage=prospects.filter(p=>p.stage===stage.id);
     if(!inStage.length)return;
     html+=`<div class="pipeline-stage"><div class="stage-label"><span class="stage-dot" style="background:${stage.color}"></span>${stage.label} (${inStage.length})</div>`;
     inStage.forEach(p=>{
-      const lastNote=p.notes&&p.notes.length?p.notes[p.notes.length-1]:'';
-      html+=`<div class="prospect-card" onclick="openProspect('${p.id}')"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="prospect-name">${esc(p.name)}</div><span class="stage-badge" style="background:${stage.bg};color:${stage.color}">${stage.label}</span></div><div class="prospect-meta">${p.platform||'IG'} ${p.dropSent?'· Drop ✓':''}</div>${lastNote?`<div class="prospect-last">${esc(lastNote.text)}</div>`:''}</div>`;
+      const ln=p.notes&&p.notes.length?p.notes[p.notes.length-1]:'';
+      html+=`<div class="prospect-card" onclick="openProspect('${p.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="prospect-name">${esc(p.name)}</div>
+          <span class="stage-badge" style="background:${stage.bg};color:${stage.color}">${stage.label}</span>
+        </div>
+        <div class="prospect-meta">${p.platform||'IG'}${p.dropSent?' · Drop ✓':''}</div>
+        ${ln?`<div class="prospect-last">${esc(ln.text)}</div>`:''}
+      </div>`;
     });
     html+=`</div>`;
   });
-  others.forEach(stage=>{
+  STAGES.filter(s=>s.id==='partner'||s.id==='x').forEach(stage=>{
     const inStage=prospects.filter(p=>p.stage===stage.id);
     if(!inStage.length)return;
-    html+=`<details style="margin-bottom:12px"><summary style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);cursor:pointer;padding:8px 0">${stage.label} (${inStage.length})</summary>${inStage.map(p=>`<div class="prospect-card" onclick="openProspect('${p.id}')"><div class="prospect-name">${esc(p.name)}</div><div class="prospect-meta">${p.platform||'IG'}</div></div>`).join('')}</details>`;
+    html+=`<details style="margin-bottom:10px"><summary style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);cursor:pointer;padding:7px 0">${stage.label} (${inStage.length})</summary>${inStage.map(p=>`<div class="prospect-card" onclick="openProspect('${p.id}')"><div class="prospect-name">${esc(p.name)}</div><div class="prospect-meta">${p.platform||'IG'}</div></div>`).join('')}</details>`;
   });
-  if(!prospects.length)html+=`<div class="empty"><div class="empty-icon">👥</div>No prospects yet. Add your first one.</div>`;
+  if(!prospects.length)html+=`<div class="empty"><div class="empty-icon">👥</div>No prospects yet</div>`;
   document.getElementById('biz-content').innerHTML=html;
 }
 function openAddProspect(){
@@ -719,7 +742,7 @@ function openAddProspect(){
     <div class="input-group"><div class="input-label">Name</div><input class="inp" id="p-name" placeholder="Full name"></div>
     <div class="input-group"><div class="input-label">Platform</div><select class="inp" id="p-platform"><option>Instagram</option><option>Bumble Biz</option><option>LinkedIn</option><option>In Person</option><option>Other</option></select></div>
     <div class="input-group"><div class="input-label">Stage</div><select class="inp" id="p-stage">${STAGES.map(s=>`<option value="${s.id}">${s.label}</option>`).join('')}</select></div>
-    <div class="input-group"><div class="input-label">First Note</div><textarea class="inp" id="p-note" rows="3" placeholder="What got your attention, context..."></textarea></div>
+    <div class="input-group"><div class="input-label">First Note</div><textarea class="inp" id="p-note" rows="3" placeholder="What got your attention..."></textarea></div>
     <button class="btn btn-primary" onclick="saveNewProspect()">Add to Pipeline</button>`;
   openModal('prospect-modal');
 }
@@ -727,29 +750,22 @@ function saveNewProspect(){
   const name=document.getElementById('p-name').value.trim();
   if(!name){toast('Name required');return;}
   const prospects=load('prospects',[]);
-  const id='p'+Date.now();
   const note=document.getElementById('p-note').value.trim();
-  prospects.push({id,name,platform:document.getElementById('p-platform').value,stage:document.getElementById('p-stage').value,notes:note?[{text:note,date:new Date().toISOString()}]:[],addedAt:new Date().toISOString(),dropSent:false});
-  save('prospects',prospects);
-  closeModal('prospect-modal');
-  toast(name+' added to pipeline');
-  renderPipeline();
-  renderHome();
+  prospects.push({id:'p'+Date.now(),name,platform:document.getElementById('p-platform').value,stage:document.getElementById('p-stage').value,notes:note?[{text:note,date:new Date().toISOString()}]:[],addedAt:new Date().toISOString(),dropSent:false});
+  save('prospects',prospects);closeModal('prospect-modal');toast(name+' added');renderPipeline();renderHome();
 }
 function openProspect(id){
-  const prospects=load('prospects',[]);
-  const p=prospects.find(x=>x.id===id);
-  if(!p)return;
+  const prospects=load('prospects',[]),p=prospects.find(x=>x.id===id);if(!p)return;
   document.getElementById('prospect-modal-title').textContent=p.name;
   document.getElementById('prospect-modal-body').innerHTML=`
     <div class="input-group"><div class="input-label">Stage</div><select class="inp" id="ep-stage" onchange="updateProspectStage('${id}',this.value)">${STAGES.map(s=>`<option value="${s.id}"${p.stage===s.id?' selected':''}>${s.label}</option>`).join('')}</select></div>
     <div class="input-group"><div class="input-label">Platform</div><select class="inp" id="ep-platform">${['Instagram','Bumble Biz','LinkedIn','In Person','Other'].map(pl=>`<option${p.platform===pl?' selected':''}>${pl}</option>`).join('')}</select></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin-bottom:4px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;margin-bottom:4px">
       <span style="font-size:12px;font-weight:700">Drop Message Sent</span>
-      <button class="btn btn-ghost" id="drop-btn" onclick="toggleDrop('${id}')" style="${p.dropSent?'background:var(--gd);color:var(--gr)':''}">${p.dropSent?'✓ Sent':'Mark Sent'}</button>
+      <button class="btn btn-ghost" id="drop-btn" onclick="toggleDrop('${id}')" style="${p.dropSent?'background:rgba(42,122,66,.15);color:var(--gr)':''}">${p.dropSent?'✓ Sent':'Mark Sent'}</button>
     </div>
-    <div class="card-title" style="margin-top:10px">Notes</div>
-    <div id="ep-notes" style="margin-bottom:10px">${(p.notes||[]).map(n=>`<div style="padding:7px 0;border-bottom:1px solid var(--s2)"><div style="font-size:11px;color:var(--t2)">${new Date(n.date).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div><div style="font-size:12px;margin-top:2px">${esc(n.text)}</div></div>`).join('')||'<div style="font-size:12px;color:var(--t3);padding:6px 0">No notes yet</div>'}</div>
+    <div class="card-title" style="margin-top:8px">Notes</div>
+    <div style="margin-bottom:10px">${(p.notes||[]).map(n=>`<div style="padding:6px 0;border-bottom:1px solid var(--s2)"><div style="font-size:10px;color:var(--t2)">${new Date(n.date).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div><div style="font-size:11px;margin-top:2px">${esc(n.text)}</div></div>`).join('')||'<div style="font-size:11px;color:var(--t3);padding:5px 0">No notes yet</div>'}</div>
     <textarea class="inp" id="ep-new-note" rows="2" placeholder="Add a note..." style="margin-bottom:8px"></textarea>
     <div style="display:flex;gap:8px">
       <button class="btn btn-ghost" style="flex:1" onclick="addProspectNote('${id}')">Add Note</button>
@@ -758,43 +774,23 @@ function openProspect(id){
   openModal('prospect-modal');
 }
 function updateProspectStage(id,stage){
-  const prospects=load('prospects',[]);
-  const p=prospects.find(x=>x.id===id);
-  if(!p)return;
-  p.stage=stage;p.stageChangedAt=new Date().toISOString();
-  save('prospects',prospects);renderPipeline();
+  const prospects=load('prospects',[]),p=prospects.find(x=>x.id===id);if(!p)return;
+  p.stage=stage;p.stageChangedAt=new Date().toISOString();save('prospects',prospects);renderPipeline();
 }
 function toggleDrop(id){
-  const prospects=load('prospects',[]);
-  const p=prospects.find(x=>x.id===id);
-  if(!p)return;
+  const prospects=load('prospects',[]),p=prospects.find(x=>x.id===id);if(!p)return;
   p.dropSent=!p.dropSent;
-  if(p.dropSent){
-    p.dropSentAt=new Date().toISOString();
-    const wk=getWeekKey();
-    const drops=load('weekly-drops',{week:'',count:0});
-    if(drops.week===wk)drops.count++;
-    else{drops.week=wk;drops.count=1;}
-    save('weekly-drops',drops);
-  }
+  if(p.dropSent){p.dropSentAt=new Date().toISOString();const wk=getWeekKey();const drops=load('weekly-drops',{week:'',count:0});if(drops.week===wk)drops.count++;else{drops.week=wk;drops.count=1;}save('weekly-drops',drops);}
   save('prospects',prospects);
   const btn=document.getElementById('drop-btn');
-  if(btn){btn.textContent=p.dropSent?'✓ Sent':'Mark Sent';btn.style=p.dropSent?'background:var(--gd);color:var(--gr)':'';}
-  toast(p.dropSent?'Drop message marked sent':'Unmarked');
-  renderHome();
+  if(btn){btn.textContent=p.dropSent?'✓ Sent':'Mark Sent';btn.style=p.dropSent?'background:rgba(42,122,66,.15);color:var(--gr)':'';}
+  toast(p.dropSent?'Drop marked sent':'Unmarked');
 }
 function addProspectNote(id){
-  const note=document.getElementById('ep-new-note').value.trim();
-  if(!note)return;
-  const prospects=load('prospects',[]);
-  const p=prospects.find(x=>x.id===id);
-  if(!p)return;
-  p.notes=p.notes||[];
-  p.notes.push({text:note,date:new Date().toISOString()});
-  save('prospects',prospects);
-  document.getElementById('ep-new-note').value='';
-  toast('Note added');
-  openProspect(id);
+  const note=document.getElementById('ep-new-note').value.trim();if(!note)return;
+  const prospects=load('prospects',[]),p=prospects.find(x=>x.id===id);if(!p)return;
+  p.notes=p.notes||[];p.notes.push({text:note,date:new Date().toISOString()});
+  save('prospects',prospects);document.getElementById('ep-new-note').value='';toast('Note added');openProspect(id);
 }
 function deleteProspect(id){
   save('prospects',load('prospects',[]).filter(x=>x.id!==id));
@@ -803,8 +799,8 @@ function deleteProspect(id){
 function renderCustomers(){
   const customers=load('customers',[]);
   let html=`<button class="btn btn-primary" onclick="openAddCustomer()" style="margin-bottom:12px">+ Add Customer</button>`;
-  if(!customers.length){html+=`<div class="empty"><div class="empty-icon">🛒</div>No customers yet</div>`;}
-  else{customers.forEach(c=>{html+=`<div class="prospect-card" onclick="openCustomer('${c.id}')"><div class="prospect-name">${esc(c.name)}</div><div class="prospect-meta">${c.products||'No products noted'}</div>${c.lastContact?`<div class="prospect-last">Last contact: ${new Date(c.lastContact).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div>`:''}</div>`;});}
+  if(!customers.length)html+=`<div class="empty"><div class="empty-icon">🛒</div>No customers yet</div>`;
+  else customers.forEach(c=>{html+=`<div class="prospect-card" onclick="openCustomer('${c.id}')"><div class="prospect-name">${esc(c.name)}</div><div class="prospect-meta">${c.products||'No products noted'}</div>${c.lastContact?`<div class="prospect-last">Last: ${new Date(c.lastContact).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div>`:''}</div>`;});
   document.getElementById('biz-content').innerHTML=html;
 }
 function openAddCustomer(){
@@ -812,76 +808,144 @@ function openAddCustomer(){
   document.getElementById('customer-modal-body').innerHTML=`
     <div class="input-group"><div class="input-label">Name</div><input class="inp" id="c-name" placeholder="Full name"></div>
     <div class="input-group"><div class="input-label">Products / Samples</div><input class="inp" id="c-products" placeholder="What they use or tried..."></div>
-    <div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="c-note" rows="3" placeholder="How they found you, context..."></textarea></div>
+    <div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="c-note" rows="2" placeholder="Context..."></textarea></div>
     <button class="btn btn-primary" onclick="saveNewCustomer()">Add Customer</button>`;
   openModal('customer-modal');
 }
 function saveNewCustomer(){
-  const name=document.getElementById('c-name').value.trim();
-  if(!name){toast('Name required');return;}
+  const name=document.getElementById('c-name').value.trim();if(!name){toast('Name required');return;}
   const customers=load('customers',[]);
   customers.push({id:'c'+Date.now(),name,products:document.getElementById('c-products').value,notes:[{text:document.getElementById('c-note').value,date:new Date().toISOString()}],addedAt:new Date().toISOString(),lastContact:new Date().toISOString()});
   save('customers',customers);closeModal('customer-modal');toast(name+' added');renderCustomers();
 }
 function openCustomer(id){
-  const customers=load('customers',[]);
-  const c=customers.find(x=>x.id===id);
-  if(!c)return;
+  const customers=load('customers',[]),c=customers.find(x=>x.id===id);if(!c)return;
   document.getElementById('customer-modal-title').textContent=c.name;
   document.getElementById('customer-modal-body').innerHTML=`
     <div class="input-group"><div class="input-label">Products / Samples</div><input class="inp" id="ec-products" value="${esc(c.products||'')}" onchange="updateCustomerField('${id}','products',this.value)"></div>
-    <div class="input-group"><div class="input-label">Last Contact</div><input class="inp" type="date" id="ec-last" value="${c.lastContact?c.lastContact.split('T')[0]:''}" onchange="updateCustomerField('${id}','lastContact',this.value)"></div>
+    <div class="input-group"><div class="input-label">Last Contact</div><input class="inp" type="date" value="${c.lastContact?c.lastContact.split('T')[0]:''}" onchange="updateCustomerField('${id}','lastContact',this.value)"></div>
     <div class="card-title" style="margin-top:4px">Notes</div>
-    <div style="margin-bottom:10px">${(c.notes||[]).map(n=>`<div style="padding:7px 0;border-bottom:1px solid var(--s2)"><div style="font-size:11px;color:var(--t2)">${new Date(n.date).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div><div style="font-size:12px;margin-top:2px">${esc(n.text)}</div></div>`).join('')}</div>
+    <div style="margin-bottom:10px">${(c.notes||[]).map(n=>`<div style="padding:6px 0;border-bottom:1px solid var(--s2)"><div style="font-size:10px;color:var(--t2)">${new Date(n.date).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div><div style="font-size:11px;margin-top:2px">${esc(n.text)}</div></div>`).join('')}</div>
     <textarea class="inp" id="ec-note" rows="2" placeholder="Add a note..." style="margin-bottom:8px"></textarea>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-ghost" style="flex:1" onclick="addCustomerNote('${id}')">Add Note</button>
-      <button class="btn btn-danger" onclick="deleteCustomer('${id}')">Delete</button>
-    </div>`;
+    <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1" onclick="addCustomerNote('${id}')">Add Note</button><button class="btn btn-danger" onclick="deleteCustomer('${id}')">Delete</button></div>`;
   openModal('customer-modal');
 }
-function updateCustomerField(id,field,val){
-  const customers=load('customers',[]);
-  const c=customers.find(x=>x.id===id);
-  if(c){c[field]=val;save('customers',customers);}
-}
+function updateCustomerField(id,field,val){const customers=load('customers',[]),c=customers.find(x=>x.id===id);if(c){c[field]=val;save('customers',customers);}}
 function addCustomerNote(id){
-  const note=document.getElementById('ec-note').value.trim();
-  if(!note)return;
-  const customers=load('customers',[]);
-  const c=customers.find(x=>x.id===id);
-  if(!c)return;
-  c.notes=c.notes||[];
-  c.notes.push({text:note,date:new Date().toISOString()});
-  c.lastContact=new Date().toISOString();
+  const note=document.getElementById('ec-note').value.trim();if(!note)return;
+  const customers=load('customers',[]),c=customers.find(x=>x.id===id);if(!c)return;
+  c.notes=c.notes||[];c.notes.push({text:note,date:new Date().toISOString()});c.lastContact=new Date().toISOString();
   save('customers',customers);toast('Note added');openCustomer(id);
 }
-function deleteCustomer(id){
-  save('customers',load('customers',[]).filter(x=>x.id!==id));
-  closeModal('customer-modal');toast('Removed');renderCustomers();
+function deleteCustomer(id){save('customers',load('customers',[]).filter(x=>x.id!==id));closeModal('customer-modal');toast('Removed');renderCustomers();}
+function renderContent(){
+  const events=load('content-events',[]);
+  const now=new Date();
+  const year=now.getFullYear(),month=now.getMonth();
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const today=now.getDate();
+  const monthName=now.toLocaleDateString('en-CA',{month:'long',year:'numeric'});
+  const upcoming=events.filter(e=>{const d=new Date(e.date);const diff=(d-now)/(1000*60*60*24);return diff>=-1&&diff<=14;}).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  let html=`
+    <button class="btn btn-primary" onclick="openAddContent()" style="margin-bottom:12px">+ Add Content Day</button>
+    <div class="content-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--bl)"></div>Film</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--pu)"></div>Edit</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--gr)"></div>Post</div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--tx);margin-bottom:8px">${monthName}</div>
+    <div class="cal-grid">
+      ${['S','M','T','W','T','F','S'].map(d=>`<div class="cal-day-head">${d}</div>`).join('')}
+      ${Array(firstDay===0?6:firstDay-1).fill('<div></div>').join('')}
+      ${Array.from({length:daysInMonth},(_,i)=>{
+        const day=i+1;
+        const dateStr=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+        const ev=events.find(e=>e.date===dateStr);
+        const isToday=day===today;
+        return `<div class="cal-cell${ev?' '+ev.type:''}${isToday?' today':''}" onclick="openContentDay('${dateStr}')">
+          <div class="cal-cell-num">${day}</div>
+          ${ev?`<div class="cal-cell-type">${ev.type}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  if(upcoming.length){
+    html+=`<div class="card-title" style="margin-top:4px;margin-bottom:10px">Upcoming</div>`;
+    upcoming.forEach(e=>{
+      const d=new Date(e.date+'T12:00:00');
+      html+=`<div class="upcoming-item">
+        <div><div class="upcoming-date">${d.getDate()}</div><div class="upcoming-month">${d.toLocaleDateString('en-CA',{month:'short'})}</div></div>
+        <div class="upcoming-info"><div class="upcoming-title">${esc(e.title||e.type+' day')}</div><div class="upcoming-type">${esc(e.notes||'')}</div></div>
+        <span class="type-pill type-${e.type}">${e.type}</span>
+      </div>`;
+    });
+  }
+  document.getElementById('biz-content').innerHTML=html;
+}
+function openAddContent(prefillDate){
+  document.getElementById('content-modal-title').textContent='Add Content Day';
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('content-modal-body').innerHTML=`
+    <div class="input-group"><div class="input-label">Type</div>
+      <div class="chip-row">
+        <div class="chip" onclick="selectContentType('film',this)">🎬 Film</div>
+        <div class="chip" onclick="selectContentType('edit',this)">✂️ Edit</div>
+        <div class="chip" onclick="selectContentType('post',this)">📲 Post</div>
+      </div>
+    </div>
+    <div class="input-group"><div class="input-label">Date</div><input class="inp" type="date" id="ce-date" value="${prefillDate||today}"></div>
+    <div class="input-group"><div class="input-label">Title / Topic</div><input class="inp" id="ce-title" placeholder="What are you filming/editing/posting?"></div>
+    <div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="ce-notes" rows="2" placeholder="Pillar, format, hook idea..."></textarea></div>
+    <button class="btn btn-primary" onclick="saveContentEvent()">Add to Schedule</button>`;
+  openModal('content-modal');
+}
+let selectedContentType='film';
+function selectContentType(type,el){
+  document.querySelectorAll('#content-modal-body .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');selectedContentType=type;
+}
+function openContentDay(dateStr){
+  const events=load('content-events',[]);
+  const ev=events.find(e=>e.date===dateStr);
+  if(ev){
+    document.getElementById('content-modal-title').textContent=new Date(dateStr+'T12:00:00').toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'});
+    document.getElementById('content-modal-body').innerHTML=`
+      <span class="type-pill type-${ev.type}" style="font-size:11px;padding:5px 12px">${ev.type.toUpperCase()}</span>
+      <div style="margin-top:12px;font-size:14px;font-weight:700;color:var(--tx)">${esc(ev.title||ev.type+' day')}</div>
+      ${ev.notes?`<div style="font-size:12px;color:var(--t2);margin-top:6px">${esc(ev.notes)}</div>`:''}
+      <button class="btn btn-danger" style="width:100%;margin-top:16px" onclick="deleteContentEvent('${ev.id}')">Remove from Schedule</button>`;
+    openModal('content-modal');
+  } else {
+    openAddContent(dateStr);
+  }
+}
+function saveContentEvent(){
+  const type=selectedContentType;
+  const date=document.getElementById('ce-date').value;
+  if(!date){toast('Pick a date');return;}
+  const events=load('content-events',[]);
+  events.push({id:'ce'+Date.now(),type,date,title:document.getElementById('ce-title').value,notes:document.getElementById('ce-notes').value,addedAt:new Date().toISOString()});
+  save('content-events',events);closeModal('content-modal');toast('Added to schedule');renderContent();
+}
+function deleteContentEvent(id){
+  save('content-events',load('content-events',[]).filter(e=>e.id!==id));
+  closeModal('content-modal');toast('Removed');renderContent();
 }
 function renderBizStats(){
-  const prospects=load('prospects',[]);
-  const customers=load('customers',[]);
-  const drops=load('weekly-drops',{week:'',count:0});
-  const wk=getWeekKey();
+  const prospects=load('prospects',[]),customers=load('customers',[]);
+  const wk=getWeekKey();const drops=load('weekly-drops',{week:'',count:0});
   const dropCount=drops.week===wk?drops.count:0;
-  const stageCounts={};
-  STAGES.forEach(s=>stageCounts[s.id]=0);
+  const stageCounts={};STAGES.forEach(s=>stageCounts[s.id]=0);
   prospects.forEach(p=>stageCounts[p.stage]=(stageCounts[p.stage]||0)+1);
   document.getElementById('biz-content').innerHTML=`
-    <div class="stats-row" style="margin-bottom:10px">
-      <div class="stat-card"><div class="stat-num">${prospects.length}</div><div class="stat-label">Total Prospects</div></div>
-      <div class="stat-card"><div class="stat-num">${customers.length}</div><div class="stat-label">Customers</div></div>
-      <div class="stat-card"><div class="stat-num">${dropCount}</div><div class="stat-label">Drops This Week</div></div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${prospects.length}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Prospects</div></div>
+      <div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${customers.length}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Customers</div></div>
+      <div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${dropCount}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Drops/Wk</div></div>
     </div>
-    <div class="card"><div class="card-title">Pipeline Breakdown</div>${STAGES.map(s=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--s2)"><span style="font-size:12px;color:var(--tx)">${s.label}</span><span style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:${s.color}">${stageCounts[s.id]||0}</span></div>`).join('')}</div>`;
+    <div class="card"><div class="card-title">Pipeline</div>${STAGES.map(s=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px">${s.label}</span><span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:800;color:${s.color}">${stageCounts[s.id]||0}</span></div>`).join('')}</div>`;
 }
-function esc(str){if(!str)return'';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');}
-function init(){
-  renderHome();
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('data:application/javascript,').catch(()=>{});}
-}
+function init(){renderHome();}
 init();
 </script>
 </body>
