@@ -556,9 +556,12 @@ select.fn-inp{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg 
 
 <script>
 /* ── CORE ── */
+const memStore={};
+let _lsOk=true;
+try{localStorage.setItem('__t','1');localStorage.removeItem('__t');}catch(e){_lsOk=false;}
 const db={
-  get:(k,d=null)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d}catch{return d}},
-  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  get:(k,d=null)=>{try{if(_lsOk){const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}return k in memStore?memStore[k]:d;}catch{return k in memStore?memStore[k]:d;}},
+  set:(k,v)=>{try{memStore[k]=v;if(_lsOk)localStorage.setItem(k,JSON.stringify(v));}catch(e){_lsOk=false;}}
 };
 function save(k,v){db.set(k,v)}
 function load(k,d){return db.get(k,d)}
