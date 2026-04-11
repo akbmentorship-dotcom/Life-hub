@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -24,13 +25,15 @@ button,input,textarea,select{font-family:'Inter',sans-serif}
   --pu:#6b3fa0;--pd:rgba(107,63,160,0.10);
   --ye:#9a6b10;--yd:rgba(154,107,16,0.10);
   --re:#b83030;--rd:rgba(184,48,48,0.10);
+  --fn-partner:#c45c1a;--fn-faith:#6b3fa0;--fn-content:#2a7a42;
   --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--nav:58px;
 }
 #app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative;background:var(--bg)}
 #screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav) + var(--sb) + 8px)}
 #screen::-webkit-scrollbar{display:none}
-#nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(--nav) + var(--sb));padding-bottom:var(--sb);background:rgba(232,221,208,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--s2);display:flex;align-items:flex-start;padding-top:6px;z-index:100}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;cursor:pointer}
+#nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(--nav) + var(--sb));padding-bottom:var(--sb);background:rgba(232,221,208,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--s2);display:flex;align-items:flex-start;padding-top:6px;z-index:100;overflow-x:auto}
+#nav::-webkit-scrollbar{display:none}
+.nav-item{flex:1;min-width:52px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;cursor:pointer}
 .nav-item.active .nav-icon{color:var(--or)}
 .nav-item.active .nav-label{color:var(--or);font-weight:700}
 .nav-icon{font-size:18px;line-height:1;color:var(--t2)}
@@ -155,11 +158,72 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
 .review-empty{font-size:11px;color:var(--t3);font-style:italic;padding:6px 0}
 .review-summary-box{background:var(--ad);border:1px solid var(--ab);border-radius:11px;padding:11px 13px;margin-bottom:14px}
 .review-summary-text{font-size:11px;color:var(--tx);line-height:1.6}
+
+/* ── FIELD NOTES ── */
+.fn-page-header{padding-top:calc(var(–st) + 14px);display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.fn-review-btn{background:var(–tx);color:var(–bg);border:none;border-radius:9px;padding:8px 13px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap}
+.fn-general-card{background:var(–b1);border:1px solid var(–s2);border-radius:14px;padding:13px 15px;margin-bottom:10px}
+.fn-general-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.fn-general-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(–t2)}
+.fn-add-small{background:var(–s1);border:1px solid var(–s2);border-radius:8px;padding:4px 11px;font-size:10px;font-weight:600;color:var(–tx);cursor:pointer}
+.fn-general-list{display:flex;flex-direction:column;gap:5px}
+.fn-general-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(–s2)}
+.fn-general-item:last-child{border-bottom:none}
+.fn-general-text{font-size:12px;color:var(–tx);flex:1;line-height:1.5}
+.fn-general-date{font-size:9px;color:var(–t3);white-space:nowrap;margin-top:2px}
+.fn-folder{margin-bottom:10px;border-radius:14px;overflow:hidden;border:1px solid var(–s2)}
+.fn-folder-header{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:var(–b1);cursor:pointer;border-left:4px solid}
+.fn-folder-header:active{opacity:.8}
+.fn-folder-left{display:flex;align-items:center;gap:8px}
+.fn-folder-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.fn-folder-count{font-size:10px;color:var(–t3)}
+.fn-folder-right{display:flex;align-items:center;gap:8px}
+.fn-add-btn{border:none;border-radius:7px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer}
+.fn-chevron{font-size:10px;color:var(–t3);transition:transform .2s}
+.fn-folder.collapsed .fn-chevron{transform:rotate(-90deg)}
+.fn-folder-body{background:var(–b1);border-top:1px solid var(–s2)}
+.fn-folder.collapsed .fn-folder-body{display:none}
+.fn-inline-form{padding:13px 15px;background:var(–s1);border-bottom:1px solid var(–s2);display:none}
+.fn-inline-form.open{display:block}
+.fn-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px}
+.fn-form-row.single{grid-template-columns:1fr}
+.fn-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(–t2);margin-bottom:4px;display:block}
+.fn-inp{width:100%;background:var(–bg);border:1px solid var(–s2);border-radius:8px;padding:8px 10px;font-size:12px;color:var(–tx);outline:none;font-family:‘Inter’,sans-serif}
+.fn-inp:focus{border-color:var(–ac)}
+.fn-inp::placeholder{color:var(–t3)}
+textarea.fn-inp{resize:none;min-height:64px}
+select.fn-inp{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’%3E%3Cpath d=‘M0 0l5 6 5-6z’ fill=’%23a8967e’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 10px center}
+.fn-form-actions{display:flex;gap:7px;margin-top:10px}
+.fn-btn-save{background:var(–tx);color:var(–bg);border:none;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer}
+.fn-btn-cancel{background:var(–s2);color:var(–t2);border:none;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer}
+.fn-note-card{padding:11px 15px;border-bottom:1px solid var(–s2);cursor:pointer}
+.fn-note-card:last-child{border-bottom:none}
+.fn-note-card:active{background:var(–s1)}
+.fn-note-top{display:flex;justify-content:space-between;align-items:flex-start}
+.fn-note-name{font-size:13px;font-weight:700;color:var(–tx);margin-bottom:2px}
+.fn-note-meta{font-size:10px;color:var(–t2);display:flex;gap:8px;flex-wrap:wrap}
+.fn-note-actions{display:flex;gap:4px;margin-left:6px;flex-shrink:0}
+.fn-icon-btn{background:none;border:none;font-size:13px;cursor:pointer;padding:2px 3px;color:var(–t3)}
+.fn-note-body{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(–s2)}
+.fn-note-body.open{display:block}
+.fn-note-section{margin-bottom:8px}
+.fn-note-section-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(–t2);margin-bottom:3px}
+.fn-note-section-text{font-size:12px;color:var(–tx);line-height:1.5}
+.fn-status-open{color:var(–or);font-weight:600}
+.fn-status-done{color:var(–gr);font-weight:600}
+.fn-empty{padding:16px 15px;font-size:11px;color:var(–t3)}
+.fn-review-note-block{background:var(–b1);border:1px solid var(–s2);border-radius:11px;padding:11px 13px;margin-bottom:10px}
+.fn-review-note-title{font-size:13px;font-weight:700;color:var(–tx);margin-bottom:3px}
+.fn-review-note-folder{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.fn-review-q{margin-bottom:10px;border-left:3px solid var(–or);padding-left:10px}
+.fn-review-q-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(–or);margin-bottom:4px}
 </style>
+
 </head>
 <body>
 <div id="app">
   <div id="screen">
+    <!-- HOME -->
     <div id="page-home" class="page active">
       <div class="home-header">
         <div>
@@ -209,87 +273,267 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
         </div>
       </div>
     </div>
-    <div id="page-faith" class="page section-scroll">
-      <div class="page-title">✝️ Faith</div>
-      <div class="card" style="text-align:center">
-        <div class="faith-streak-ring">
-          <svg class="faith-ring-svg" width="72" height="72" viewBox="0 0 72 72">
-            <circle class="faith-ring-bg" cx="36" cy="36" r="30"/>
-            <circle class="faith-ring-fill" id="faith-ring" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
-          </svg>
-          <div class="faith-streak-num" id="faith-streak-num">0</div>
-        </div>
-        <div style="font-size:10px;color:var(--t2)">Day streak</div>
-      </div>
-      <div class="card">
-        <div class="card-title">Daily Habits</div>
-        <div class="habit-row"><span class="habit-name">📖 Bible Reading</span><div class="habit-dots" id="dots-bible"></div></div>
-        <div class="habit-row"><span class="habit-name">🙏 Prayer</span><div class="habit-dots" id="dots-prayer"></div></div>
-        <div class="habit-row"><span class="habit-name">✍️ Gratitude</span><div class="habit-dots" id="dots-gratitude"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Notes</div>
-        <textarea class="inp" id="faith-notes" placeholder="Reflections, verses, thoughts..." rows="4" oninput="save('faith-notes',this.value)"></textarea>
-      </div>
+
+```
+<!-- FAITH -->
+<div id="page-faith" class="page section-scroll">
+  <div class="page-title">✝️ Faith</div>
+  <div class="card" style="text-align:center">
+    <div class="faith-streak-ring">
+      <svg class="faith-ring-svg" width="72" height="72" viewBox="0 0 72 72">
+        <circle class="faith-ring-bg" cx="36" cy="36" r="30"/>
+        <circle class="faith-ring-fill" id="faith-ring" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+      </svg>
+      <div class="faith-streak-num" id="faith-streak-num">0</div>
     </div>
-    <div id="page-fitness" class="page section-scroll">
-      <div class="page-title">💪 Fitness</div>
-      <div class="tabs">
-        <div class="tab active" onclick="fitTab('log',this)">Log</div>
-        <div class="tab" onclick="fitTab('history',this)">History</div>
+    <div style="font-size:10px;color:var(--t2)">Day streak</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Daily Habits</div>
+    <div class="habit-row"><span class="habit-name">📖 Bible Reading</span><div class="habit-dots" id="dots-bible"></div></div>
+    <div class="habit-row"><span class="habit-name">🙏 Prayer</span><div class="habit-dots" id="dots-prayer"></div></div>
+    <div class="habit-row"><span class="habit-name">✍️ Gratitude</span><div class="habit-dots" id="dots-gratitude"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Notes</div>
+    <textarea class="inp" id="faith-notes" placeholder="Reflections, verses, thoughts..." rows="4" oninput="save('faith-notes',this.value)"></textarea>
+  </div>
+</div>
+
+<!-- FITNESS -->
+<div id="page-fitness" class="page section-scroll">
+  <div class="page-title">💪 Fitness</div>
+  <div class="tabs">
+    <div class="tab active" onclick="fitTab('log',this)">Log</div>
+    <div class="tab" onclick="fitTab('history',this)">History</div>
+  </div>
+  <div id="fit-log">
+    <div class="card">
+      <div class="card-title">Today's Session</div>
+      <div class="chip-row">
+        <div class="chip" onclick="selectDay('Upper A',this)">Upper A</div>
+        <div class="chip" onclick="selectDay('Lower A',this)">Lower A</div>
+        <div class="chip" onclick="selectDay('Upper B',this)">Upper B</div>
+        <div class="chip" onclick="selectDay('Lower B',this)">Lower B</div>
+        <div class="chip" onclick="selectDay('Cardio',this)">Cardio</div>
+        <div class="chip" onclick="selectDay('Rest',this)">Rest</div>
       </div>
-      <div id="fit-log">
-        <div class="card">
-          <div class="card-title">Today's Session</div>
-          <div class="chip-row">
-            <div class="chip" onclick="selectDay('Upper A',this)">Upper A</div>
-            <div class="chip" onclick="selectDay('Lower A',this)">Lower A</div>
-            <div class="chip" onclick="selectDay('Upper B',this)">Upper B</div>
-            <div class="chip" onclick="selectDay('Lower B',this)">Lower B</div>
-            <div class="chip" onclick="selectDay('Cardio',this)">Cardio</div>
-            <div class="chip" onclick="selectDay('Rest',this)">Rest</div>
-          </div>
-          <div id="fit-exercises"></div>
-          <div class="input-group" style="margin-top:10px">
-            <div class="input-label">Notes</div>
-            <textarea class="inp" id="fit-notes" rows="2" placeholder="How it felt, PRs, energy level..."></textarea>
-          </div>
-          <button class="btn btn-primary" onclick="logWorkout()">Log Session</button>
-        </div>
+      <div id="fit-exercises"></div>
+      <div class="input-group" style="margin-top:10px">
+        <div class="input-label">Notes</div>
+        <textarea class="inp" id="fit-notes" rows="2" placeholder="How it felt, PRs, energy level..."></textarea>
       </div>
-      <div id="fit-history" style="display:none">
-        <div id="fit-history-list"><div class="empty"><div class="empty-icon">📊</div>No sessions yet</div></div>
-      </div>
-    </div>
-    <div id="page-parenting" class="page section-scroll">
-      <div class="page-title">👨‍👩‍👧 Parenting</div>
-      <div class="tabs">
-        <div class="tab active" onclick="kidTab(0,this)">Kid 1</div>
-        <div class="tab" onclick="kidTab(1,this)">Kid 2</div>
-        <div class="tab" onclick="kidTab(2,this)">Kid 3</div>
-      </div>
-      <div id="kid-content"></div>
-    </div>
-    <div id="page-marriage" class="page section-scroll">
-      <div class="page-title">💍 Marriage</div>
-      <div class="tabs">
-        <div class="tab active" onclick="marriageTab('log',this)">Log</div>
-        <div class="tab" onclick="marriageTab('gifts',this)">Gifts</div>
-        <div class="tab" onclick="marriageTab('notes',this)">Notes</div>
-      </div>
-      <div id="marriage-content"></div>
-    </div>
-    <div id="page-biz" class="page section-scroll">
-      <div class="page-title">🏗️ AKB</div>
-      <div class="tabs">
-        <div class="tab active" onclick="bizTab('pipeline',this)">Pipeline</div>
-        <div class="tab" onclick="bizTab('customers',this)">Customers</div>
-        <div class="tab" onclick="bizTab('content',this)">Content</div>
-        <div class="tab" onclick="bizTab('stats',this)">Stats</div>
-      </div>
-      <div id="biz-content"></div>
+      <button class="btn btn-primary" onclick="logWorkout()">Log Session</button>
     </div>
   </div>
+  <div id="fit-history" style="display:none">
+    <div id="fit-history-list"><div class="empty"><div class="empty-icon">📊</div>No sessions yet</div></div>
+  </div>
+</div>
+
+<!-- PARENTING -->
+<div id="page-parenting" class="page section-scroll">
+  <div class="page-title">👨‍👩‍👧 Parenting</div>
+  <div class="tabs">
+    <div class="tab active" onclick="kidTab(0,this)">Kid 1</div>
+    <div class="tab" onclick="kidTab(1,this)">Kid 2</div>
+    <div class="tab" onclick="kidTab(2,this)">Kid 3</div>
+  </div>
+  <div id="kid-content"></div>
+</div>
+
+<!-- MARRIAGE -->
+<div id="page-marriage" class="page section-scroll">
+  <div class="page-title">💍 Marriage</div>
+  <div class="tabs">
+    <div class="tab active" onclick="marriageTab('log',this)">Log</div>
+    <div class="tab" onclick="marriageTab('gifts',this)">Gifts</div>
+    <div class="tab" onclick="marriageTab('notes',this)">Notes</div>
+  </div>
+  <div id="marriage-content"></div>
+</div>
+
+<!-- AKB -->
+<div id="page-biz" class="page section-scroll">
+  <div class="page-title">🏗️ AKB</div>
+  <div class="tabs">
+    <div class="tab active" onclick="bizTab('pipeline',this)">Pipeline</div>
+    <div class="tab" onclick="bizTab('customers',this)">Customers</div>
+    <div class="tab" onclick="bizTab('content',this)">Content</div>
+    <div class="tab" onclick="bizTab('stats',this)">Stats</div>
+  </div>
+  <div id="biz-content"></div>
+</div>
+
+<!-- FIELD NOTES -->
+<div id="page-notes" class="page section-scroll">
+  <div class="fn-page-header">
+    <div class="page-title" style="margin-bottom:0">📋 Field Notes</div>
+    <button class="fn-review-btn" onclick="fnOpenReview()">Weekly Review</button>
+  </div>
+
+  <!-- General Notes -->
+  <div class="fn-general-card">
+    <div class="fn-general-header">
+      <div class="fn-general-title">General Notes</div>
+      <button class="fn-add-small" onclick="fnOpenGeneralForm()">+ Add</button>
+    </div>
+    <div id="fn-general-form" style="display:none;margin-bottom:10px">
+      <textarea class="fn-inp" id="fn-general-input" placeholder="Quick note, thought, or observation..." rows="3"></textarea>
+      <div style="display:flex;gap:7px;margin-top:7px">
+        <button class="fn-btn-cancel" onclick="fnCloseGeneralForm()">Cancel</button>
+        <button class="fn-btn-save" onclick="fnSaveGeneral()">Save</button>
+      </div>
+    </div>
+    <div class="fn-general-list" id="fn-general-list"></div>
+  </div>
+
+  <!-- Partnership Events folder -->
+  <div class="fn-folder" id="fnfolder-partner">
+    <div class="fn-folder-header" style="border-left-color:var(--fn-partner)" onclick="fnToggleFolder('partner')">
+      <div class="fn-folder-left">
+        <span class="fn-folder-name" style="color:var(--fn-partner)">Partnership Events</span>
+        <span class="fn-folder-count" id="fn-count-partner">0 notes</span>
+      </div>
+      <div class="fn-folder-right">
+        <button class="fn-add-btn" style="background:rgba(196,92,26,.12);color:var(--fn-partner)" onclick="event.stopPropagation();fnOpenForm('partner')">+ Add</button>
+        <span class="fn-chevron">▾</span>
+      </div>
+    </div>
+    <div class="fn-folder-body">
+      <div class="fn-inline-form" id="fn-form-partner">
+        <div class="fn-form-row">
+          <div><label class="fn-label">Event Name</label><input type="text" class="fn-inp" id="fnf_partner_event" placeholder="e.g. WWDB Edmonton Open"></div>
+          <div><label class="fn-label">Date</label><input type="date" class="fn-inp" id="fnf_partner_date"></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Key People Met</label><input type="text" class="fn-inp" id="fnf_partner_people" placeholder="Names, signals, roles"></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Observations / Signals</label><textarea class="fn-inp" id="fnf_partner_obs" placeholder="What stood out? Partnership signals, mindset cues..."></textarea></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Raw Notes</label><textarea class="fn-inp" id="fnf_partner_raw" placeholder="Quotes, ideas, anything else"></textarea></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Follow-Up Status</label>
+            <select class="fn-inp" id="fnf_partner_followup">
+              <option value="open">Open — needs follow-up</option>
+              <option value="done">Done — followed up</option>
+              <option value="none">No follow-up needed</option>
+            </select>
+          </div>
+        </div>
+        <div class="fn-form-actions">
+          <button class="fn-btn-save" onclick="fnSaveNote('partner')">Save</button>
+          <button class="fn-btn-cancel" onclick="fnCloseForm('partner')">Cancel</button>
+        </div>
+      </div>
+      <div id="fn-notes-partner"></div>
+    </div>
+  </div>
+
+  <!-- Faith folder -->
+  <div class="fn-folder" id="fnfolder-faith">
+    <div class="fn-folder-header" style="border-left-color:var(--fn-faith)" onclick="fnToggleFolder('faith')">
+      <div class="fn-folder-left">
+        <span class="fn-folder-name" style="color:var(--fn-faith)">Faith</span>
+        <span class="fn-folder-count" id="fn-count-faith">0 notes</span>
+      </div>
+      <div class="fn-folder-right">
+        <button class="fn-add-btn" style="background:rgba(107,63,160,.12);color:var(--fn-faith)" onclick="event.stopPropagation();fnOpenForm('faith')">+ Add</button>
+        <span class="fn-chevron">▾</span>
+      </div>
+    </div>
+    <div class="fn-folder-body">
+      <div class="fn-inline-form" id="fn-form-faith">
+        <div class="fn-form-row">
+          <div><label class="fn-label">Event Name</label><input type="text" class="fn-inp" id="fnf_faith_event" placeholder="e.g. Sunday Service, Small Group"></div>
+          <div><label class="fn-label">Date</label><input type="date" class="fn-inp" id="fnf_faith_date"></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Key People / Context</label><input type="text" class="fn-inp" id="fnf_faith_people" placeholder="Who was there, what came up"></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Reflections</label><textarea class="fn-inp" id="fnf_faith_obs" placeholder="What resonated, what you felt, what to carry forward..."></textarea></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Raw Notes</label><textarea class="fn-inp" id="fnf_faith_raw" placeholder="Scripture, quotes, anything else"></textarea></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Follow-Up</label>
+            <select class="fn-inp" id="fnf_faith_followup">
+              <option value="open">Open — needs follow-up</option>
+              <option value="done">Done — followed up</option>
+              <option value="none">No follow-up needed</option>
+            </select>
+          </div>
+        </div>
+        <div class="fn-form-actions">
+          <button class="fn-btn-save" onclick="fnSaveNote('faith')">Save</button>
+          <button class="fn-btn-cancel" onclick="fnCloseForm('faith')">Cancel</button>
+        </div>
+      </div>
+      <div id="fn-notes-faith"></div>
+    </div>
+  </div>
+
+  <!-- Content folder -->
+  <div class="fn-folder" id="fnfolder-content">
+    <div class="fn-folder-header" style="border-left-color:var(--fn-content)" onclick="fnToggleFolder('content')">
+      <div class="fn-folder-left">
+        <span class="fn-folder-name" style="color:var(--fn-content)">Content</span>
+        <span class="fn-folder-count" id="fn-count-content">0 notes</span>
+      </div>
+      <div class="fn-folder-right">
+        <button class="fn-add-btn" style="background:rgba(42,122,66,.12);color:var(--fn-content)" onclick="event.stopPropagation();fnOpenForm('content')">+ Add</button>
+        <span class="fn-chevron">▾</span>
+      </div>
+    </div>
+    <div class="fn-folder-body">
+      <div class="fn-inline-form" id="fn-form-content">
+        <div class="fn-form-row">
+          <div><label class="fn-label">Idea / Title</label><input type="text" class="fn-inp" id="fnf_content_event" placeholder="e.g. Reel hook, caption concept"></div>
+          <div><label class="fn-label">Date</label><input type="date" class="fn-inp" id="fnf_content_date"></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Pillar</label>
+            <select class="fn-inp" id="fnf_content_people">
+              <option value="">Select pillar...</option>
+              <option>Faith</option><option>Fitness</option><option>Parenting</option><option>Marriage</option><option>Entrepreneurship</option>
+            </select>
+          </div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Idea / Concept</label><textarea class="fn-inp" id="fnf_content_obs" placeholder="Hook, format, angle, what you want to say..."></textarea></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Raw Notes</label><textarea class="fn-inp" id="fnf_content_raw" placeholder="B-roll ideas, caption lines, CTAs"></textarea></div>
+        </div>
+        <div class="fn-form-row single">
+          <div><label class="fn-label">Status</label>
+            <select class="fn-inp" id="fnf_content_followup">
+              <option value="open">Not posted yet</option>
+              <option value="done">Posted</option>
+              <option value="none">Archived</option>
+            </select>
+          </div>
+        </div>
+        <div class="fn-form-actions">
+          <button class="fn-btn-save" onclick="fnSaveNote('content')">Save</button>
+          <button class="fn-btn-cancel" onclick="fnCloseForm('content')">Cancel</button>
+        </div>
+      </div>
+      <div id="fn-notes-content"></div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- NAV -->
+
   <div id="nav">
     <div class="nav-item active" id="nav-home" onclick="navTo('home')"><div class="nav-icon">⚡</div><div class="nav-label">Home</div></div>
     <div class="nav-item" id="nav-faith" onclick="navTo('faith')"><div class="nav-icon">✝️</div><div class="nav-label">Faith</div></div>
@@ -297,38 +541,21 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
     <div class="nav-item" id="nav-parenting" onclick="navTo('parenting')"><div class="nav-icon">👨‍👩‍👧</div><div class="nav-label">Kids</div></div>
     <div class="nav-item" id="nav-marriage" onclick="navTo('marriage')"><div class="nav-icon">💍</div><div class="nav-label">Marriage</div></div>
     <div class="nav-item" id="nav-biz" onclick="navTo('biz')"><div class="nav-icon">🏗️</div><div class="nav-label">AKB</div></div>
+    <div class="nav-item" id="nav-notes" onclick="navTo('notes')"><div class="nav-icon">📋</div><div class="nav-label">Notes</div></div>
   </div>
 </div>
-<div class="modal-overlay" id="prospect-modal" onclick="closeModal('prospect-modal')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="prospect-modal-title">Add Prospect</div>
-    <div id="prospect-modal-body"></div>
-  </div>
-</div>
-<div class="modal-overlay" id="review-modal" onclick="closeModal('review-modal')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
-    <div class="modal-title">📋 Weekly Review</div>
-    <div id="review-modal-body"></div>
-  </div>
-</div>
-<div class="modal-overlay" id="customer-modal" onclick="closeModal('customer-modal')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="customer-modal-title">Add Customer</div>
-    <div id="customer-modal-body"></div>
-  </div>
-</div>
-<div class="modal-overlay" id="content-modal" onclick="closeModal('content-modal')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="content-modal-title">Add Content Day</div>
-    <div id="content-modal-body"></div>
-  </div>
-</div>
+
+<!-- MODALS -->
+
+<div class="modal-overlay" id="prospect-modal" onclick="closeModal('prospect-modal')"><div class="modal" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title" id="prospect-modal-title">Add Prospect</div><div id="prospect-modal-body"></div></div></div>
+<div class="modal-overlay" id="review-modal" onclick="closeModal('review-modal')"><div class="modal" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">📋 Weekly Review</div><div id="review-modal-body"></div></div></div>
+<div class="modal-overlay" id="customer-modal" onclick="closeModal('customer-modal')"><div class="modal" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title" id="customer-modal-title">Add Customer</div><div id="customer-modal-body"></div></div></div>
+<div class="modal-overlay" id="content-modal" onclick="closeModal('content-modal')"><div class="modal" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title" id="content-modal-title">Add Content Day</div><div id="content-modal-body"></div></div></div>
+<div class="modal-overlay" id="fn-review-modal" onclick="closeModal('fn-review-modal')"><div class="modal" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">📋 Field Notes Review</div><div id="fn-review-modal-body"></div></div></div>
 <div id="toast"></div>
+
 <script>
+/* ── CORE ── */
 const db={
   get:(k,d=null)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d}catch{return d}},
   set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -336,6 +563,12 @@ const db={
 function save(k,v){db.set(k,v)}
 function load(k,d){return db.get(k,d)}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;')}
+function getWeekKey(){const now=new Date();const d=new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);const yr=new Date(Date.UTC(d.getUTCFullYear(),0,1));return d.getUTCFullYear()+'-W'+Math.ceil(((d-yr)/86400000+1)/7);}
+function isFriday(){return new Date().getDay()===5}
+function todayKey(){return new Date().toDateString()}
+
+/* ── NAV ── */
 let currentPage='home';
 function navTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -350,31 +583,21 @@ function navTo(page){
   if(page==='parenting')renderKid(0);
   if(page==='marriage')renderMarriage('log');
   if(page==='biz'){bizActiveTab='pipeline';renderBiz();}
+  if(page==='notes')fnRender();
 }
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
-function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;')}
-function getWeekKey(){
-  const now=new Date();
-  const d=new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));
-  const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);
-  const yr=new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  return d.getUTCFullYear()+'-W'+Math.ceil(((d-yr)/86400000+1)/7);
-}
-function isFriday(){return new Date().getDay()===5}
-function todayKey(){return new Date().toDateString()}
+
+/* ── HOME ── */
 const ADMIN_ITEMS=['Responded to all messages','Requested resources','Checked calendar','Sent meeting links'];
 const HABIT_ITEMS=['2 Bible Chapters','Read a book','Audio','Workout'];
 function renderHome(){
-  const now=new Date();
-  const h=now.getHours();
+  const now=new Date();const h=now.getHours();
   let gr=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
   document.getElementById('home-greeting').textContent=gr+', Austin';
   document.getElementById('home-date').textContent=now.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'});
   const streak=load('faith-streak',0);
   document.getElementById('streak-pill').textContent='🔥 '+streak+' days';
-  const prospects=load('prospects',[]);
-  const active=prospects.filter(p=>p.stage!=='x'&&p.stage!=='partner').length;
   const today=todayKey();
   const reach=load('reach-today',{date:'',ig:0,bb:0,igGoal:3,bbGoal:3});
   if(reach.date!==today){reach.date=today;reach.ig=0;reach.bb=0;save('reach-today',reach);}
@@ -382,571 +605,284 @@ function renderHome(){
   document.getElementById('bb-count').textContent=reach.bb;
   document.getElementById('ig-goal').textContent=reach.igGoal||3;
   document.getElementById('bb-goal').textContent=reach.bbGoal||3;
+  const prospects=load('prospects',[]);
   const banner=document.getElementById('review-banner');
-  const dismissed=load('review-dismissed','');
-  const wk=getWeekKey();
-  if(isFriday()&&dismissed!==wk){
-    banner.classList.remove('hidden');
-    const{touched}=getWeeklyProspects(prospects);
-    document.getElementById('review-banner-sub').textContent=touched.length+' conversations to review';
-  } else {
-    banner.classList.add('hidden');
-  }
-  renderAdminList();
-  renderHabitsList();
-  renderQuickTasks();
+  const dismissed=load('review-dismissed','');const wk=getWeekKey();
+  if(isFriday()&&dismissed!==wk){banner.classList.remove('hidden');const{touched}=getWeeklyProspects(prospects);document.getElementById('review-banner-sub').textContent=touched.length+' conversations to review';}
+  else banner.classList.add('hidden');
+  renderAdminList();renderHabitsList();renderQuickTasks();
 }
 function increment(type){
-  const today=todayKey();
-  const reach=load('reach-today',{date:today,ig:0,bb:0,igGoal:3,bbGoal:3});
+  const today=todayKey();const reach=load('reach-today',{date:today,ig:0,bb:0,igGoal:3,bbGoal:3});
   if(reach.date!==today){reach.date=today;reach.ig=0;reach.bb=0;}
-  reach[type]++;
-  save('reach-today',reach);
+  reach[type]++;save('reach-today',reach);
   document.getElementById(type+'-count').textContent=reach[type];
-  if(type==='ig'){
-    const wk=getWeekKey();
-    const drops=load('weekly-drops',{week:'',count:0});
-    if(drops.week===wk)drops.count++;else{drops.week=wk;drops.count=1;}
-    save('weekly-drops',drops);
-  }
+  if(type==='ig'){const wk=getWeekKey();const drops=load('weekly-drops',{week:'',count:0});if(drops.week===wk)drops.count++;else{drops.week=wk;drops.count=1;}save('weekly-drops',drops);}
 }
 function renderAdminList(){
-  const today=todayKey();
-  const done=load('admin-done-'+today,[]);
-  const list=document.getElementById('admin-list');
-  list.innerHTML=ADMIN_ITEMS.map((item,i)=>`
-    <div class="check-item" onclick="toggleAdmin(${i})">
-      <div class="check-circle${done.includes(i)?' done':''}">${done.includes(i)?'✓':''}</div>
-      <span class="check-text${done.includes(i)?' done':''}">${item}</span>
-    </div>`).join('');
+  const today=todayKey();const done=load('admin-done-'+today,[]);
+  document.getElementById('admin-list').innerHTML=ADMIN_ITEMS.map((item,i)=>`<div class="check-item" onclick="toggleAdmin(${i})"><div class="check-circle${done.includes(i)?' done':''}">${done.includes(i)?'✓':''}</div><span class="check-text${done.includes(i)?' done':''}">${item}</span></div>`).join('');
   document.getElementById('admin-score').textContent=done.length+'/'+ADMIN_ITEMS.length;
 }
-function toggleAdmin(i){
-  const today=todayKey();
-  const done=load('admin-done-'+today,[]);
-  const pos=done.indexOf(i);
-  if(pos===-1)done.push(i);else done.splice(pos,1);
-  save('admin-done-'+today,done);
-  renderAdminList();
-}
+function toggleAdmin(i){const today=todayKey();const done=load('admin-done-'+today,[]);const pos=done.indexOf(i);if(pos===-1)done.push(i);else done.splice(pos,1);save('admin-done-'+today,done);renderAdminList();}
 function renderHabitsList(){
-  const today=todayKey();
-  const done=load('habits-done-'+today,[]);
-  const list=document.getElementById('habits-list');
-  list.innerHTML=HABIT_ITEMS.map((item,i)=>`
-    <div class="check-item" onclick="toggleHabitHome(${i})">
-      <div class="check-circle${done.includes(i)?' done':''}">${done.includes(i)?'✓':''}</div>
-      <span class="check-text${done.includes(i)?' done':''}">${item}</span>
-    </div>`).join('');
+  const today=todayKey();const done=load('habits-done-'+today,[]);
+  document.getElementById('habits-list').innerHTML=HABIT_ITEMS.map((item,i)=>`<div class="check-item" onclick="toggleHabitHome(${i})"><div class="check-circle${done.includes(i)?' done':''}">${done.includes(i)?'✓':''}</div><span class="check-text${done.includes(i)?' done':''}">${item}</span></div>`).join('');
   document.getElementById('habits-score').textContent=done.length+'/'+HABIT_ITEMS.length;
 }
 function toggleHabitHome(i){
-  const today=todayKey();
-  const done=load('habits-done-'+today,[]);
-  const pos=done.indexOf(i);
-  if(pos===-1)done.push(i);else done.splice(pos,1);
-  save('habits-done-'+today,done);
-  renderHabitsList();
-  if(done.length===HABIT_ITEMS.length){
-    const streak=load('faith-streak',0);
-    const lastDate=load('faith-last-date','');
-    const todayStr=new Date().toDateString();
-    if(lastDate!==todayStr){save('faith-streak',streak+1);save('faith-last-date',todayStr);}
-  }
+  const today=todayKey();const done=load('habits-done-'+today,[]);const pos=done.indexOf(i);
+  if(pos===-1)done.push(i);else done.splice(pos,1);save('habits-done-'+today,done);renderHabitsList();
+  if(done.length===HABIT_ITEMS.length){const streak=load('faith-streak',0);const lastDate=load('faith-last-date','');const todayStr=new Date().toDateString();if(lastDate!==todayStr){save('faith-streak',streak+1);save('faith-last-date',todayStr);}}
 }
-function addQuickTask(){
-  const inp=document.getElementById('quick-task-input');
-  const text=inp.value.trim();
-  if(!text)return;
-  const tasks=load('quick-tasks',[]);
-  tasks.unshift({id:'t'+Date.now(),text,done:false,addedAt:new Date().toISOString()});
-  save('quick-tasks',tasks);
-  inp.value='';
-  renderQuickTasks();
-}
-function toggleQuickTask(id){
-  const tasks=load('quick-tasks',[]);
-  const t=tasks.find(x=>x.id===id);
-  if(t)t.done=!t.done;
-  save('quick-tasks',tasks);
-  renderQuickTasks();
-}
-function deleteQuickTask(id){
-  save('quick-tasks',load('quick-tasks',[]).filter(x=>x.id!==id));
-  renderQuickTasks();
-}
+function addQuickTask(){const inp=document.getElementById('quick-task-input');const text=inp.value.trim();if(!text)return;const tasks=load('quick-tasks',[]);tasks.unshift({id:'t'+Date.now(),text,done:false,addedAt:new Date().toISOString()});save('quick-tasks',tasks);inp.value='';renderQuickTasks();}
+function toggleQuickTask(id){const tasks=load('quick-tasks',[]);const t=tasks.find(x=>x.id===id);if(t)t.done=!t.done;save('quick-tasks',tasks);renderQuickTasks();}
+function deleteQuickTask(id){save('quick-tasks',load('quick-tasks',[]).filter(x=>x.id!==id));renderQuickTasks();}
 function renderQuickTasks(){
-  const tasks=load('quick-tasks',[]);
-  const container=document.getElementById('quick-task-list');
-  if(!container)return;
+  const tasks=load('quick-tasks',[]);const container=document.getElementById('quick-task-list');if(!container)return;
   const all=[...tasks.filter(t=>!t.done),...tasks.filter(t=>t.done)].slice(0,12);
   if(!all.length){container.innerHTML=`<div style="font-size:11px;color:var(--t3);text-align:center;padding:8px 0">No tasks — you're clear</div>`;return;}
-  container.innerHTML=all.map(t=>`
-    <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)" class="check-item" onclick="toggleQuickTask('${t.id}')">
-      <div class="check-circle${t.done?' done':''}">${t.done?'✓':''}</div>
-      <span class="check-text${t.done?' done':''}" style="flex:1;font-size:12px">${esc(t.text)}</span>
-      <button style="background:none;border:none;color:var(--t3);font-size:14px;cursor:pointer;padding:0 2px;line-height:1" onclick="event.stopPropagation();deleteQuickTask('${t.id}')">×</button>
-    </div>`).join('');
+  container.innerHTML=all.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)" class="check-item" onclick="toggleQuickTask('${t.id}')"><div class="check-circle${t.done?' done':''}">${t.done?'✓':''}</div><span class="check-text${t.done?' done':''}" style="flex:1;font-size:12px">${esc(t.text)}</span><button style="background:none;border:none;color:var(--t3);font-size:14px;cursor:pointer;padding:0 2px;line-height:1" onclick="event.stopPropagation();deleteQuickTask('${t.id}')">×</button></div>`).join('');
 }
 function getWeeklyProspects(prospects){
   const now=new Date(),weekAgo=new Date(now-7*24*60*60*1000);
-  const touched=[],newOnes=[],movedStage=[],drops=[];
-  prospects.forEach(p=>{
-    const added=p.addedAt?new Date(p.addedAt):null;
-    const lastNote=p.notes&&p.notes.length?new Date(p.notes[p.notes.length-1].date):null;
-    const recent=lastNote&&lastNote>=weekAgo,addedRecent=added&&added>=weekAgo;
-    if(recent||addedRecent){touched.push(p);if(addedRecent)newOnes.push(p);}
-    if(p.dropSentAt&&new Date(p.dropSentAt)>=weekAgo)drops.push(p);
-    if(p.stageChangedAt&&new Date(p.stageChangedAt)>=weekAgo)movedStage.push(p);
-  });
-  return{touched,newOnes,movedStage,drops};
+  const touched=[],newOnes=[],drops=[];
+  prospects.forEach(p=>{const added=p.addedAt?new Date(p.addedAt):null;const lastNote=p.notes&&p.notes.length?new Date(p.notes[p.notes.length-1].date):null;const recent=lastNote&&lastNote>=weekAgo,addedRecent=added&&added>=weekAgo;if(recent||addedRecent){touched.push(p);if(addedRecent)newOnes.push(p);}if(p.dropSentAt&&new Date(p.dropSentAt)>=weekAgo)drops.push(p);});
+  return{touched,newOnes,drops};
 }
 function openWeeklyReview(){
   const prospects=load('prospects',[]),customers=load('customers',[]);
   const now=new Date(),weekAgo=new Date(now-7*24*60*60*1000);
-  const{touched,newOnes,movedStage}=getWeeklyProspects(prospects);
-  const wk=getWeekKey();
-  const drops=load('weekly-drops',{week:'',count:0});
-  const dropCount=drops.week===wk?drops.count:0;
+  const{touched,newOnes}=getWeeklyProspects(prospects);
+  const wk=getWeekKey();const drops=load('weekly-drops',{week:'',count:0});const dropCount=drops.week===wk?drops.count:0;
   const newCust=customers.filter(c=>c.addedAt&&new Date(c.addedAt)>=weekAgo);
-  let html=`<div class="review-summary-box"><div class="review-summary-text">
-    <strong>Week of ${weekAgo.toLocaleDateString('en-CA',{month:'short',day:'numeric'})} – ${now.toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</strong><br>
-    ${touched.length} conversation${touched.length!==1?'s':''} &nbsp;·&nbsp; ${newOnes.length} new prospect${newOnes.length!==1?'s':''} &nbsp;·&nbsp; ${dropCount} drop msg${dropCount!==1?'s':''} sent
-  </div></div>`;
-  if(touched.length){
-    html+=`<div class="review-section"><div class="review-section-title">Conversations This Week</div>`;
-    touched.forEach(p=>{
-      const si=stageInfo(p.stage);
-      const ln=p.notes&&p.notes.length?p.notes[p.notes.length-1]:'';
-      html+=`<div class="review-person-row">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div class="review-person-name">${esc(p.name)}</div>
-          <span class="stage-badge" style="background:${si.bg};color:${si.color}">${si.label}</span>
-        </div>
-        <div class="review-person-meta">${p.platform||'IG'}${p.dropSent?' · Drop ✓':''}</div>
-        ${ln?`<div class="review-person-last">${esc(ln.text)}</div>`:''}
-      </div>`;
-    });
-    html+=`</div>`;
-  } else {
-    html+=`<div class="review-section"><div class="review-section-title">Conversations</div><div class="review-empty">No conversations logged this week</div></div>`;
-  }
-  if(newCust.length){
-    html+=`<div class="review-section"><div class="review-section-title">New Customers</div>`;
-    newCust.forEach(c=>{html+=`<div class="review-person-row"><div class="review-person-name">${esc(c.name)}</div></div>`;});
-    html+=`</div>`;
-  }
-  html+=`<div class="review-section"><div class="review-section-title">Reflection</div>
-    <textarea class="inp" rows="3" placeholder="What worked? What needs attention next week?" oninput="save('review-reflection-${wk}',this.value)">${load('review-reflection-'+wk,'')}</textarea>
-  </div>
-  <button class="btn btn-primary" onclick="dismissReview()">Done — See You Next Friday</button>`;
-  document.getElementById('review-modal-body').innerHTML=html;
-  openModal('review-modal');
+  let html=`<div class="review-summary-box"><div class="review-summary-text"><strong>Week of ${weekAgo.toLocaleDateString('en-CA',{month:'short',day:'numeric'})} – ${now.toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</strong><br>${touched.length} conversation${touched.length!==1?'s':''} &nbsp;·&nbsp; ${newOnes.length} new prospect${newOnes.length!==1?'s':''} &nbsp;·&nbsp; ${dropCount} drop msg${dropCount!==1?'s':''} sent</div></div>`;
+  if(touched.length){html+=`<div class="review-section"><div class="review-section-title">Conversations This Week</div>`;touched.forEach(p=>{const si=stageInfo(p.stage);const ln=p.notes&&p.notes.length?p.notes[p.notes.length-1]:'';html+=`<div class="review-person-row"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="review-person-name">${esc(p.name)}</div><span class="stage-badge" style="background:${si.bg};color:${si.color}">${si.label}</span></div><div class="review-person-meta">${p.platform||'IG'}${p.dropSent?' · Drop ✓':''}</div>${ln?`<div class="review-person-last">${esc(ln.text)}</div>`:''}</div>`;});html+=`</div>`;}
+  else html+=`<div class="review-section"><div class="review-section-title">Conversations</div><div class="review-empty">No conversations logged this week</div></div>`;
+  if(newCust.length){html+=`<div class="review-section"><div class="review-section-title">New Customers</div>`;newCust.forEach(c=>{html+=`<div class="review-person-row"><div class="review-person-name">${esc(c.name)}</div></div>`;});html+=`</div>`;}
+  html+=`<div class="review-section"><div class="review-section-title">Reflection</div><textarea class="inp" rows="3" placeholder="What worked? What needs attention next week?" oninput="save('review-reflection-${wk}',this.value)">${load('review-reflection-'+wk,'')}</textarea></div><button class="btn btn-primary" onclick="dismissReview()">Done — See You Next Friday</button>`;
+
+document.getElementById(‘review-modal-body’).innerHTML=html;openModal(‘review-modal’);
 }
-function dismissReview(){
-  save('review-dismissed',getWeekKey());
-  closeModal('review-modal');
-  document.getElementById('review-banner').classList.add('hidden');
-  toast('Review saved.');
-}
-const FAITH_HABITS=['bible','prayer','gratitude'];
-const DAYS=['M','T','W','T','F','S','S'];
+function dismissReview(){save(‘review-dismissed’,getWeekKey());closeModal(‘review-modal’);document.getElementById(‘review-banner’).classList.add(‘hidden’);toast(‘Review saved.’);}
+
+/* ── FAITH ── */
+const FAITH_HABITS=[‘bible’,‘prayer’,‘gratitude’];const DAYS=[‘M’,‘T’,‘W’,‘T’,‘F’,‘S’,‘S’];
 function renderFaith(){
-  const streak=load('faith-streak',0);
-  document.getElementById('faith-streak-num').textContent=streak;
-  const circ=188.5,pct=Math.min(streak/30,1);
-  document.getElementById('faith-ring').style.strokeDashoffset=circ-(circ*pct);
-  FAITH_HABITS.forEach(h=>{
-    const data=load('habit-'+h,{days:[]});
-    const dots=document.getElementById('dots-'+h);
-    dots.innerHTML='';
-    for(let i=0;i<7;i++){
-      const done=data.days.includes(i);
-      const d=document.createElement('button');
-      d.className='habit-dot'+(done?' done':'');
-      d.textContent=done?'✓':DAYS[i];
-      d.onclick=(()=>{const idx=i;return()=>toggleFaithHabit(h,idx);})();
-      dots.appendChild(d);
-    }
-  });
-  document.getElementById('faith-notes').value=load('faith-notes','');
+const streak=load(‘faith-streak’,0);document.getElementById(‘faith-streak-num’).textContent=streak;
+const circ=188.5,pct=Math.min(streak/30,1);document.getElementById(‘faith-ring’).style.strokeDashoffset=circ-(circ*pct);
+FAITH_HABITS.forEach(h=>{const data=load(‘habit-’+h,{days:[]});const dots=document.getElementById(‘dots-’+h);dots.innerHTML=’’;for(let i=0;i<7;i++){const done=data.days.includes(i);const d=document.createElement(‘button’);d.className=‘habit-dot’+(done?’ done’:’’);d.textContent=done?‘✓’:DAYS[i];d.onclick=(()=>{const idx=i;return()=>toggleFaithHabit(h,idx);})();dots.appendChild(d);}});
+document.getElementById(‘faith-notes’).value=load(‘faith-notes’,’’);
 }
-function toggleFaithHabit(habit,dayIdx){
-  const data=load('habit-'+habit,{days:[]});
-  const pos=data.days.indexOf(dayIdx);
-  if(pos===-1)data.days.push(dayIdx);else data.days.splice(pos,1);
-  save('habit-'+habit,data);
-  renderFaith();
-}
-const workoutDays={
-  'Upper A':[{n:'Bench Press',s:'4×6-8'},{n:'Barbell Row',s:'4×6-8'},{n:'OHP',s:'3×8-10'},{n:'Pull-Ups',s:'3×AMRAP'},{n:'Dips',s:'3×10-12'}],
-  'Lower A':[{n:'Squat',s:'4×6-8'},{n:'Romanian DL',s:'3×10-12'},{n:'Leg Press',s:'3×10-12'},{n:'Leg Curl',s:'3×12-15'},{n:'Calf Raises',s:'4×15-20'}],
-  'Upper B':[{n:'Incline Press',s:'4×8-10'},{n:'Cable Row',s:'4×10-12'},{n:'Lat Pulldown',s:'3×10-12'},{n:'Lateral Raises',s:'3×15-20'},{n:'Bicep Curls',s:'3×12-15'},{n:'Tricep Pushdown',s:'3×12-15'}],
-  'Lower B':[{n:'Deadlift',s:'4×4-6'},{n:'Bulgarian Split Squat',s:'3×10-12'},{n:'Leg Extension',s:'3×12-15'},{n:'Nordic Curl',s:'3×8-10'},{n:'Calf Raises',s:'4×15-20'}],
-  'Cardio':[{n:'Cardio Session',s:'30-45 min'}],
-  'Rest':[{n:'Rest & Recovery',s:'Active stretch optional'}],
-};
-let selectedWorkoutDay='';
-function selectDay(day,el){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');selectedWorkoutDay=day;
-  const ex=workoutDays[day]||[];
-  document.getElementById('fit-exercises').innerHTML=ex.map(e=>`<div class="exercise-row"><span class="exercise-name">${e.n}</span><span class="exercise-sets">${e.s}</span></div>`).join('');
-}
-function fitTab(tab,el){
-  document.querySelectorAll('#page-fitness .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('fit-log').style.display=tab==='log'?'block':'none';
-  document.getElementById('fit-history').style.display=tab==='history'?'block':'none';
-  if(tab==='history')renderFitHistory();
-}
-function logWorkout(){
-  if(!selectedWorkoutDay){toast('Select a workout type first');return;}
-  const sessions=load('workout-sessions',[]);
-  sessions.unshift({day:selectedWorkoutDay,notes:document.getElementById('fit-notes').value,date:new Date().toISOString()});
-  save('workout-sessions',sessions);
-  document.getElementById('fit-notes').value='';
-  toast('Session logged!');renderFitHistory();
-}
-function renderFitHistory(){
-  const sessions=load('workout-sessions',[]);
-  const c=document.getElementById('fit-history-list');
-  if(!sessions.length){c.innerHTML='<div class="empty"><div class="empty-icon">📊</div>No sessions yet</div>';return;}
-  c.innerHTML=sessions.slice(0,20).map(s=>`<div class="card"><div class="card-title">${s.day}</div><div style="font-size:10px;color:var(--t2)">${new Date(s.date).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})}</div>${s.notes?`<div style="font-size:11px;color:var(--t2);margin-top:5px">${esc(s.notes)}</div>`:''}</div>`).join('');
-}
-let currentKid=0;
-const kidDefaults=['Kid 1','Kid 2','Kid 3'];
-function kidTab(idx,el){
-  document.querySelectorAll('#page-parenting .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');currentKid=idx;renderKid(idx);
-}
-function renderKid(idx){
-  const kid=load('kid-'+idx,{name:kidDefaults[idx],notes:'',giftIdeas:[],sizes:{}});
-  document.getElementById('kid-content').innerHTML=`
-    <div class="card">
-      <div class="input-group"><div class="input-label">Name</div><input class="inp" value="${esc(kid.name)}" onchange="updateKidName(${idx},this.value)"></div>
-      <div class="input-group"><div class="input-label">Clothing Sizes</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input class="inp" placeholder="Shirt" value="${esc(kid.sizes.shirt||'')}" onchange="updateKidSize(${idx},'shirt',this.value)">
-          <input class="inp" placeholder="Pants" value="${esc(kid.sizes.pants||'')}" onchange="updateKidSize(${idx},'pants',this.value)">
-          <input class="inp" placeholder="Shoes" value="${esc(kid.sizes.shoes||'')}" onchange="updateKidSize(${idx},'shoes',this.value)">
-          <input class="inp" placeholder="Other" value="${esc(kid.sizes.other||'')}" onchange="updateKidSize(${idx},'other',this.value)">
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Gift Ideas</div>
-      <div>${(kid.giftIdeas||[]).map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px;flex:1">${esc(g)}</span><button class="btn btn-danger" style="padding:3px 8px;font-size:10px" onclick="removeKidGift(${idx},${i})">✕</button></div>`).join('')}</div>
-      <div style="display:flex;gap:8px;margin-top:8px"><input class="inp" id="kid-gift-input-${idx}" placeholder="Add gift idea..." style="flex:1"><button class="btn btn-ghost" onclick="addKidGift(${idx})">Add</button></div>
-    </div>
-    <div class="card"><div class="card-title">Notes</div><textarea class="inp" rows="4" placeholder="Milestones, conversations, moments..." oninput="updateKidNotes(${idx},this.value)">${esc(kid.notes||'')}</textarea></div>`;
-}
-function updateKidName(idx,v){const k=load('kid-'+idx,{});k.name=v;save('kid-'+idx,k)}
-function updateKidSize(idx,f,v){const k=load('kid-'+idx,{sizes:{}});k.sizes=k.sizes||{};k.sizes[f]=v;save('kid-'+idx,k)}
-function updateKidNotes(idx,v){const k=load('kid-'+idx,{});k.notes=v;save('kid-'+idx,k)}
-function addKidGift(idx){
-  const inp=document.getElementById('kid-gift-input-'+idx);
-  if(!inp.value.trim())return;
-  const k=load('kid-'+idx,{giftIdeas:[]});k.giftIdeas=k.giftIdeas||[];k.giftIdeas.push(inp.value.trim());
-  save('kid-'+idx,k);renderKid(idx);
-}
-function removeKidGift(idx,i){const k=load('kid-'+idx,{giftIdeas:[]});k.giftIdeas.splice(i,1);save('kid-'+idx,k);renderKid(idx);}
-function marriageTab(tab,el){
-  document.querySelectorAll('#page-marriage .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');renderMarriage(tab);
-}
+function toggleFaithHabit(habit,dayIdx){const data=load(‘habit-’+habit,{days:[]});const pos=data.days.indexOf(dayIdx);if(pos===-1)data.days.push(dayIdx);else data.days.splice(pos,1);save(‘habit-’+habit,data);renderFaith();}
+
+/* ── FITNESS ── */
+const workoutDays={‘Upper A’:[{n:‘Bench Press’,s:‘4×6-8’},{n:‘Barbell Row’,s:‘4×6-8’},{n:‘OHP’,s:‘3×8-10’},{n:‘Pull-Ups’,s:‘3×AMRAP’},{n:‘Dips’,s:‘3×10-12’}],‘Lower A’:[{n:‘Squat’,s:‘4×6-8’},{n:‘Romanian DL’,s:‘3×10-12’},{n:‘Leg Press’,s:‘3×10-12’},{n:‘Leg Curl’,s:‘3×12-15’},{n:‘Calf Raises’,s:‘4×15-20’}],‘Upper B’:[{n:‘Incline Press’,s:‘4×8-10’},{n:‘Cable Row’,s:‘4×10-12’},{n:‘Lat Pulldown’,s:‘3×10-12’},{n:‘Lateral Raises’,s:‘3×15-20’},{n:‘Bicep Curls’,s:‘3×12-15’},{n:‘Tricep Pushdown’,s:‘3×12-15’}],‘Lower B’:[{n:‘Deadlift’,s:‘4×4-6’},{n:‘Bulgarian Split Squat’,s:‘3×10-12’},{n:‘Leg Extension’,s:‘3×12-15’},{n:‘Nordic Curl’,s:‘3×8-10’},{n:‘Calf Raises’,s:‘4×15-20’}],‘Cardio’:[{n:‘Cardio Session’,s:‘30-45 min’}],‘Rest’:[{n:‘Rest & Recovery’,s:‘Active stretch optional’}]};
+let selectedWorkoutDay=’’;
+function selectDay(day,el){document.querySelectorAll(’.chip’).forEach(c=>c.classList.remove(‘active’));el.classList.add(‘active’);selectedWorkoutDay=day;const ex=workoutDays[day]||[];document.getElementById(‘fit-exercises’).innerHTML=ex.map(e=>`<div class="exercise-row"><span class="exercise-name">${e.n}</span><span class="exercise-sets">${e.s}</span></div>`).join(’’);}
+function fitTab(tab,el){document.querySelectorAll(’#page-fitness .tab’).forEach(t=>t.classList.remove(‘active’));el.classList.add(‘active’);document.getElementById(‘fit-log’).style.display=tab===‘log’?‘block’:‘none’;document.getElementById(‘fit-history’).style.display=tab===‘history’?‘block’:‘none’;if(tab===‘history’)renderFitHistory();}
+function logWorkout(){if(!selectedWorkoutDay){toast(‘Select a workout type first’);return;}const sessions=load(‘workout-sessions’,[]);sessions.unshift({day:selectedWorkoutDay,notes:document.getElementById(‘fit-notes’).value,date:new Date().toISOString()});save(‘workout-sessions’,sessions);document.getElementById(‘fit-notes’).value=’’;toast(‘Session logged!’);renderFitHistory();}
+function renderFitHistory(){const sessions=load(‘workout-sessions’,[]);const c=document.getElementById(‘fit-history-list’);if(!sessions.length){c.innerHTML=’<div class="empty"><div class="empty-icon">📊</div>No sessions yet</div>’;return;}c.innerHTML=sessions.slice(0,20).map(s=>`<div class="card"><div class="card-title">${s.day}</div><div style="font-size:10px;color:var(--t2)">${new Date(s.date).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})}</div>${s.notes?`<div style="font-size:11px;color:var(--t2);margin-top:5px">${esc(s.notes)}</div>`:''}</div>`).join(’’);}
+
+/* ── PARENTING ── */
+let currentKid=0;const kidDefaults=[‘Kid 1’,‘Kid 2’,‘Kid 3’];
+function kidTab(idx,el){document.querySelectorAll(’#page-parenting .tab’).forEach(t=>t.classList.remove(‘active’));el.classList.add(‘active’);currentKid=idx;renderKid(idx);}
+function renderKid(idx){const kid=load(‘kid-’+idx,{name:kidDefaults[idx],notes:’’,giftIdeas:[],sizes:{}});document.getElementById(‘kid-content’).innerHTML=`<div class="card"><div class="input-group"><div class="input-label">Name</div><input class="inp" value="${esc(kid.name)}" onchange="updateKidName(${idx},this.value)"></div><div class="input-group"><div class="input-label">Clothing Sizes</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input class="inp" placeholder="Shirt" value="${esc(kid.sizes.shirt||'')}" onchange="updateKidSize(${idx},'shirt',this.value)"><input class="inp" placeholder="Pants" value="${esc(kid.sizes.pants||'')}" onchange="updateKidSize(${idx},'pants',this.value)"><input class="inp" placeholder="Shoes" value="${esc(kid.sizes.shoes||'')}" onchange="updateKidSize(${idx},'shoes',this.value)"><input class="inp" placeholder="Other" value="${esc(kid.sizes.other||'')}" onchange="updateKidSize(${idx},'other',this.value)"></div></div></div><div class="card"><div class="card-title">Gift Ideas</div><div>${(kid.giftIdeas||[]).map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px;flex:1">${esc(g)}</span><button class="btn btn-danger" style="padding:3px 8px;font-size:10px" onclick="removeKidGift(${idx},${i})">✕</button></div>`).join('')}</div><div style="display:flex;gap:8px;margin-top:8px"><input class="inp" id="kid-gift-input-${idx}" placeholder="Add gift idea..." style="flex:1"><button class="btn btn-ghost" onclick="addKidGift(${idx})">Add</button></div></div><div class="card"><div class="card-title">Notes</div><textarea class="inp" rows="4" placeholder="Milestones, conversations, moments..." oninput="updateKidNotes(${idx},this.value)">${esc(kid.notes||'')}</textarea></div>`;}
+function updateKidName(idx,v){const k=load(‘kid-’+idx,{});k.name=v;save(‘kid-’+idx,k)}
+function updateKidSize(idx,f,v){const k=load(‘kid-’+idx,{sizes:{}});k.sizes=k.sizes||{};k.sizes[f]=v;save(‘kid-’+idx,k)}
+function updateKidNotes(idx,v){const k=load(‘kid-’+idx,{});k.notes=v;save(‘kid-’+idx,k)}
+function addKidGift(idx){const inp=document.getElementById(‘kid-gift-input-’+idx);if(!inp.value.trim())return;const k=load(‘kid-’+idx,{giftIdeas:[]});k.giftIdeas=k.giftIdeas||[];k.giftIdeas.push(inp.value.trim());save(‘kid-’+idx,k);renderKid(idx);}
+function removeKidGift(idx,i){const k=load(‘kid-’+idx,{giftIdeas:[]});k.giftIdeas.splice(i,1);save(‘kid-’+idx,k);renderKid(idx);}
+
+/* ── MARRIAGE ── */
+function marriageTab(tab,el){document.querySelectorAll(’#page-marriage .tab’).forEach(t=>t.classList.remove(‘active’));el.classList.add(‘active’);renderMarriage(tab);}
 function renderMarriage(tab){
-  const marriage=load('marriage',{log:[],gifts:[]});
-  let html='';
-  if(tab==='log'){
-    html=`<div class="card">
-      <div class="input-group"><div class="input-label">Type</div>
-        <select class="inp" id="marriage-type"><option>Date night</option><option>Conversation</option><option>Counseling</option><option>Conflict resolved</option><option>Gratitude moment</option><option>Other</option></select>
-      </div>
-      <div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="marriage-log-note" rows="3" placeholder="What happened..."></textarea></div>
-      <button class="btn btn-primary" onclick="addMarriageLog()">Log Entry</button></div>
-    <div>${(marriage.log||[]).slice(0,20).map(e=>`<div class="card"><div class="card-title">${esc(e.type)}</div><div style="font-size:10px;color:var(--t2)">${new Date(e.date).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})}</div><div style="font-size:11px;color:var(--t2);margin-top:5px">${esc(e.note)}</div></div>`).join('')||'<div class="empty"><div class="empty-icon">💍</div>No entries yet</div>'}</div>`;
-  } else if(tab==='gifts'){
-    html=`<div class="card"><div class="card-title">Gift Ideas for Kyra</div>
-      <div>${(marriage.gifts||[]).map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px;flex:1">${esc(g)}</span><button class="btn btn-danger" style="padding:3px 8px;font-size:10px" onclick="removeMarriageGift(${i})">✕</button></div>`).join('')}</div>
-      <div style="display:flex;gap:8px;margin-top:8px"><input class="inp" id="marriage-gift-input" placeholder="Add idea..." style="flex:1"><button class="btn btn-ghost" onclick="addMarriageGift()">Add</button></div>
-    </div>`;
-  } else {
-    html=`<div class="card"><textarea class="inp" rows="6" placeholder="Counseling notes, things to work on, intentions..." oninput="save('marriage-notes',this.value)">${esc(load('marriage-notes',''))}</textarea></div>`;
-  }
-  document.getElementById('marriage-content').innerHTML=html;
+const marriage=load(‘marriage’,{log:[],gifts:[]});let html=’’;
+if(tab===‘log’){html=`<div class="card"><div class="input-group"><div class="input-label">Type</div><select class="inp" id="marriage-type"><option>Date night</option><option>Conversation</option><option>Counseling</option><option>Conflict resolved</option><option>Gratitude moment</option><option>Other</option></select></div><div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="marriage-log-note" rows="3" placeholder="What happened..."></textarea></div><button class="btn btn-primary" onclick="addMarriageLog()">Log Entry</button></div><div>${(marriage.log||[]).slice(0,20).map(e=>`<div class="card"><div class="card-title">${esc(e.type)}</div><div style="font-size:10px;color:var(--t2)">${new Date(e.date).toLocaleDateString(‘en-CA’,{weekday:‘short’,month:‘short’,day:‘numeric’})}</div><div style="font-size:11px;color:var(--t2);margin-top:5px">${esc(e.note)}</div></div>`).join('')||'<div class="empty"><div class="empty-icon">💍</div>No entries yet</div>'}</div>`;}
+else if(tab===‘gifts’){html=`<div class="card"><div class="card-title">Gift Ideas for Kyra</div><div>${(marriage.gifts||[]).map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px;flex:1">${esc(g)}</span><button class="btn btn-danger" style="padding:3px 8px;font-size:10px" onclick="removeMarriageGift(${i})">✕</button></div>`).join('')}</div><div style="display:flex;gap:8px;margin-top:8px"><input class="inp" id="marriage-gift-input" placeholder="Add idea..." style="flex:1"><button class="btn btn-ghost" onclick="addMarriageGift()">Add</button></div></div>`;}
+else{html=`<div class="card"><textarea class="inp" rows="6" placeholder="Counseling notes, things to work on, intentions..." oninput="save('marriage-notes',this.value)">${esc(load('marriage-notes',''))}</textarea></div>`;}
+document.getElementById(‘marriage-content’).innerHTML=html;
 }
-function addMarriageLog(){
-  const type=document.getElementById('marriage-type').value,note=document.getElementById('marriage-log-note').value;
-  const m=load('marriage',{log:[],gifts:[]});m.log=m.log||[];m.log.unshift({type,note,date:new Date().toISOString()});
-  save('marriage',m);toast('Logged!');renderMarriage('log');
-}
-function addMarriageGift(){
-  const inp=document.getElementById('marriage-gift-input');if(!inp.value.trim())return;
-  const m=load('marriage',{log:[],gifts:[]});m.gifts=m.gifts||[];m.gifts.push(inp.value.trim());
-  save('marriage',m);renderMarriage('gifts');
-}
-function removeMarriageGift(i){const m=load('marriage',{log:[],gifts:[]});m.gifts.splice(i,1);save('marriage',m);renderMarriage('gifts');}
-const STAGES=[
-  {id:'signal',label:'Signal',color:'#2a5fa8',bg:'rgba(42,95,168,.12)'},
-  {id:'initial',label:'Initial Convo',color:'#9a6b10',bg:'rgba(154,107,16,.12)'},
-  {id:'observation',label:'Observing',color:'#6b3fa0',bg:'rgba(107,63,160,.12)'},
-  {id:'invitation',label:'Invited',color:'#c45c1a',bg:'rgba(196,92,26,.12)'},
-  {id:'vetting',label:'Vetting',color:'#2a7a42',bg:'rgba(42,122,66,.12)'},
-  {id:'partner',label:'Partner ✓',color:'#2a7a42',bg:'rgba(42,122,66,.18)'},
-  {id:'x',label:'Not a Fit',color:'#a8967e',bg:'rgba(0,0,0,.06)'},
-];
+function addMarriageLog(){const type=document.getElementById(‘marriage-type’).value,note=document.getElementById(‘marriage-log-note’).value;const m=load(‘marriage’,{log:[],gifts:[]});m.log=m.log||[];m.log.unshift({type,note,date:new Date().toISOString()});save(‘marriage’,m);toast(‘Logged!’);renderMarriage(‘log’);}
+function addMarriageGift(){const inp=document.getElementById(‘marriage-gift-input’);if(!inp.value.trim())return;const m=load(‘marriage’,{log:[],gifts:[]});m.gifts=m.gifts||[];m.gifts.push(inp.value.trim());save(‘marriage’,m);renderMarriage(‘gifts’);}
+function removeMarriageGift(i){const m=load(‘marriage’,{log:[],gifts:[]});m.gifts.splice(i,1);save(‘marriage’,m);renderMarriage(‘gifts’);}
+
+/* ── PIPELINE ── */
+const STAGES=[{id:‘signal’,label:‘Signal’,color:’#2a5fa8’,bg:‘rgba(42,95,168,.12)’},{id:‘initial’,label:‘Initial Convo’,color:’#9a6b10’,bg:‘rgba(154,107,16,.12)’},{id:‘observation’,label:‘Observing’,color:’#6b3fa0’,bg:‘rgba(107,63,160,.12)’},{id:‘invitation’,label:‘Invited’,color:’#c45c1a’,bg:‘rgba(196,92,26,.12)’},{id:‘vetting’,label:‘Vetting’,color:’#2a7a42’,bg:‘rgba(42,122,66,.12)’},{id:‘partner’,label:‘Partner ✓’,color:’#2a7a42’,bg:‘rgba(42,122,66,.18)’},{id:‘x’,label:‘Not a Fit’,color:’#a8967e’,bg:‘rgba(0,0,0,.06)’}];
 function stageInfo(id){return STAGES.find(s=>s.id===id)||STAGES[0]}
-let bizActiveTab='pipeline';
-function bizTab(tab,el){
-  document.querySelectorAll('#page-biz .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');bizActiveTab=tab;renderBiz();
-}
-function renderBiz(){
-  if(bizActiveTab==='pipeline')renderPipeline();
-  else if(bizActiveTab==='customers')renderCustomers();
-  else if(bizActiveTab==='content')renderContent();
-  else renderBizStats();
-}
+let bizActiveTab=‘pipeline’;
+function bizTab(tab,el){document.querySelectorAll(’#page-biz .tab’).forEach(t=>t.classList.remove(‘active’));el.classList.add(‘active’);bizActiveTab=tab;renderBiz();}
+function renderBiz(){if(bizActiveTab===‘pipeline’)renderPipeline();else if(bizActiveTab===‘customers’)renderCustomers();else if(bizActiveTab===‘content’)renderContent();else renderBizStats();}
 function renderPipeline(){
-  const prospects=load('prospects',[]);
-  let html=`<button class="btn btn-primary" onclick="openAddProspect()" style="margin-bottom:12px">+ Add Prospect</button>`;
-  STAGES.filter(s=>s.id!=='x'&&s.id!=='partner').forEach(stage=>{
-    const inStage=prospects.filter(p=>p.stage===stage.id);
-    if(!inStage.length)return;
-    html+=`<div class="pipeline-stage"><div class="stage-label"><span class="stage-dot" style="background:${stage.color}"></span>${stage.label} (${inStage.length})</div>`;
-    inStage.forEach(p=>{
-      const ln=p.notes&&p.notes.length?p.notes[p.notes.length-1]:'';
-      html+=`<div class="prospect-card" onclick="openProspect('${p.id}')">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div class="prospect-name">${esc(p.name)}</div>
-          <span class="stage-badge" style="background:${stage.bg};color:${stage.color}">${stage.label}</span>
-        </div>
-        <div class="prospect-meta">${p.platform||'IG'}${p.dropSent?' · Drop ✓':''}</div>
-        ${ln?`<div class="prospect-last">${esc(ln.text)}</div>`:''}
-      </div>`;
-    });
-    html+=`</div>`;
-  });
-  STAGES.filter(s=>s.id==='partner'||s.id==='x').forEach(stage=>{
-    const inStage=prospects.filter(p=>p.stage===stage.id);
-    if(!inStage.length)return;
-    html+=`<details style="margin-bottom:10px"><summary style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);cursor:pointer;padding:7px 0">${stage.label} (${inStage.length})</summary>${inStage.map(p=>`<div class="prospect-card" onclick="openProspect('${p.id}')"><div class="prospect-name">${esc(p.name)}</div><div class="prospect-meta">${p.platform||'IG'}</div></div>`).join('')}</details>`;
-  });
-  if(!prospects.length)html+=`<div class="empty"><div class="empty-icon">👥</div>No prospects yet</div>`;
-  document.getElementById('biz-content').innerHTML=html;
+const prospects=load(‘prospects’,[]);
+let html=`<button class="btn btn-primary" onclick="openAddProspect()" style="margin-bottom:12px">+ Add Prospect</button>`;
+STAGES.filter(s=>s.id!==‘x’&&s.id!==‘partner’).forEach(stage=>{const inStage=prospects.filter(p=>p.stage===stage.id);if(!inStage.length)return;html+=`<div class="pipeline-stage"><div class="stage-label"><span class="stage-dot" style="background:${stage.color}"></span>${stage.label} (${inStage.length})</div>`;inStage.forEach(p=>{const ln=p.notes&&p.notes.length?p.notes[p.notes.length-1]:’’;html+=`<div class="prospect-card" onclick="openProspect('${p.id}')"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="prospect-name">${esc(p.name)}</div><span class="stage-badge" style="background:${stage.bg};color:${stage.color}">${stage.label}</span></div><div class="prospect-meta">${p.platform||'IG'}${p.dropSent?' · Drop ✓':''}</div>${ln?`<div class="prospect-last">${esc(ln.text)}</div>`:''}</div>`;});html+=`</div>`;});
+STAGES.filter(s=>s.id===‘partner’||s.id===‘x’).forEach(stage=>{const inStage=prospects.filter(p=>p.stage===stage.id);if(!inStage.length)return;html+=`<details style="margin-bottom:10px"><summary style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);cursor:pointer;padding:7px 0">${stage.label} (${inStage.length})</summary>${inStage.map(p=>`<div class="prospect-card" onclick="openProspect('${p.id}')"><div class="prospect-name">${esc(p.name)}</div><div class="prospect-meta">${p.platform||‘IG’}</div></div>`).join('')}</details>`;});
+if(!prospects.length)html+=`<div class="empty"><div class="empty-icon">👥</div>No prospects yet</div>`;
+document.getElementById(‘biz-content’).innerHTML=html;
 }
-function openAddProspect(){
-  document.getElementById('prospect-modal-title').textContent='Add Prospect';
-  document.getElementById('prospect-modal-body').innerHTML=`
-    <div class="input-group"><div class="input-label">Name</div><input class="inp" id="p-name" placeholder="Full name"></div>
-    <div class="input-group"><div class="input-label">Platform</div><select class="inp" id="p-platform"><option>Instagram</option><option>Bumble Biz</option><option>LinkedIn</option><option>In Person</option><option>Other</option></select></div>
-    <div class="input-group"><div class="input-label">Stage</div><select class="inp" id="p-stage">${STAGES.map(s=>`<option value="${s.id}">${s.label}</option>`).join('')}</select></div>
-    <div class="input-group"><div class="input-label">First Note</div><textarea class="inp" id="p-note" rows="3" placeholder="What got your attention..."></textarea></div>
-    <button class="btn btn-primary" onclick="saveNewProspect()">Add to Pipeline</button>`;
-  openModal('prospect-modal');
-}
-function saveNewProspect(){
-  const name=document.getElementById('p-name').value.trim();
-  if(!name){toast('Name required');return;}
-  const prospects=load('prospects',[]);
-  const note=document.getElementById('p-note').value.trim();
-  prospects.push({id:'p'+Date.now(),name,platform:document.getElementById('p-platform').value,stage:document.getElementById('p-stage').value,notes:note?[{text:note,date:new Date().toISOString()}]:[],addedAt:new Date().toISOString(),dropSent:false});
-  save('prospects',prospects);closeModal('prospect-modal');toast(name+' added');renderPipeline();renderHome();
-}
-function openProspect(id){
-  const prospects=load('prospects',[]),p=prospects.find(x=>x.id===id);if(!p)return;
-  document.getElementById('prospect-modal-title').textContent=p.name;
-  document.getElementById('prospect-modal-body').innerHTML=`
-    <div class="input-group"><div class="input-label">Stage</div><select class="inp" id="ep-stage" onchange="updateProspectStage('${id}',this.value)">${STAGES.map(s=>`<option value="${s.id}"${p.stage===s.id?' selected':''}>${s.label}</option>`).join('')}</select></div>
-    <div class="input-group"><div class="input-label">Platform</div><select class="inp" id="ep-platform">${['Instagram','Bumble Biz','LinkedIn','In Person','Other'].map(pl=>`<option${p.platform===pl?' selected':''}>${pl}</option>`).join('')}</select></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;margin-bottom:4px">
-      <span style="font-size:12px;font-weight:700">Drop Message Sent</span>
-      <button class="btn btn-ghost" id="drop-btn" onclick="toggleDrop('${id}')" style="${p.dropSent?'background:rgba(42,122,66,.15);color:var(--gr)':''}">${p.dropSent?'✓ Sent':'Mark Sent'}</button>
-    </div>
-    <div class="card-title" style="margin-top:8px">Notes</div>
-    <div style="margin-bottom:10px">${(p.notes||[]).map(n=>`<div style="padding:6px 0;border-bottom:1px solid var(--s2)"><div style="font-size:10px;color:var(--t2)">${new Date(n.date).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div><div style="font-size:11px;margin-top:2px">${esc(n.text)}</div></div>`).join('')||'<div style="font-size:11px;color:var(--t3);padding:5px 0">No notes yet</div>'}</div>
-    <textarea class="inp" id="ep-new-note" rows="2" placeholder="Add a note..." style="margin-bottom:8px"></textarea>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-ghost" style="flex:1" onclick="addProspectNote('${id}')">Add Note</button>
-      <button class="btn btn-danger" onclick="deleteProspect('${id}')">Delete</button>
-    </div>`;
-  openModal('prospect-modal');
-}
-function updateProspectStage(id,stage){
-  const prospects=load('prospects',[]),p=prospects.find(x=>x.id===id);if(!p)return;
-  p.stage=stage;p.stageChangedAt=new Date().toISOString();save('prospects',prospects);renderPipeline();
-}
-function toggleDrop(id){
-  const prospects=load('prospects',[]),p=prospects.find(x=>x.id===id);if(!p)return;
-  p.dropSent=!p.dropSent;
-  if(p.dropSent){p.dropSentAt=new Date().toISOString();const wk=getWeekKey();const drops=load('weekly-drops',{week:'',count:0});if(drops.week===wk)drops.count++;else{drops.week=wk;drops.count=1;}save('weekly-drops',drops);}
-  save('prospects',prospects);
-  const btn=document.getElementById('drop-btn');
-  if(btn){btn.textContent=p.dropSent?'✓ Sent':'Mark Sent';btn.style=p.dropSent?'background:rgba(42,122,66,.15);color:var(--gr)':'';}
-  toast(p.dropSent?'Drop marked sent':'Unmarked');
-}
-function addProspectNote(id){
-  const note=document.getElementById('ep-new-note').value.trim();if(!note)return;
-  const prospects=load('prospects',[]),p=prospects.find(x=>x.id===id);if(!p)return;
-  p.notes=p.notes||[];p.notes.push({text:note,date:new Date().toISOString()});
-  save('prospects',prospects);document.getElementById('ep-new-note').value='';toast('Note added');openProspect(id);
-}
-function deleteProspect(id){
-  save('prospects',load('prospects',[]).filter(x=>x.id!==id));
-  closeModal('prospect-modal');toast('Removed');renderPipeline();renderHome();
-}
-function renderCustomers(){
-  const customers=load('customers',[]);
-  let html=`<button class="btn btn-primary" onclick="openAddCustomer()" style="margin-bottom:12px">+ Add Customer</button>`;
-  if(!customers.length)html+=`<div class="empty"><div class="empty-icon">🛒</div>No customers yet</div>`;
-  else customers.forEach(c=>{html+=`<div class="prospect-card" onclick="openCustomer('${c.id}')"><div class="prospect-name">${esc(c.name)}</div><div class="prospect-meta">${c.products||'No products noted'}</div>${c.lastContact?`<div class="prospect-last">Last: ${new Date(c.lastContact).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div>`:''}</div>`;});
-  document.getElementById('biz-content').innerHTML=html;
-}
-function openAddCustomer(){
-  document.getElementById('customer-modal-title').textContent='Add Customer';
-  document.getElementById('customer-modal-body').innerHTML=`
-    <div class="input-group"><div class="input-label">Name</div><input class="inp" id="c-name" placeholder="Full name"></div>
-    <div class="input-group"><div class="input-label">Products / Samples</div><input class="inp" id="c-products" placeholder="What they use or tried..."></div>
-    <div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="c-note" rows="2" placeholder="Context..."></textarea></div>
-    <button class="btn btn-primary" onclick="saveNewCustomer()">Add Customer</button>`;
-  openModal('customer-modal');
-}
-function saveNewCustomer(){
-  const name=document.getElementById('c-name').value.trim();if(!name){toast('Name required');return;}
-  const customers=load('customers',[]);
-  customers.push({id:'c'+Date.now(),name,products:document.getElementById('c-products').value,notes:[{text:document.getElementById('c-note').value,date:new Date().toISOString()}],addedAt:new Date().toISOString(),lastContact:new Date().toISOString()});
-  save('customers',customers);closeModal('customer-modal');toast(name+' added');renderCustomers();
-}
-function openCustomer(id){
-  const customers=load('customers',[]),c=customers.find(x=>x.id===id);if(!c)return;
-  document.getElementById('customer-modal-title').textContent=c.name;
-  document.getElementById('customer-modal-body').innerHTML=`
-    <div class="input-group"><div class="input-label">Products / Samples</div><input class="inp" id="ec-products" value="${esc(c.products||'')}" onchange="updateCustomerField('${id}','products',this.value)"></div>
-    <div class="input-group"><div class="input-label">Last Contact</div><input class="inp" type="date" value="${c.lastContact?c.lastContact.split('T')[0]:''}" onchange="updateCustomerField('${id}','lastContact',this.value)"></div>
-    <div class="card-title" style="margin-top:4px">Notes</div>
-    <div style="margin-bottom:10px">${(c.notes||[]).map(n=>`<div style="padding:6px 0;border-bottom:1px solid var(--s2)"><div style="font-size:10px;color:var(--t2)">${new Date(n.date).toLocaleDateString('en-CA',{month:'short',day:'numeric'})}</div><div style="font-size:11px;margin-top:2px">${esc(n.text)}</div></div>`).join('')}</div>
-    <textarea class="inp" id="ec-note" rows="2" placeholder="Add a note..." style="margin-bottom:8px"></textarea>
-    <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1" onclick="addCustomerNote('${id}')">Add Note</button><button class="btn btn-danger" onclick="deleteCustomer('${id}')">Delete</button></div>`;
-  openModal('customer-modal');
-}
-function updateCustomerField(id,field,val){const customers=load('customers',[]),c=customers.find(x=>x.id===id);if(c){c[field]=val;save('customers',customers);}}
-function addCustomerNote(id){
-  const note=document.getElementById('ec-note').value.trim();if(!note)return;
-  const customers=load('customers',[]),c=customers.find(x=>x.id===id);if(!c)return;
-  c.notes=c.notes||[];c.notes.push({text:note,date:new Date().toISOString()});c.lastContact=new Date().toISOString();
-  save('customers',customers);toast('Note added');openCustomer(id);
-}
-function deleteCustomer(id){save('customers',load('customers',[]).filter(x=>x.id!==id));closeModal('customer-modal');toast('Removed');renderCustomers();}
+function openAddProspect(){document.getElementById(‘prospect-modal-title’).textContent=‘Add Prospect’;document.getElementById(‘prospect-modal-body’).innerHTML=`<div class="input-group"><div class="input-label">Name</div><input class="inp" id="p-name" placeholder="Full name"></div><div class="input-group"><div class="input-label">Platform</div><select class="inp" id="p-platform"><option>Instagram</option><option>Bumble Biz</option><option>LinkedIn</option><option>In Person</option><option>Other</option></select></div><div class="input-group"><div class="input-label">Stage</div><select class="inp" id="p-stage">${STAGES.map(s=>`<option value="${s.id}">${s.label}</option>`).join('')}</select></div><div class="input-group"><div class="input-label">First Note</div><textarea class="inp" id="p-note" rows="3" placeholder="What got your attention..."></textarea></div><button class="btn btn-primary" onclick="saveNewProspect()">Add to Pipeline</button>`;openModal(‘prospect-modal’);}
+function saveNewProspect(){const name=document.getElementById(‘p-name’).value.trim();if(!name){toast(‘Name required’);return;}const prospects=load(‘prospects’,[]);const note=document.getElementById(‘p-note’).value.trim();prospects.push({id:‘p’+Date.now(),name,platform:document.getElementById(‘p-platform’).value,stage:document.getElementById(‘p-stage’).value,notes:note?[{text:note,date:new Date().toISOString()}]:[],addedAt:new Date().toISOString(),dropSent:false});save(‘prospects’,prospects);closeModal(‘prospect-modal’);toast(name+’ added’);renderPipeline();renderHome();}
+function openProspect(id){const prospects=load(‘prospects’,[]),p=prospects.find(x=>x.id===id);if(!p)return;document.getElementById(‘prospect-modal-title’).textContent=p.name;document.getElementById(‘prospect-modal-body’).innerHTML=`<div class="input-group"><div class="input-label">Stage</div><select class="inp" id="ep-stage" onchange="updateProspectStage('${id}',this.value)">${STAGES.map(s=>`<option value=”${s.id}”${p.stage===s.id?’ selected’:’’}>${s.label}</option>`).join('')}</select></div><div class="input-group"><div class="input-label">Platform</div><select class="inp" id="ep-platform">${['Instagram','Bumble Biz','LinkedIn','In Person','Other'].map(pl=>`<option${p.platform===pl?’ selected’:’’}>${pl}</option>`).join('')}</select></div><div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;margin-bottom:4px"><span style="font-size:12px;font-weight:700">Drop Message Sent</span><button class="btn btn-ghost" id="drop-btn" onclick="toggleDrop('${id}')" style="${p.dropSent?'background:rgba(42,122,66,.15);color:var(--gr)':''}">${p.dropSent?'✓ Sent':'Mark Sent'}</button></div><div class="card-title" style="margin-top:8px">Notes</div><div style="margin-bottom:10px">${(p.notes||[]).map(n=>`<div style="padding:6px 0;border-bottom:1px solid var(--s2)"><div style="font-size:10px;color:var(--t2)">${new Date(n.date).toLocaleDateString(‘en-CA’,{month:‘short’,day:‘numeric’})}</div><div style="font-size:11px;margin-top:2px">${esc(n.text)}</div></div>`).join('')||'<div style="font-size:11px;color:var(--t3);padding:5px 0">No notes yet</div>'}</div><textarea class="inp" id="ep-new-note" rows="2" placeholder="Add a note..." style="margin-bottom:8px"></textarea><div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1" onclick="addProspectNote('${id}')">Add Note</button><button class="btn btn-danger" onclick="deleteProspect('${id}')">Delete</button></div>`;openModal(‘prospect-modal’);}
+function updateProspectStage(id,stage){const prospects=load(‘prospects’,[]),p=prospects.find(x=>x.id===id);if(!p)return;p.stage=stage;p.stageChangedAt=new Date().toISOString();save(‘prospects’,prospects);renderPipeline();}
+function toggleDrop(id){const prospects=load(‘prospects’,[]),p=prospects.find(x=>x.id===id);if(!p)return;p.dropSent=!p.dropSent;if(p.dropSent){p.dropSentAt=new Date().toISOString();const wk=getWeekKey();const drops=load(‘weekly-drops’,{week:’’,count:0});if(drops.week===wk)drops.count++;else{drops.week=wk;drops.count=1;}save(‘weekly-drops’,drops);}save(‘prospects’,prospects);const btn=document.getElementById(‘drop-btn’);if(btn){btn.textContent=p.dropSent?‘✓ Sent’:‘Mark Sent’;btn.style=p.dropSent?‘background:rgba(42,122,66,.15);color:var(–gr)’:’’;}toast(p.dropSent?‘Drop marked sent’:‘Unmarked’);}
+function addProspectNote(id){const note=document.getElementById(‘ep-new-note’).value.trim();if(!note)return;const prospects=load(‘prospects’,[]),p=prospects.find(x=>x.id===id);if(!p)return;p.notes=p.notes||[];p.notes.push({text:note,date:new Date().toISOString()});save(‘prospects’,prospects);document.getElementById(‘ep-new-note’).value=’’;toast(‘Note added’);openProspect(id);}
+function deleteProspect(id){save(‘prospects’,load(‘prospects’,[]).filter(x=>x.id!==id));closeModal(‘prospect-modal’);toast(‘Removed’);renderPipeline();renderHome();}
+
+/* ── CUSTOMERS ── */
+function renderCustomers(){const customers=load(‘customers’,[]);let html=`<button class="btn btn-primary" onclick="openAddCustomer()" style="margin-bottom:12px">+ Add Customer</button>`;if(!customers.length)html+=`<div class="empty"><div class="empty-icon">🛒</div>No customers yet</div>`;else customers.forEach(c=>{html+=`<div class="prospect-card" onclick="openCustomer('${c.id}')"><div class="prospect-name">${esc(c.name)}</div><div class="prospect-meta">${c.products||'No products noted'}</div>${c.lastContact?`<div class="prospect-last">Last: ${new Date(c.lastContact).toLocaleDateString(‘en-CA’,{month:‘short’,day:‘numeric’})}</div>`:''}</div>`;});document.getElementById(‘biz-content’).innerHTML=html;}
+function openAddCustomer(){document.getElementById(‘customer-modal-title’).textContent=‘Add Customer’;document.getElementById(‘customer-modal-body’).innerHTML=`<div class="input-group"><div class="input-label">Name</div><input class="inp" id="c-name" placeholder="Full name"></div><div class="input-group"><div class="input-label">Products / Samples</div><input class="inp" id="c-products" placeholder="What they use or tried..."></div><div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="c-note" rows="2" placeholder="Context..."></textarea></div><button class="btn btn-primary" onclick="saveNewCustomer()">Add Customer</button>`;openModal(‘customer-modal’);}
+function saveNewCustomer(){const name=document.getElementById(‘c-name’).value.trim();if(!name){toast(‘Name required’);return;}const customers=load(‘customers’,[]);customers.push({id:‘c’+Date.now(),name,products:document.getElementById(‘c-products’).value,notes:[{text:document.getElementById(‘c-note’).value,date:new Date().toISOString()}],addedAt:new Date().toISOString(),lastContact:new Date().toISOString()});save(‘customers’,customers);closeModal(‘customer-modal’);toast(name+’ added’);renderCustomers();}
+function openCustomer(id){const customers=load(‘customers’,[]),c=customers.find(x=>x.id===id);if(!c)return;document.getElementById(‘customer-modal-title’).textContent=c.name;document.getElementById(‘customer-modal-body’).innerHTML=`<div class="input-group"><div class="input-label">Products / Samples</div><input class="inp" id="ec-products" value="${esc(c.products||'')}" onchange="updateCustomerField('${id}','products',this.value)"></div><div class="input-group"><div class="input-label">Last Contact</div><input class="inp" type="date" value="${c.lastContact?c.lastContact.split('T')[0]:''}" onchange="updateCustomerField('${id}','lastContact',this.value)"></div><div class="card-title" style="margin-top:4px">Notes</div><div style="margin-bottom:10px">${(c.notes||[]).map(n=>`<div style="padding:6px 0;border-bottom:1px solid var(--s2)"><div style="font-size:10px;color:var(--t2)">${new Date(n.date).toLocaleDateString(‘en-CA’,{month:‘short’,day:‘numeric’})}</div><div style="font-size:11px;margin-top:2px">${esc(n.text)}</div></div>`).join('')}</div><textarea class="inp" id="ec-note" rows="2" placeholder="Add a note..." style="margin-bottom:8px"></textarea><div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1" onclick="addCustomerNote('${id}')">Add Note</button><button class="btn btn-danger" onclick="deleteCustomer('${id}')">Delete</button></div>`;openModal(‘customer-modal’);}
+function updateCustomerField(id,field,val){const customers=load(‘customers’,[]),c=customers.find(x=>x.id===id);if(c){c[field]=val;save(‘customers’,customers);}}
+function addCustomerNote(id){const note=document.getElementById(‘ec-note’).value.trim();if(!note)return;const customers=load(‘customers’,[]),c=customers.find(x=>x.id===id);if(!c)return;c.notes=c.notes||[];c.notes.push({text:note,date:new Date().toISOString()});c.lastContact=new Date().toISOString();save(‘customers’,customers);toast(‘Note added’);openCustomer(id);}
+function deleteCustomer(id){save(‘customers’,load(‘customers’,[]).filter(x=>x.id!==id));closeModal(‘customer-modal’);toast(‘Removed’);renderCustomers();}
+
+/* ── CONTENT CALENDAR ── */
 function renderContent(){
-  const events=load('content-events',[]);
-  const now=new Date();
-  const year=now.getFullYear(),month=now.getMonth();
-  const firstDay=new Date(year,month,1).getDay();
-  const daysInMonth=new Date(year,month+1,0).getDate();
-  const today=now.getDate();
-  const monthName=now.toLocaleDateString('en-CA',{month:'long',year:'numeric'});
-  const upcoming=events.filter(e=>{const d=new Date(e.date);const diff=(d-now)/(1000*60*60*24);return diff>=-1&&diff<=14;}).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  let html=`
-    <button class="btn btn-primary" onclick="openAddContent()" style="margin-bottom:12px">+ Add Content Day</button>
-    <div class="content-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bl)"></div>Film</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--pu)"></div>Edit</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--gr)"></div>Post</div>
-    </div>
-    <div style="font-size:11px;font-weight:700;color:var(--tx);margin-bottom:8px">${monthName}</div>
-    <div class="cal-grid">
-      ${['S','M','T','W','T','F','S'].map(d=>`<div class="cal-day-head">${d}</div>`).join('')}
-      ${Array(firstDay===0?6:firstDay-1).fill('<div></div>').join('')}
-      ${Array.from({length:daysInMonth},(_,i)=>{
-        const day=i+1;
-        const dateStr=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-        const ev=events.find(e=>e.date===dateStr);
-        const isToday=day===today;
-        return `<div class="cal-cell${ev?' '+ev.type:''}${isToday?' today':''}" onclick="openContentDay('${dateStr}')">
-          <div class="cal-cell-num">${day}</div>
-          ${ev?`<div class="cal-cell-type">${ev.type}</div>`:''}
-        </div>`;
-      }).join('')}
-    </div>`;
-  if(upcoming.length){
-    html+=`<div class="card-title" style="margin-top:4px;margin-bottom:10px">Upcoming</div>`;
-    upcoming.forEach(e=>{
-      const d=new Date(e.date+'T12:00:00');
-      html+=`<div class="upcoming-item">
-        <div><div class="upcoming-date">${d.getDate()}</div><div class="upcoming-month">${d.toLocaleDateString('en-CA',{month:'short'})}</div></div>
-        <div class="upcoming-info"><div class="upcoming-title">${esc(e.title||e.type+' day')}</div><div class="upcoming-type">${esc(e.notes||'')}</div></div>
-        <span class="type-pill type-${e.type}">${e.type}</span>
-      </div>`;
-    });
-  }
-  document.getElementById('biz-content').innerHTML=html;
+const events=load(‘content-events’,[]);const now=new Date();const year=now.getFullYear(),month=now.getMonth();const firstDay=new Date(year,month,1).getDay();const daysInMonth=new Date(year,month+1,0).getDate();const today=now.getDate();const monthName=now.toLocaleDateString(‘en-CA’,{month:‘long’,year:‘numeric’});
+const upcoming=events.filter(e=>{const d=new Date(e.date);const diff=(d-now)/(1000*60*60*24);return diff>=-1&&diff<=14;}).sort((a,b)=>new Date(a.date)-new Date(b.date));
+let html=`<button class="btn btn-primary" onclick="openAddContent()" style="margin-bottom:12px">+ Add Content Day</button><div class="content-legend"><div class="legend-item"><div class="legend-dot" style="background:var(--bl)"></div>Film</div><div class="legend-item"><div class="legend-dot" style="background:var(--pu)"></div>Edit</div><div class="legend-item"><div class="legend-dot" style="background:var(--gr)"></div>Post</div></div><div style="font-size:11px;font-weight:700;color:var(--tx);margin-bottom:8px">${monthName}</div><div class="cal-grid">${['S','M','T','W','T','F','S'].map(d=>`<div class="cal-day-head">${d}</div>`).join('')}${Array(firstDay===0?6:firstDay-1).fill('<div></div>').join('')}${Array.from({length:daysInMonth},(_,i)=>{const day=i+1;const dateStr=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');const ev=events.find(e=>e.date===dateStr);const isToday=day===today;return`<div class="cal-cell${ev?' '+ev.type:''}${isToday?' today':''}" onclick="openContentDay('${dateStr}')"><div class="cal-cell-num">${day}</div>${ev?`<div class="cal-cell-type">${ev.type}</div>`:’’}</div>`;}).join('')}</div>`;
+if(upcoming.length){html+=`<div class="card-title" style="margin-top:4px;margin-bottom:10px">Upcoming</div>`;upcoming.forEach(e=>{const d=new Date(e.date+‘T12:00:00’);html+=`<div class="upcoming-item"><div><div class="upcoming-date">${d.getDate()}</div><div class="upcoming-month">${d.toLocaleDateString('en-CA',{month:'short'})}</div></div><div class="upcoming-info"><div class="upcoming-title">${esc(e.title||e.type+' day')}</div><div class="upcoming-type">${esc(e.notes||'')}</div></div><span class="type-pill type-${e.type}">${e.type}</span></div>`;});}
+document.getElementById(‘biz-content’).innerHTML=html;
 }
-function openAddContent(prefillDate){
-  document.getElementById('content-modal-title').textContent='Add Content Day';
-  const today=new Date().toISOString().split('T')[0];
-  document.getElementById('content-modal-body').innerHTML=`
-    <div class="input-group"><div class="input-label">Type</div>
-      <div class="chip-row">
-        <div class="chip" onclick="selectContentType('film',this)">🎬 Film</div>
-        <div class="chip" onclick="selectContentType('edit',this)">✂️ Edit</div>
-        <div class="chip" onclick="selectContentType('post',this)">📲 Post</div>
-      </div>
-    </div>
-    <div class="input-group"><div class="input-label">Date</div><input class="inp" type="date" id="ce-date" value="${prefillDate||today}"></div>
-    <div class="input-group"><div class="input-label">Title / Topic</div><input class="inp" id="ce-title" placeholder="What are you filming/editing/posting?"></div>
-    <div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="ce-notes" rows="2" placeholder="Pillar, format, hook idea..."></textarea></div>
-    <button class="btn btn-primary" onclick="saveContentEvent()">Add to Schedule</button>`;
-  openModal('content-modal');
+function openAddContent(prefillDate){document.getElementById(‘content-modal-title’).textContent=‘Add Content Day’;const today=new Date().toISOString().split(‘T’)[0];document.getElementById(‘content-modal-body’).innerHTML=`<div class="input-group"><div class="input-label">Type</div><div class="chip-row"><div class="chip" onclick="selectContentType('film',this)">🎬 Film</div><div class="chip" onclick="selectContentType('edit',this)">✂️ Edit</div><div class="chip" onclick="selectContentType('post',this)">📲 Post</div></div></div><div class="input-group"><div class="input-label">Date</div><input class="inp" type="date" id="ce-date" value="${prefillDate||today}"></div><div class="input-group"><div class="input-label">Title / Topic</div><input class="inp" id="ce-title" placeholder="What are you filming/editing/posting?"></div><div class="input-group"><div class="input-label">Notes</div><textarea class="inp" id="ce-notes" rows="2" placeholder="Pillar, format, hook idea..."></textarea></div><button class="btn btn-primary" onclick="saveContentEvent()">Add to Schedule</button>`;openModal(‘content-modal’);}
+let selectedContentType=‘film’;
+function selectContentType(type,el){document.querySelectorAll(’#content-modal-body .chip’).forEach(c=>c.classList.remove(‘active’));el.classList.add(‘active’);selectedContentType=type;}
+function openContentDay(dateStr){const events=load(‘content-events’,[]);const ev=events.find(e=>e.date===dateStr);if(ev){document.getElementById(‘content-modal-title’).textContent=new Date(dateStr+‘T12:00:00’).toLocaleDateString(‘en-CA’,{weekday:‘long’,month:‘long’,day:‘numeric’});document.getElementById(‘content-modal-body’).innerHTML=`<span class="type-pill type-${ev.type}" style="font-size:11px;padding:5px 12px">${ev.type.toUpperCase()}</span><div style="margin-top:12px;font-size:14px;font-weight:700;color:var(--tx)">${esc(ev.title||ev.type+' day')}</div>${ev.notes?`<div style="font-size:12px;color:var(--t2);margin-top:6px">${esc(ev.notes)}</div>`:''}<button class="btn btn-danger" style="width:100%;margin-top:16px" onclick="deleteContentEvent('${ev.id}')">Remove from Schedule</button>`;openModal(‘content-modal’);}else{openAddContent(dateStr);}}
+function saveContentEvent(){const type=selectedContentType;const date=document.getElementById(‘ce-date’).value;if(!date){toast(‘Pick a date’);return;}const events=load(‘content-events’,[]);events.push({id:‘ce’+Date.now(),type,date,title:document.getElementById(‘ce-title’).value,notes:document.getElementById(‘ce-notes’).value,addedAt:new Date().toISOString()});save(‘content-events’,events);closeModal(‘content-modal’);toast(‘Added to schedule’);renderContent();}
+function deleteContentEvent(id){save(‘content-events’,load(‘content-events’,[]).filter(e=>e.id!==id));closeModal(‘content-modal’);toast(‘Removed’);renderContent();}
+function renderBizStats(){const prospects=load(‘prospects’,[]),customers=load(‘customers’,[]);const wk=getWeekKey();const drops=load(‘weekly-drops’,{week:’’,count:0});const dropCount=drops.week===wk?drops.count:0;const stageCounts={};STAGES.forEach(s=>stageCounts[s.id]=0);prospects.forEach(p=>stageCounts[p.stage]=(stageCounts[p.stage]||0)+1);document.getElementById(‘biz-content’).innerHTML=`<div style="display:flex;gap:8px;margin-bottom:10px"><div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${prospects.length}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Prospects</div></div><div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${customers.length}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Customers</div></div><div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${dropCount}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Drops/Wk</div></div></div><div class="card"><div class="card-title">Pipeline</div>${STAGES.map(s=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px">${s.label}</span><span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:800;color:${s.color}">${stageCounts[s.id]||0}</span></div>`).join('')}</div>`;}
+
+/* ── FIELD NOTES ── */
+const FN_KEY=‘alignliving_fn_v1’;
+const FN_FOLDERS=[‘partner’,‘faith’,‘content’];
+const FN_REVIEW_QS=[
+{key:‘followedUp’,label:‘Did you follow up with anyone from this?’},
+{key:‘signals’,label:‘Any signals or next steps worth pursuing?’},
+{key:‘insight’,label:‘What did this teach or confirm?’},
+];
+function fnLoad(){return load(FN_KEY,{notes:[],general:[]});}
+function fnSaveData(d){save(FN_KEY,d);}
+
+function fnRender(){
+const d=fnLoad();
+fnRenderGeneral(d.general||[]);
+FN_FOLDERS.forEach(f=>fnRenderFolder(f,d.notes||[]));
 }
-let selectedContentType='film';
-function selectContentType(type,el){
-  document.querySelectorAll('#content-modal-body .chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');selectedContentType=type;
+
+/* General */
+function fnOpenGeneralForm(){
+document.getElementById(‘fn-general-form’).style.display=‘block’;
+document.getElementById(‘fn-general-input’).focus();
 }
-function openContentDay(dateStr){
-  const events=load('content-events',[]);
-  const ev=events.find(e=>e.date===dateStr);
-  if(ev){
-    document.getElementById('content-modal-title').textContent=new Date(dateStr+'T12:00:00').toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'});
-    document.getElementById('content-modal-body').innerHTML=`
-      <span class="type-pill type-${ev.type}" style="font-size:11px;padding:5px 12px">${ev.type.toUpperCase()}</span>
-      <div style="margin-top:12px;font-size:14px;font-weight:700;color:var(--tx)">${esc(ev.title||ev.type+' day')}</div>
-      ${ev.notes?`<div style="font-size:12px;color:var(--t2);margin-top:6px">${esc(ev.notes)}</div>`:''}
-      <button class="btn btn-danger" style="width:100%;margin-top:16px" onclick="deleteContentEvent('${ev.id}')">Remove from Schedule</button>`;
-    openModal('content-modal');
-  } else {
-    openAddContent(dateStr);
-  }
+function fnCloseGeneralForm(){
+document.getElementById(‘fn-general-form’).style.display=‘none’;
+document.getElementById(‘fn-general-input’).value=’’;
 }
-function saveContentEvent(){
-  const type=selectedContentType;
-  const date=document.getElementById('ce-date').value;
-  if(!date){toast('Pick a date');return;}
-  const events=load('content-events',[]);
-  events.push({id:'ce'+Date.now(),type,date,title:document.getElementById('ce-title').value,notes:document.getElementById('ce-notes').value,addedAt:new Date().toISOString()});
-  save('content-events',events);closeModal('content-modal');toast('Added to schedule');renderContent();
+function fnSaveGeneral(){
+const text=document.getElementById(‘fn-general-input’).value.trim();
+if(!text)return;
+const d=fnLoad();d.general=d.general||[];
+d.general.unshift({id:‘g’+Date.now(),text,date:new Date().toISOString().split(‘T’)[0]});
+fnSaveData(d);fnCloseGeneralForm();fnRenderGeneral(d.general);
 }
-function deleteContentEvent(id){
-  save('content-events',load('content-events',[]).filter(e=>e.id!==id));
-  closeModal('content-modal');toast('Removed');renderContent();
+function fnDeleteGeneral(id){
+const d=fnLoad();d.general=d.general.filter(g=>g.id!==id);fnSaveData(d);fnRenderGeneral(d.general);
 }
-function renderBizStats(){
-  const prospects=load('prospects',[]),customers=load('customers',[]);
-  const wk=getWeekKey();const drops=load('weekly-drops',{week:'',count:0});
-  const dropCount=drops.week===wk?drops.count:0;
-  const stageCounts={};STAGES.forEach(s=>stageCounts[s.id]=0);
-  prospects.forEach(p=>stageCounts[p.stage]=(stageCounts[p.stage]||0)+1);
-  document.getElementById('biz-content').innerHTML=`
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${prospects.length}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Prospects</div></div>
-      <div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${customers.length}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Customers</div></div>
-      <div class="card" style="flex:1;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800">${dropCount}</div><div style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Drops/Wk</div></div>
-    </div>
-    <div class="card"><div class="card-title">Pipeline</div>${STAGES.map(s=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--s2)"><span style="font-size:11px">${s.label}</span><span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:800;color:${s.color}">${stageCounts[s.id]||0}</span></div>`).join('')}</div>`;
+function fnRenderGeneral(general){
+const el=document.getElementById(‘fn-general-list’);
+if(!general.length){el.innerHTML=’’;return;}
+el.innerHTML=general.map(g=>` <div class="fn-general-item"> <div class="fn-general-text">${esc(g.text)}</div> <div style="display:flex;align-items:center;gap:6px;flex-shrink:0"> <span class="fn-general-date">${fnFmtDate(g.date)}</span> <button class="fn-icon-btn" onclick="fnDeleteGeneral('${g.id}')">×</button> </div> </div>`).join(’’);
 }
+
+/* Folders */
+function fnToggleFolder(folder){document.getElementById(‘fnfolder-’+folder).classList.toggle(‘collapsed’);}
+function fnOpenForm(folder){
+const fb=document.getElementById(‘fnfolder-’+folder);
+if(fb.classList.contains(‘collapsed’))fb.classList.remove(‘collapsed’);
+document.getElementById(‘fn-form-’+folder).classList.add(‘open’);
+document.getElementById(‘fnf_’+folder+’*date’).value=new Date().toISOString().split(‘T’)[0];
+setTimeout(()=>document.getElementById(’fnf*’+folder+’_event’).focus(),50);
+}
+function fnCloseForm(folder){
+document.getElementById(‘fn-form-’+folder).classList.remove(‘open’);
+[’_event’,’_people’,’*obs’,’*raw’].forEach(s=>{
+const el=document.getElementById(’fnf*’+folder+s);
+if(el)el.value=’’;
+});
+const fu=document.getElementById(’fnf*’+folder+’*followup’);
+if(fu)fu.selectedIndex=0;
+}
+function fnSaveNote(folder){
+const eventEl=document.getElementById(’fnf*’+folder+’*event’);
+const eventName=eventEl.value.trim();
+if(!eventName){toast(‘Enter a name for this note’);return;}
+const note={
+id:‘fn’+Date.now(),folder,event:eventName,
+date:document.getElementById(’fnf*’+folder+’*date’).value,
+people:document.getElementById(’fnf*’+folder+’*people’).value.trim(),
+obs:document.getElementById(’fnf*’+folder+’*obs’).value.trim(),
+raw:document.getElementById(’fnf*’+folder+’*raw’).value.trim(),
+followup:document.getElementById(’fnf*’+folder+’*followup’).value,
+reviewNotes:{},createdAt:Date.now()
+};
+const d=fnLoad();d.notes=d.notes||[];d.notes.unshift(note);
+fnSaveData(d);fnCloseForm(folder);fnRenderFolder(folder,d.notes);toast(‘Note saved’);
+}
+function fnDeleteNote(id,folder){
+const d=fnLoad();d.notes=d.notes.filter(n=>n.id!==id);fnSaveData(d);fnRenderFolder(folder,d.notes);
+}
+function fnToggleExpand(id){document.getElementById(’fnbody*’+id)?.classList.toggle(‘open’);}
+
+function fnRenderFolder(folder,allNotes){
+const notes=allNotes.filter(n=>n.folder===folder);
+document.getElementById(‘fn-count-’+folder).textContent=notes.length+’ note’+(notes.length!==1?‘s’:’’);
+const el=document.getElementById(‘fn-notes-’+folder);
+if(!notes.length){el.innerHTML=`<div class="fn-empty">No notes yet — hit + Add to start.</div>`;return;}
+const fuLabelMap={partner:{open:‘Follow-up open’,done:‘Followed up’,none:’’},faith:{open:‘Follow-up open’,done:‘Followed up’,none:’’},content:{open:‘Not posted’,done:‘Posted’,none:‘Archived’}};
+const fuColorMap={open:‘fn-status-open’,done:‘fn-status-done’,none:’’};
+const obsLabelMap={partner:‘Observations / Signals’,faith:‘Reflections’,content:‘Idea / Concept’};
+const peopleLabelMap={partner:‘Key People’,faith:‘Key People / Context’,content:‘Pillar’};
+
+el.innerHTML=notes.map(n=>{
+const statusText=(fuLabelMap[folder]||{})[n.followup]||’’;
+const statusClass=fuColorMap[n.followup]||’’;
+return`<div class="fn-note-card" id="fncard_${n.id}"> <div class="fn-note-top"> <div style="flex:1"> <div class="fn-note-name">${esc(n.event)}</div> <div class="fn-note-meta"> <span>${fnFmtDate(n.date)}</span> ${n.people?`<span>· ${esc(n.people.split(’,’)[0].trim())}</span>`:''} ${statusText?`<span class="${statusClass}">· ${statusText}</span>`:''} </div> </div> <div class="fn-note-actions"> <button class="fn-icon-btn" onclick="event.stopPropagation();fnDeleteNote('${n.id}','${folder}')" style="color:var(--re)">🗑</button> <button class="fn-icon-btn" onclick="event.stopPropagation();fnToggleExpand('${n.id}')">▾</button> </div> </div> <div class="fn-note-body" id="fnbody_${n.id}"> ${n.people?`<div class="fn-note-section"><div class="fn-note-section-label">${peopleLabelMap[folder]||‘Key People’}</div><div class="fn-note-section-text">${esc(n.people)}</div></div>`:''} ${n.obs?`<div class="fn-note-section"><div class="fn-note-section-label">${obsLabelMap[folder]||‘Notes’}</div><div class="fn-note-section-text">${esc(n.obs)}</div></div>`:''} ${n.raw?`<div class="fn-note-section"><div class="fn-note-section-label">Raw Notes</div><div class="fn-note-section-text">${esc(n.raw)}</div></div>`:''} ${Object.keys(n.reviewNotes||{}).length?`<div class="fn-note-section"><div class="fn-note-section-label">Review Notes</div><div class="fn-note-section-text" style="font-size:11px;color:var(--t2)">${Object.entries(n.reviewNotes).map(([k,v])=>`<div style="margin-bottom:4px"><span style="color:var(--or)">${esc(k)}:</span> ${esc(v)}</div>`).join(’’)}</div></div>`:''} </div> </div>`;
+}).join(’’);
+}
+
+/* Weekly Review */
+function fnOpenReview(){
+const d=fnLoad();const ago=Date.now()-7*24*60*60*1000;
+const weekNotes=d.notes.filter(n=>n.createdAt>=ago);
+const openNotes=d.notes.filter(n=>n.followup===‘open’);
+const toReview=weekNotes.length?weekNotes:openNotes.slice(0,6);
+const body=document.getElementById(‘fn-review-modal-body’);
+if(!toReview.length){body.innerHTML=`<div style="text-align:center;padding:32px;color:var(--t3);font-size:12px">No notes from this week yet.<br>Start logging to use the review.</div>`;openModal(‘fn-review-modal’);return;}
+const fNames={partner:‘Partnership’,faith:‘Faith’,content:‘Content’};
+const fColors={partner:‘var(–fn-partner)’,faith:‘var(–fn-faith)’,content:‘var(–fn-content)’};
+const label=weekNotes.length?`${toReview.length} note${toReview.length>1?'s':''} from the past 7 days`:`${toReview.length} open follow-up${toReview.length>1?'s':''}`;
+body.innerHTML=`<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t2);margin-bottom:14px">${label}</div>`+
+toReview.map(n=>`<div class="fn-review-note-block"> <div class="fn-review-note-folder" style="color:${fColors[n.folder]||'var(--t2)'}">${fNames[n.folder]||n.folder}</div> <div class="fn-review-note-title">${esc(n.event)}</div> ${FN_REVIEW_QS.map(q=>`<div class="fn-review-q"><div class="fn-review-q-label">${q.label}</div><textarea class="inp" id="fnrq_${n.id}_${q.key}" rows="2" placeholder="Your answer...">${esc((n.reviewNotes||{})[q.label]||’’)}</textarea></div>`).join('')} </div>`).join(’’)+
+`<button class="btn btn-primary" onclick="fnSaveReview(${JSON.stringify(toReview.map(n=>n.id))})">Save Review</button>`;
+openModal(‘fn-review-modal’);
+}
+function fnSaveReview(ids){
+const d=fnLoad();
+ids.forEach(id=>{
+const note=d.notes.find(n=>n.id===id);if(!note)return;
+if(!note.reviewNotes)note.reviewNotes={};
+FN_REVIEW_QS.forEach(q=>{const el=document.getElementById(`fnrq_${id}_${q.key}`);if(el&&el.value.trim())note.reviewNotes[q.label]=el.value.trim();});
+});
+fnSaveData(d);closeModal(‘fn-review-modal’);fnRender();toast(‘Review saved’);
+}
+function fnFmtDate(d){if(!d)return’’;try{return new Date(d+‘T12:00:00’).toLocaleDateString(‘en-CA’,{month:‘short’,day:‘numeric’,year:‘numeric’});}catch{return d;}}
+
+/* ── INIT ── */
 function init(){renderHome();}
 init();
 </script>
+
 </body>
 </html>
