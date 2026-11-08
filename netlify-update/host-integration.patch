@@ -1,0 +1,79 @@
+--- a/index.html
++++ b/index.html
+@@ -11,7 +11,8 @@
+     <link rel="icon" href="icon.svg" type="image/svg+xml" />
+     <link rel="apple-touch-icon" href="assets/icon-180.png" />
+     <link rel="manifest" href="manifest.json" />
+-    <link rel="stylesheet" href="styles.css?v=43" />
++    <link rel="stylesheet" href="styles.css?v=44" />
++    <link rel="stylesheet" href="budget.css?v=44" />
+   </head>
+   <body>
+     <section class="invite-claim" id="partnerInvitePanel" hidden>
+@@ -261,6 +262,8 @@
+         </section>
+ 
+         <section class="view" id="money" data-admin-only-panel="true">
++          <section id="page-finance" aria-label="Finance"></section>
++          <details class="panel" id="legacy-money"><summary>Previous Money tools & history</summary><p class="subtle">These existing tools keep their original records. The workbook budget above is a separate, device-local ledger; amounts and payments are not copied between the two.</p>
+           <div class="section-head">
+             <div>
+               <p class="eyebrow">Family Financial Operating System</p>
+@@ -414,6 +417,7 @@
+ 
+             <div class="finance-list" id="financeList"></div>
+           </div>
++          </details>
+         </section>
+ 
+         <section class="view" id="names">
+@@ -591,8 +595,12 @@
+     </dialog>
+ 
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+-    <script src="cloud-config.js?v=43"></script>
+-    <script src="finance-engine.js?v=43"></script>
+-    <script src="app.js?v=43"></script>
++    <script src="cloud-config.js?v=44"></script>
++    <script src="finance-engine.js?v=44"></script>
++    <script src="app.js?v=44"></script>
++    <script src="budget-engine.js?v=44"></script>
++    <script src="budget-xlsx.js?v=44"></script>
++    <script src="budget-template.js?v=44"></script>
++    <script src="budget-ui.js?v=44"></script>
+   </body>
+ </html>
+--- a/app.js
++++ b/app.js
+@@ -339,6 +339,7 @@
+ });
+ 
+ function activateTab(tabId) {
++  if(tabId === "money" && typeof finRender === "function") finRender();
+   appShell.classList.toggle("home-active",tabId === "dashboard");
+   if(tabId === "dashboard") closeHomePanel(false);
+   if(tabId === "fitness") openFitness();
+--- a/sw.js
++++ b/sw.js
+@@ -1,11 +1,16 @@
+-const cacheName = "akb-development-v43";
++const cacheName = "akb-development-v44";
+ const assets = [
++  "./budget.css?v=44",
++  "./budget-engine.js?v=44",
++  "./budget-xlsx.js?v=44",
++  "./budget-template.js?v=44",
++  "./budget-ui.js?v=44",
+   "./",
+   "./index.html",
+-  "./styles.css?v=43",
+-  "./finance-engine.js?v=43",
+-  "./app.js?v=43",
+-  "./cloud-config.js?v=43",
++  "./styles.css?v=44",
++  "./finance-engine.js?v=44",
++  "./app.js?v=44",
++  "./cloud-config.js?v=44",
+   "./manifest.json",
+   "./icon.svg",
+   "./assets/icon-180.png",
