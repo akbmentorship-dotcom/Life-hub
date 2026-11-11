@@ -1,10 +1,10 @@
-# Netlify Finance v45
+# Netlify Finance v46
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v45.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v46.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -22,4 +22,14 @@ Add a named income source for each household pay stream (employment, partner pay
 
 Actual pay records keep a source ID and source-name snapshot. Different sources can be paid on the same date; duplicate source/date records are blocked. The next household payday across all active sources defines the default budget period. Expected future income never becomes spendable cash. Same-day actual pay is combined into a single replacement household allocation plan rather than repeating the full budget against each paycheck. Users can override the planning end date when there is no next known payday.
 
-Tests cover same-day sources, deduplication, migration, month-end recurrence, one-off pay, pause/resume, backup round trips and live form interactions. v44 is currently deployed; v45 publishing awaits approval.
+Tests cover same-day sources, deduplication, migration, month-end recurrence, one-off pay, pause/resume, backup round trips and live form interactions. v44 is currently deployed; v45 and v46 publishing await approval together.
+
+## What If goal dates (v46)
+
+The new What If section compares current and scenario dates for every workbook debt, the total debt-free date, and one selected savings goal. Users supply the current monthly surplus after living costs and scheduled debt payments, the debt/savings split, and optional savings-goal amounts. Existing non-debt goals from previous Money tools can be copied into assumptions without modifying those goals.
+
+Decisions support more/less take-home income, more/less monthly spending, a different debt/savings split or priority, one-time debt/savings contributions, and a one-time withdrawal from the savings goal. Changes can start today or in the future. Comparisons report days earlier/later, projected interest, desired savings date checks, cash shortfalls, and unavailable dates when a goal is not reached within 50 years. A savings withdrawal must be funded; unfunded withdrawals do not receive optimistic completion dates.
+
+Calculations are pure: no payments, balances, income schedules or actual goals are changed. Up to 20 named scenarios save only assumptions in the Finance backup. Reopening a scenario recalculates against current projected balances and rebases a past start date to today. Monthly allocations use today's day of month; scheduled debt payments retain their real configured recurrence. Freed debt payments roll to the remaining debt and then the selected savings goal. This is a goal-timing model, not a bank cash-flow schedule; lender-specific compounding, future rate changes, fees and new borrowing are excluded. Expected income is never automatically counted as available cash.
+
+Validation adds deterministic debt/savings dates, financial tradeoffs, future decisions, interest, rollover, one-time withdrawals, shortfalls, unreachable goals, immutability and saved-scenario restore checks. Mobile UI tests verify comparison, save/reload, safe goal text, and widths down to 320px. The complete v46 ZIP includes the multiple-payday work from v45. Production remains v44 until explicitly approved.
