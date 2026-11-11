@@ -10,14 +10,15 @@ function key(s){return String(s).normalize('NFKC').trim().toLowerCase().replace(
 function empty(){return {version:1,debts:[],bills:[],events:[],paydays:[],imports:[],schedule:{anchor:'',days:14},strategy:'avalanche'};}
 function validate(s){
  if(!s||s.version!==1||!['debts','bills','events','paydays','imports'].every(k=>Array.isArray(s[k]))||!s.schedule)throw Error('Invalid Finance backup');
- const ids=new Set();for(const d of s.debts){if(typeof d.id!=='string'||ids.has(d.id)||typeof d.name!=='string'||!d.name.trim()||!cents(d.opening)||!cents(d.payment)||!Number.isFinite(d.apr)||d.apr<0||d.apr>100||!['monthly','weekly','biweekly'].includes(d.frequency))throw Error('Invalid debt');ids.add(d.id);date(d.asOf);date(d.nextDue);if(d.installments){if(!Array.isArray(d.installments)||!d.installments.length)throw Error('Invalid installments');for(const x of d.installments){if(!cents(x.amount)||!['monthly','weekly','biweekly'].includes(x.frequency))throw Error('Invalid installment');date(x.nextDue);}}if(d.initialApr!==undefined&&(!Number.isFinite(d.initialApr)||d.initialApr<0||d.initialApr>100))throw Error('Invalid opening APR');if(d.rates!==undefined){if(!Array.isArray(d.rates))throw Error('Invalid rate history');for(const r of d.rates){date(r.date);if(r.date<d.asOf||!Number.isFinite(r.apr)||r.apr<0||r.apr>100)throw Error('Invalid rate history');}}}
+ const ids=new Set();for(const d of s.debts){if(typeof d.id!=='string'||ids.has(d.id)||typeof d.name!=='string'||!d.name.trim()||!cents(d.opening)||!cents(d.payment)||!Number.isFinite(d.apr)||d.apr<0||d.apr>100||!['monthly','weekly','biweekly'].includes(d.frequency))throw Error('Invalid debt');if(d.deadlines!==undefined){if(!Array.isArray(d.deadlines)||d.deadlines.length>30||!Array.isArray(d.deadlinePaymentIds)||d.deadlinePaymentIds.some(id=>typeof id!=='string'))throw Error('Invalid debt deadlines');date(d.deadlineAsOf);if(d.deadlineAsOf<d.asOf)throw Error('Milestone snapshot predates debt opening');const milestones=new Set();for(const item of d.deadlines){if(typeof item.id!=='string'||milestones.has(item.id)||typeof item.label!=='string'||!item.label.trim()||item.label.length>100||!cents(item.amount))throw Error('Invalid debt deadline');date(item.due);milestones.add(item.id);}}ids.add(d.id);date(d.asOf);date(d.nextDue);if(d.installments){if(!Array.isArray(d.installments)||!d.installments.length)throw Error('Invalid installments');for(const x of d.installments){if(!cents(x.amount)||!['monthly','weekly','biweekly'].includes(x.frequency))throw Error('Invalid installment');date(x.nextDue);}}if(d.initialApr!==undefined&&(!Number.isFinite(d.initialApr)||d.initialApr<0||d.initialApr>100))throw Error('Invalid opening APR');if(d.rates!==undefined){if(!Array.isArray(d.rates))throw Error('Invalid rate history');for(const r of d.rates){date(r.date);if(r.date<d.asOf||!Number.isFinite(r.apr)||r.apr<0||r.apr>100)throw Error('Invalid rate history');}}}
  const billIds=new Set();for(const b of s.bills){if(billIds.has(b.id))throw Error('Duplicate budget category');billIds.add(b.id);}
  const eventIds=new Set();for(const e of s.events){if(typeof e.id!=='string'||eventIds.has(e.id)||!ids.has(e.debtId)||!['payment','reconcile'].includes(e.type)||!cents(e.amount))throw Error('Invalid history');date(e.date);if(e.date<s.debts.find(d=>d.id===e.debtId).asOf)throw Error('History predates opening balance');eventIds.add(e.id);}
  for(const b of s.bills){if(typeof b.id!=='string'||typeof b.name!=='string'||!cents(b.amount)||!['monthly','weekly','biweekly'].includes(b.frequency))throw Error('Invalid budget');date(b.nextDue);}
  const payIds=new Set();for(const p of s.paydays){if(typeof p.id!=='string'||payIds.has(p.id)||!cents(p.amount))throw Error('Invalid payday');date(p.date);payIds.add(p.id);}
  if(!Number.isInteger(s.schedule.days)||s.schedule.days<1||s.schedule.days>366)throw Error('Invalid payday interval');if(s.schedule.anchor)date(s.schedule.anchor);
  if(s.strategy!==undefined&&!['snowball','avalanche'].includes(s.strategy))throw Error('Invalid debt priority');if(s.schedule.mode!==undefined&&!['interval','semimonthly'].includes(s.schedule.mode))throw Error('Invalid payday mode');if(s.baselineIncome!==undefined&&(!Array.isArray(s.baselineIncome)||s.baselineIncome.some(p=>!cents(p.amount))))throw Error('Invalid income plan');
- if(s.incomeSources!==undefined){if(!Array.isArray(s.incomeSources))throw Error('Invalid income sources');const sourceIds=new Set();for(const source of s.incomeSources){if(typeof source.id!=='string'||sourceIds.has(source.id)||typeof source.name!=='string'||!source.name.trim()||source.name.length>100||!['interval','monthly','semimonthly','once'].includes(source.mode)||typeof source.active!=='boolean'||!Number.isInteger(source.days)||source.days<1||source.days>366||!cents(source.expected))throw Error('Invalid income source');date(source.anchor);sourceIds.add(source.id);}for(const pay of s.paydays)if(pay.sourceId!==undefined&&typeof pay.sourceId!=='string')throw Error('Invalid income source history');}
+ if(s.incomeSources!==undefined){if(!Array.isArray(s.incomeSources))throw Error('Invalid income sources');const sourceIds=new Set();for(const source of s.incomeSources){if(typeof source.id!=='string'||sourceIds.has(source.id)||typeof source.name!=='string'||!source.name.trim()||source.name.length>100||!['interval','monthly','semimonthly','monthlyweekday','monthbusiness','once'].includes(source.mode)||typeof source.active!=='boolean'||!Number.isInteger(source.days)||source.days<1||source.days>366||!cents(source.expected))throw Error('Invalid income source');date(source.anchor);validatePayRule(source);for(const move of source.overrides||[])if(nextPayday({...source,adjustment:'none',overrides:[]},move.scheduled)!==move.scheduled)throw Error('A date move must start on a scheduled payday');sourceIds.add(source.id);}for(const pay of s.paydays)if(pay.sourceId!==undefined&&typeof pay.sourceId!=='string')throw Error('Invalid income source history');}
+ if(s.focusDebtId!==undefined&&(typeof s.focusDebtId!=='string'||(s.focusDebtId&&!ids.has(s.focusDebtId))))throw Error('Invalid focus debt');
  if(s.whatIf!==undefined){if(!Array.isArray(s.whatIf)||s.whatIf.length>20)throw Error('Invalid saved scenarios');const scenarioIds=new Set();for(const scenario of s.whatIf){if(typeof scenario.id!=='string'||scenarioIds.has(scenario.id)||typeof scenario.name!=='string'||!scenario.name.trim()||scenario.name.length>100)throw Error('Invalid saved scenario');scenarioInput(scenario.input);scenarioIds.add(scenario.id);}}
  if(s.imports.some(x=>typeof x!=='string'))throw Error('Invalid imports');return s;
 }
@@ -25,7 +26,67 @@ function scenarioInput(x){if(!x||!['monthlySurplus','oneOffDebt','oneOffSavings'
 function next(d,frequency,anchorDay=Number(d.slice(8))){if(frequency!=='monthly')return add(d,frequency==='weekly'?7:14);const t=new Date(date(d));t.setUTCDate(1);t.setUTCMonth(t.getUTCMonth()+1);const last=new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth()+1,0)).getUTCDate();t.setUTCDate(Math.min(anchorDay,last));return t.toISOString().slice(0,10);}
 function occurrences(item,start,end){date(start);date(end);let d=item.nextDue;const out=[];for(let i=0;i<20000&&d<end;i++,d=next(d,item.frequency,Number(item.nextDue.slice(8))))if(d>=start)out.push(d);return out;}
 function duePayments(d,start,end){const schedules=d.installments||[{amount:d.payment,frequency:d.frequency,nextDue:d.nextDue}];return schedules.flatMap(x=>occurrences(x,start,end).map(on=>({date:on,amount:x.amount}))).sort((a,b)=>a.date.localeCompare(b.date));}
-function nextPayday(schedule,from,inclusive=true){date(from);date(schedule.anchor);if(schedule.mode==='once')return schedule.anchor>from||(inclusive&&schedule.anchor===from)?schedule.anchor:null;if(schedule.mode==='monthly'){let d=schedule.anchor;for(let i=0;i<2400;i++){if(d>from||(inclusive&&d===from))return d;d=next(d,'monthly',Number(schedule.anchor.slice(8)));}throw Error('Monthly payday is outside supported range');}if(schedule.mode==='semimonthly'){let cursor=schedule.anchor;const start=from>cursor?from:cursor;for(let i=0;i<32;i++){const candidate=add(start,i);if((candidate.slice(8)==='01'||candidate.slice(8)==='16')&&(inclusive||candidate!==from))return candidate;}throw Error('Unable to find payday');}const n=Math.max(0,Math.ceil((date(from)-date(schedule.anchor))/(DAY*schedule.days)));let d=add(schedule.anchor,n*schedule.days);if(!inclusive&&d===from)d=add(d,schedule.days);return d;}
+// Calendar rules are payer-entered. No regional holiday dates are assumed.
+function validatePayRule(s){
+ if(s.monthDay!==undefined&&(!Number.isInteger(s.monthDay)||s.monthDay<0||s.monthDay>31))throw Error('Invalid monthly pay date');
+ if(s.monthDays!==undefined&&(!Array.isArray(s.monthDays)||s.monthDays.length!==2||s.monthDays.some(n=>!Number.isInteger(n)||n<0||n>31)||s.monthDays[0]===s.monthDays[1]))throw Error('Choose two different monthly pay dates');
+ if(s.mode==='monthlyweekday'&&(![1,2,3,4,-1].includes(s.ordinal)||!Number.isInteger(s.weekday)||s.weekday<0||s.weekday>6))throw Error('Choose a weekday rule');
+ if(s.mode==='monthbusiness'&&(!Number.isInteger(s.businessCount)||s.businessCount<1||s.businessCount>20))throw Error('Choose a business-day count from 1 to 20');
+ if(s.adjustment!==undefined&&!['none','earlier','later'].includes(s.adjustment))throw Error('Invalid non-pay-day handling');
+ if(s.holidays!==undefined){if(!Array.isArray(s.holidays)||s.holidays.length>100)throw Error('Too many non-pay dates');s.holidays.forEach(date);}
+ if(s.overrides!==undefined){if(!Array.isArray(s.overrides)||s.overrides.length>100)throw Error('Too many date overrides');const seen=new Set();for(const x of s.overrides){date(x.scheduled);date(x.actual);if(x.scheduled<s.anchor||seen.has(x.scheduled))throw Error('Date overrides must be unique and on or after the schedule start');seen.add(x.scheduled);}}
+}
+function adjustedPayday(s,on){
+ const override=s.overrides?.find(x=>x.scheduled===on);if(override)return override.actual;
+ if(!s.adjustment||s.adjustment==='none')return on;
+ for(let i=0;i<370;i++){const day=new Date(date(on)).getUTCDay();if(day!==0&&day!==6&&!s.holidays?.includes(on))return on;on=add(on,s.adjustment==='earlier'?-1:1);}throw Error('Unable to adjust payday');
+}
+function nextPayday(schedule,from,inclusive=true){
+ date(from);date(schedule.anchor);validatePayRule(schedule);
+ if((!schedule.mode||schedule.mode==='interval')&&(!schedule.adjustment||schedule.adjustment==='none')&&!schedule.overrides?.length){const n=Math.max(0,Math.ceil((date(from)-date(schedule.anchor))/(DAY*schedule.days)));const on=add(schedule.anchor,n*schedule.days);return !inclusive&&on===from?add(on,schedule.days):on;}
+ const eligible=d=>d>from||(inclusive&&d===from),candidates=[];
+ const take=on=>{if(on>=schedule.anchor){const actual=adjustedPayday(schedule,on);if(eligible(actual))candidates.push(actual);}};
+ // Include explicit moves even when their original date lies outside the search window.
+ for(const x of schedule.overrides||[])if(eligible(x.actual))candidates.push(x.actual);
+ if(schedule.mode==='once')take(schedule.anchor);
+ else {
+  const base=from>schedule.anchor?from:schedule.anchor,start=add(base,-370),end=add(base,740);
+  if(!schedule.mode||schedule.mode==='interval'){
+   const n=Math.max(0,Math.ceil((date(start)-date(schedule.anchor))/(DAY*schedule.days)));
+   for(let on=add(schedule.anchor,n*schedule.days);on<=end;on=add(on,schedule.days))take(on);
+  }else {
+   const cursor=new Date(date(start));cursor.setUTCDate(1);
+   for(let i=0;i<40;i++){
+    const year=cursor.getUTCFullYear(),month=cursor.getUTCMonth(),last=new Date(Date.UTC(year,month+1,0)).getUTCDate();
+    const iso=day=>new Date(Date.UTC(year,month,day)).toISOString().slice(0,10);
+    if(schedule.mode==='monthbusiness'){
+     let remaining=schedule.businessCount;for(let day=last;day>=1;day--){const on=iso(day),weekday=new Date(date(on)).getUTCDay();if(weekday!==0&&weekday!==6&&!schedule.holidays?.includes(on)&&--remaining===0){take(on);break;}}
+    }else if(schedule.mode==='monthlyweekday'){
+     const day=schedule.ordinal===-1?last-(new Date(Date.UTC(year,month,last)).getUTCDay()-schedule.weekday+7)%7:1+(schedule.weekday-new Date(Date.UTC(year,month,1)).getUTCDay()+7)%7+7*(schedule.ordinal-1);take(iso(day));
+    }else for(const day of schedule.mode==='semimonthly'?(schedule.monthDays||[1,16]):[schedule.monthDay??Number(schedule.anchor.slice(8))])take(iso(day===0?last:Math.min(day,last)));
+    cursor.setUTCMonth(month+1);if(cursor.getTime()>date(end))break;
+   }
+  }
+ }
+ return candidates.sort()[0]||null;
+}
+function debtDeadlines(d,events,on){
+ let paid=events.filter(e=>e.debtId===d.id&&e.type==='payment'&&e.date<=on&&e.date>=(d.deadlineAsOf||d.asOf)&&!d.deadlinePaymentIds?.includes(e.id)).reduce((n,e)=>n+e.amount,0),available=balance(d,events,on).amount;
+ return [...(d.deadlines||[])].sort((a,b)=>a.due.localeCompare(b.due)).map(x=>{const applied=Math.min(paid,x.amount);paid-=applied;const remaining=Math.min(available,x.amount-applied);available-=remaining;return {...x,remaining};}).filter(x=>x.remaining>0);
+}
+function prioritizedDebts(s,on){
+ return s.debts.map(debt=>({debt,...balance(debt,s.events,on),milestone:debtDeadlines(debt,s.events,on)[0]})).filter(x=>x.amount>0).sort((a,b)=>{
+  if(a.milestone||b.milestone){if(!a.milestone)return 1;if(!b.milestone)return -1;const order=a.milestone.due.localeCompare(b.milestone.due);if(order)return order;}
+  return s.strategy==='snowball'?a.amount-b.amount||b.debt.apr-a.debt.apr:b.debt.apr-a.debt.apr||a.amount-b.amount;
+ });
+}
+function focusTarget(s,on){
+ const active=prioritizedDebts(s,on);return active[0]?.milestone?active[0]:active.find(x=>x.debt.id===s.focusDebtId)||active[0]||null;
+}
+function deadlinePace(s,milestone,on){
+ const dates=new Set([on]);for(const source of incomeSources(s).filter(x=>x.active)){let cursor=on;for(let i=0;i<20000;i++){const next=nextPayday(source,cursor,false);if(!next||next>milestone.due)break;dates.add(next);cursor=next;}}
+ return {paydays:dates.size,amount:Math.ceil(milestone.remaining/dates.size),overdue:milestone.due<on};
+}
 function incomeSources(s){return s.incomeSources!==undefined?s.incomeSources:s.schedule.anchor?[{...s.schedule,id:'legacy',name:'Household pay',mode:s.schedule.mode||'interval',active:true,expected:0}]:[];}
 function upcomingPaydays(s,from,count=8){date(from);const rows=[];for(const source of incomeSources(s).filter(x=>x.active)){let cursor=from,added=0;for(let i=0;i<count+s.paydays.length+1&&added<count;i++){const on=nextPayday(source,cursor,i===0);if(!on)break;if(!s.paydays.some(p=>(p.sourceId||'legacy')===source.id&&p.date===on)){rows.push({date:on,sourceId:source.id,name:source.name,expected:source.expected});added++;}cursor=on;}}return rows.sort((a,b)=>a.date.localeCompare(b.date)||a.name.localeCompare(b.name)).slice(0,count);}
 function nextHouseholdPayday(s,on){return upcomingPaydays(s,add(on,1),1)[0]?.date||null;}
@@ -42,11 +103,26 @@ function allocation(s,amount,on,through){if(!cents(amount))throw Error('Invalid 
  for(const d of s.debts){let remaining=balance(d,s.events,on).amount;for(const installment of duePayments(d,on,end)){const due=installment.date;const paid=s.events.filter(e=>e.type==='payment'&&e.debtId===d.id&&e.date===due).reduce((n,e)=>n+e.amount,0);const needed=Math.min(remaining,Math.max(0,installment.amount-paid));remaining-=needed;if(needed)obligations.push({id:d.id,name:d.name,due,amount:needed,kind:'debt'});}}
  obligations.sort((a,b)=>a.due.localeCompare(b.due)||(a.kind==='budget'?-1:1));let shortfall=0;
  for(const o of obligations){const allocated=Math.min(left,o.amount);left-=allocated;shortfall+=o.amount-allocated;rows.push({...o,allocated});}
- const targets=[...s.debts].filter(d=>balance(d,s.events,on).amount>0).sort((a,b)=>s.strategy==='snowball'?balance(a,s.events,on).amount-balance(b,s.events,on).amount:b.apr-a.apr);for(const target of targets)if(left){const reserved=rows.filter(r=>r.id===target.id).reduce((n,r)=>n+r.allocated,0);const extra=Math.min(left,Math.max(0,balance(target,s.events,on).amount-reserved));if(extra){rows.push({id:target.id,name:target.name+' · extra',kind:'extra',amount:extra,allocated:extra,due:on});left-=extra;}}
+ const remaining=new Map(),reserved=new Map();for(const d of s.debts){const amount=rows.filter(r=>r.id===d.id).reduce((n,r)=>n+r.allocated,0);reserved.set(d.id,amount);remaining.set(d.id,Math.max(0,balance(d,s.events,on).amount-amount));}
+ const milestones=s.debts.flatMap(d=>debtDeadlines(d,s.events,on).map(x=>{const already=Math.min(reserved.get(d.id),x.remaining);reserved.set(d.id,reserved.get(d.id)-already);return {...x,debt:d,needed:x.remaining-already};})).sort((a,b)=>a.due.localeCompare(b.due));
+ function extra(d,needed,label){const amount=Math.min(left,remaining.get(d.id),needed);if(amount){rows.push({id:d.id,name:d.name+' · '+label,kind:'extra',amount,allocated:amount,due:on});left-=amount;remaining.set(d.id,remaining.get(d.id)-amount);}}
+ for(const x of milestones)extra(x.debt,x.needed,x.label+' · deadline '+x.due);
+ const targets=[...s.debts].sort((a,b)=>s.strategy==='snowball'?balance(a,s.events,on).amount-balance(b,s.events,on).amount:b.apr-a.apr);for(const target of targets)extra(target,remaining.get(target.id),'extra');
+
  return {rows,left,shortfall,end};
 }
+function mergeSetup(s,setup,mapping,on){
+ date(on);if(!setup||setup.type!=='life-hub-finance-setup'||setup.version!==1||!Array.isArray(setup.sources)||setup.sources.length>30||!Array.isArray(setup.accounts)||setup.accounts.length>30||mapping.sources.length!==setup.sources.length||mapping.accounts.length!==setup.accounts.length)throw Error('Invalid private Finance setup');
+ validate({...empty(),incomeSources:setup.sources.map(x=>({...x,active:true,expected:x.expected??0}))});
+ const next=JSON.parse(JSON.stringify(s)),sources=incomeSources(next).map(x=>({...x})),usedSources=new Set(),usedDebts=new Set();
+ setup.sources.forEach((input,i)=>{const selected=mapping.sources[i];if(selected==='skip')return;const existing=sources.find(x=>x.id===selected);if(selected!=='new'&&!existing)throw Error('Choose an income source to update');if(usedSources.has(selected)&&selected!=='new')throw Error('Map each existing income source only once');usedSources.add(selected);const row={...input,id:existing?.id||input.id,active:existing?.active??true,expected:input.expected??existing?.expected??0};const index=sources.findIndex(x=>x.id===row.id);if(index>=0)sources[index]=row;else sources.push(row);});
+ if(new Set(sources.map(x=>key(x.name))).size!==sources.length)throw Error('An income source with this name already exists. Choose it in the review instead of adding a duplicate.');next.incomeSources=sources;
+ setup.accounts.forEach((input,i)=>{const selected=mapping.accounts[i];if(selected==='skip')return;const debt=next.debts.find(x=>x.id===selected);if(!debt)throw Error('Choose the existing debt for each milestone group');if(usedDebts.has(selected))throw Error('Map each debt only once');usedDebts.add(selected);if(!Array.isArray(input.deadlines)||input.deadlines.reduce((n,x)=>n+x.amount,0)>balance(debt,next.events,on).amount)throw Error('Milestones exceed the selected account balance. Confirm or reconcile that debt first.');debt.deadlines=input.deadlines.map(x=>({...x}));debt.deadlineAsOf=on;debt.deadlinePaymentIds=next.events.filter(e=>e.debtId===debt.id&&e.type==='payment'&&e.date<=on).map(e=>e.id);});
+ return validate(next);
+}
+
 function importRows(rows,map,kind,asOf){date(asOf);const seen=new Set();return rows.filter(r=>String(r[map.name]??'').trim()).map(r=>{const name=String(r[map.name]).trim(),id=key(name);if(seen.has(id))throw Error('Duplicate account/category: '+name);seen.add(id);const frequency=String(r[map.frequency]||'monthly').trim().toLowerCase();if(!['monthly','weekly','biweekly'].includes(frequency))throw Error('Frequency must be monthly, weekly or biweekly');const nextDue=String(r[map.nextDue]||asOf).trim();date(nextDue);if(kind==='budget')return {id,name,amount:money(r[map.amount]),frequency,nextDue};
  const raw=String(r[map.apr]??'').trim();if(!raw)throw Error('Interest rate is required, including 0');const apr=Number(raw.replace('%',''))*(map.fractionRate&&!raw.includes('%')?100:1);if(!Number.isFinite(apr)||apr<0||apr>100)throw Error('Invalid interest rate');return {id,name,opening:/\bvisa\b/i.test(name)?0:money(r[map.balance]),apr,payment:money(r[map.payment]),asOf,nextDue,frequency};});}
 function merge(s,rows,kind,hash,effectiveOn){if(s.imports.includes(hash))throw Error('This import has already been applied');const field=kind==='budget'?'bills':'debts';const items=[...s[field]];for(const row of rows){const i=items.findIndex(d=>key(d.name)===key(row.name));if(i<0)items.push(row);else if(kind==='budget')items[i]={...items[i],...row,id:items[i].id};else {const old=items[i];const rates=[...(old.rates||[])];if(old.apr!==row.apr)rates.push({date:effectiveOn||row.asOf,apr:row.apr});items[i]={...old,initialApr:old.initialApr??old.apr,rates,installments:row.installments,apr:row.apr,payment:row.payment,frequency:row.frequency,nextDue:row.nextDue};}}return validate({...s,[field]:items,imports:[...s.imports,hash]});}
-const api={scenarioInput,date,add,money,key,empty,validate,next,occurrences,duePayments,nextPayday,incomeSources,upcomingPaydays,nextHouseholdPayday,recordPay,balance,payment,forecast,allocation,importRows,merge};if(typeof module!=='undefined')module.exports=api;else root.Finance=api;
+const api={scenarioInput,date,add,money,key,empty,validate,next,occurrences,duePayments,validatePayRule,adjustedPayday,nextPayday,debtDeadlines,prioritizedDebts,focusTarget,deadlinePace,incomeSources,upcomingPaydays,nextHouseholdPayday,recordPay,balance,payment,forecast,allocation,mergeSetup,importRows,merge};if(typeof module!=='undefined')module.exports=api;else root.Finance=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

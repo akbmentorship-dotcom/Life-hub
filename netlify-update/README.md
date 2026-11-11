@@ -1,10 +1,10 @@
-# Netlify Finance v46
+# Netlify Finance v47
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v46.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v47.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -22,7 +22,7 @@ Add a named income source for each household pay stream (employment, partner pay
 
 Actual pay records keep a source ID and source-name snapshot. Different sources can be paid on the same date; duplicate source/date records are blocked. The next household payday across all active sources defines the default budget period. Expected future income never becomes spendable cash. Same-day actual pay is combined into a single replacement household allocation plan rather than repeating the full budget against each paycheck. Users can override the planning end date when there is no next known payday.
 
-Tests cover same-day sources, deduplication, migration, month-end recurrence, one-off pay, pause/resume, backup round trips and live form interactions. v44 is currently deployed; v45 and v46 publishing await approval together.
+Tests cover same-day sources, deduplication, migration, month-end recurrence, one-off pay, pause/resume, backup round trips and live form interactions. v46 was published with explicit approval. This v47 update is pending approval.
 
 ## What If goal dates (v46)
 
@@ -32,4 +32,18 @@ Decisions support more/less take-home income, more/less monthly spending, a diff
 
 Calculations are pure: no payments, balances, income schedules or actual goals are changed. Up to 20 named scenarios save only assumptions in the Finance backup. Reopening a scenario recalculates against current projected balances and rebases a past start date to today. Monthly allocations use today's day of month; scheduled debt payments retain their real configured recurrence. Freed debt payments roll to the remaining debt and then the selected savings goal. This is a goal-timing model, not a bank cash-flow schedule; lender-specific compounding, future rate changes, fees and new borrowing are excluded. Expected income is never automatically counted as available cash.
 
-Validation adds deterministic debt/savings dates, financial tradeoffs, future decisions, interest, rollover, one-time withdrawals, shortfalls, unreachable goals, immutability and saved-scenario restore checks. Mobile UI tests verify comparison, save/reload, safe goal text, and widths down to 320px. The complete v46 ZIP includes the multiple-payday work from v45. Production remains v44 until explicitly approved.
+Validation adds deterministic debt/savings dates, financial tradeoffs, future decisions, interest, rollover, one-time withdrawals, shortfalls, unreachable goals, immutability and saved-scenario restore checks. Mobile UI tests verify comparison, save/reload, safe goal text, and widths down to 320px. The complete v46 ZIP includes the multiple-payday work from v45. Production is v46. v47 publishing requires explicit approval.
+
+## Guided pay rules and next focus (v47)
+
+Finance opens with one next-focus card. The total and full debt list are in a collapsed disclosure. Household payday tools are collapsed until needed. A focus shows remaining amount, progress, next scheduled payment and either an entered payoff deadline or a scheduled-payment forecast. Full account/statement details and settings are expandable.
+
+Dated debt portions take priority, earliest deadline first; once cleared, focus advances automatically. General debt priorities remain highest APR or smallest balance. An optional general-debt pin cannot hide an outstanding dated milestone. Milestone amounts are portions of a debt and never increase total debt. Payday allocations reserve budget and scheduled payments first, then fund dated portions, then normal extra debt payments. What If uses the same dated-portion ordering. The target pace divides remaining principal by distinct active household pay dates up to the deadline plus today; it includes minimums and is an estimate rather than a guarantee. Expected income is never available cash.
+
+Multiple promotions may share an account and even a deadline. Their remaining amounts are snapshots; later recorded payments reduce them in earliest-deadline order as an explicit estimate. Previously counted payments are excluded by ID; re-entered snapshots do not double-count them. Account reconciliation caps estimated milestone portions but cannot prove lender allocation. Confirm actual promotion balances, rates, deferred-interest terms and processing times with the lender. No penalty or deferred-interest amount is inferred. Deadline lists can be edited/retired without deleting transactions.
+
+Guided income setup supports weekly, every two weeks, N-day intervals, chosen monthly date/last day, custom twice-monthly dates, ordinal/last weekday, Nth-last business day and one planned irregular date. Business days exclude weekends and payer-entered closure dates; no regional holiday calendar is assumed. Users choose keep/earlier/later handling and can move individual scheduled dates without shifting the recurrence. The editor previews upcoming dates before saving, and preserves IDs, expected amounts and pay history on edits.
+
+A private JSON setup import previews source/debt matching. It updates selected schedules and milestone snapshots only, preserving account balances, payment/reconciliation history, budgets, scenarios and unrelated storage. Users can skip items and must map milestones to existing debts. Reapplying the same setup does not add transactions. Unselected old schedules remain and may be paused by the user. The user's personal schedule and photographed promotion values are held in an uncommitted private file, excluded from both the deployment ZIP and GitHub. The release does not ship personal defaults.
+
+Tests cover month ends and leap years, weekday and business-day rules, closure/weekend adjustments across month boundaries, specific date moves, old-state compatibility, focus progression, milestone snapshots and caps, deadline allocation and simulation consistency, reviewed setup preservation, responsive mobile forms and backup validation. Existing Home/Fitness/Learning/follow-up flows and offline cache upgrades are checked.

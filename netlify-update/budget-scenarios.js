@@ -8,7 +8,7 @@ function simulate(state,input,on,changed=false){
  if(input.startDate<on)throw Error('Choose today or a future decision start date');
  const horizon=F.add(on,365*50);if(input.startDate>=horizon)throw Error('Decision start must be within 50 years');const monthly=input.monthlySurplus+(changed?input.incomeDelta-input.spendingDelta:0);
 
- const debts=state.debts.map(d=>({id:d.id,name:d.name,apr:d.apr,value:F.balance(d,state.events,on).amount,at:on,interest:0,paidOn:null}));
+ const debts=state.debts.map(d=>({id:d.id,name:d.name,apr:d.apr,value:F.balance(d,state.events,on).amount,at:on,interest:0,paidOn:null,milestones:F.debtDeadlines(d,state.events,on).map(x=>({...x}))}));
  for(const d of debts)if(d.value===0)d.paidOn=on;
  let savings=Math.min(input.goalSaved,input.goalTarget),savingsDate=input.goalTarget&&savings>=input.goalTarget?on:null;
  const snapshots=()=>debts.map(d=>({id:d.id,name:d.name,date:d.paidOn}));
@@ -23,9 +23,9 @@ function simulate(state,input,on,changed=false){
  if(changed)events.push({date:input.startDate,type:'oneoff'});
  const order={minimum:0,oneoff:1,monthly:2};events.sort((a,b)=>a.date.localeCompare(b.date)||order[a.type]-order[b.type]);
  function current(d,date){return d.value+Math.round(d.value*d.apr/100*(F.date(date)-F.date(d.at))/DAY/365);}
- function pay(d,amount,date){if(d.value===0)return 0;const owed=current(d,date),interest=owed-d.value;d.interest+=interest;d.at=date;const paid=Math.min(amount,owed);d.value=owed-paid;if(!d.value)d.paidOn=date;return paid;}
+ function pay(d,amount,date){if(d.value===0)return 0;const owed=current(d,date),interest=owed-d.value;d.interest+=interest;d.at=date;const paid=Math.min(amount,owed);d.value=owed-paid;let applied=paid,available=d.value;for(const x of d.milestones){const used=Math.min(applied,x.remaining);applied-=used;x.remaining=Math.min(available,x.remaining-used);available-=x.remaining;}if(!d.value)d.paidOn=date;return paid;}
  function fundGoal(amount,date){if(!input.goalTarget)return;const applied=Math.min(amount,Math.max(0,input.goalTarget-savings));savings+=applied;if(savings>=input.goalTarget&&!savingsDate)savingsDate=date;}
- function extra(amount,date){const targets=debts.filter(d=>d.value>0).sort((a,b)=>(changed&&date>=input.startDate?input.newStrategy:state.strategy)==='snowball'?current(a,date)-current(b,date):b.apr-a.apr);for(const debt of targets){if(!amount)break;amount-=pay(debt,amount,date);}return amount;}
+ function extra(amount,date){const dated=debts.flatMap(d=>d.milestones.filter(x=>x.remaining>0).map(x=>({debt:d,milestone:x}))).sort((a,b)=>a.milestone.due.localeCompare(b.milestone.due));for(const x of dated){if(!amount)break;amount-=pay(x.debt,Math.min(amount,x.milestone.remaining),date);}const targets=debts.filter(d=>d.value>0).sort((a,b)=>(changed&&date>=input.startDate?input.newStrategy:state.strategy)==='snowball'?current(a,date)-current(b,date):b.apr-a.apr);for(const debt of targets){if(!amount)break;amount-=pay(debt,amount,date);}return amount;}
  for(const event of events){
   if(event.type==='minimum'){
    const debt=debts.find(d=>d.id===event.debtId),paid=pay(debt,event.amount,event.date);

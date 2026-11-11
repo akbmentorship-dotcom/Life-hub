@@ -5,8 +5,8 @@
      <link rel="apple-touch-icon" href="assets/icon-180.png" />
      <link rel="manifest" href="manifest.json" />
 -    <link rel="stylesheet" href="styles.css?v=43" />
-+    <link rel="stylesheet" href="styles.css?v=46" />
-+    <link rel="stylesheet" href="budget.css?v=46" />
++    <link rel="stylesheet" href="styles.css?v=47" />
++    <link rel="stylesheet" href="budget.css?v=47" />
    </head>
    <body>
      <section class="invite-claim" id="partnerInvitePanel" hidden>
@@ -34,15 +34,15 @@
 -    <script src="cloud-config.js?v=43"></script>
 -    <script src="finance-engine.js?v=43"></script>
 -    <script src="app.js?v=43"></script>
-+    <script src="cloud-config.js?v=46"></script>
-+    <script src="finance-engine.js?v=46"></script>
-+    <script src="app.js?v=46"></script>
-+    <script src="budget-engine.js?v=46"></script>
-+    <script src="budget-xlsx.js?v=46"></script>
-+    <script src="budget-template.js?v=46"></script>
-+    <script src="budget-scenarios.js?v=46"></script>
-+    <script src="budget-scenario-ui.js?v=46"></script>
-+    <script src="budget-ui.js?v=46"></script>
++    <script src="cloud-config.js?v=47"></script>
++    <script src="finance-engine.js?v=47"></script>
++    <script src="app.js?v=47"></script>
++    <script src="budget-engine.js?v=47"></script>
++    <script src="budget-xlsx.js?v=47"></script>
++    <script src="budget-template.js?v=47"></script>
++    <script src="budget-scenarios.js?v=47"></script>
++    <script src="budget-scenario-ui.js?v=47"></script>
++    <script src="budget-ui.js?v=47"></script>
    </body>
  </html>
 --- a/app.js
@@ -59,25 +59,25 @@
 +++ b/sw.js
 @@ -1,11 +1,18 @@
 -const cacheName = "akb-development-v43";
-+const cacheName = "akb-development-v46";
++const cacheName = "akb-development-v47";
  const assets = [
-+  "./budget-scenarios.js?v=46",
-+  "./budget-scenario-ui.js?v=46",
-+  "./budget.css?v=46",
-+  "./budget-engine.js?v=46",
-+  "./budget-xlsx.js?v=46",
-+  "./budget-template.js?v=46",
-+  "./budget-ui.js?v=46",
++  "./budget-scenarios.js?v=47",
++  "./budget-scenario-ui.js?v=47",
++  "./budget.css?v=47",
++  "./budget-engine.js?v=47",
++  "./budget-xlsx.js?v=47",
++  "./budget-template.js?v=47",
++  "./budget-ui.js?v=47",
    "./",
    "./index.html",
 -  "./styles.css?v=43",
 -  "./finance-engine.js?v=43",
 -  "./app.js?v=43",
 -  "./cloud-config.js?v=43",
-+  "./styles.css?v=46",
-+  "./finance-engine.js?v=46",
-+  "./app.js?v=46",
-+  "./cloud-config.js?v=46",
++  "./styles.css?v=47",
++  "./finance-engine.js?v=47",
++  "./app.js?v=47",
++  "./cloud-config.js?v=47",
    "./manifest.json",
    "./icon.svg",
    "./assets/icon-180.png",
