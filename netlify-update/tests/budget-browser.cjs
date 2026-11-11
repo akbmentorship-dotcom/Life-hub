@@ -46,6 +46,27 @@ function fixture(){const xml=s=>`<?xml version="1.0"?><worksheet xmlns="http://s
  assert.equal(await page.evaluate(()=>F.validate(JSON.parse(JSON.stringify(finState))).paydays.length),2);
  for(const width of [320,390,760]){await page.setViewportSize({width,height:844});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Income sources fit '+width);}
  await page.setViewportSize({width:390,height:844});await page.evaluate(()=>{finMessage('Saved on this device.');window.scrollTo(0,document.getElementById('fin-income-sources').getBoundingClientRect().top+scrollY-70)});await page.locator('#fin-income-sources').screenshot({path:'/private/tmp/multiple-income-paydays.png'});
+
+ // Scenario previews and saves must not change real balances, payment history or sources.
+ const realBefore=await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays,sources:finState.incomeSources}));
+ await page.locator('#fin-scenario-section > summary').click();
+ await page.locator('#what-monthlySurplus').fill('100');await page.locator('#what-incomeDelta').fill('100');
+ await page.getByRole('button',{name:'Compare goal dates',exact:true}).click();
+ assert.match(await page.locator('#fin-scenario-result').innerText(),/earlier/);
+ assert.equal(await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays,sources:finState.incomeSources})),realBefore);
+ await page.locator('#what-name').fill('Extra income');await page.getByRole('button',{name:'Save assumptions',exact:true}).click();
+ assert.equal(await page.evaluate(()=>finState.whatIf.length),1);
+ assert.equal(await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays,sources:finState.incomeSources})),realBefore);
+ await page.reload();await page.evaluate(()=>activateTab('money'));await page.locator('#fin-scenario-section > summary').click();
+ const scenarioId=await page.evaluate(()=>finState.whatIf[0].id);await page.locator('#what-saved').selectOption(scenarioId);
+ assert.match(await page.locator('#fin-scenario-result').innerText(),/earlier/);
+ await page.locator('#what-incomeDirection').selectOption('decrease');await page.locator('#what-incomeDelta').fill('1000');
+ await page.getByRole('button',{name:'Compare goal dates',exact:true}).click();assert.match(await page.locator('#fin-scenario-result').innerText(),/shortfall/);
+ await page.locator('#what-incomeDirection').selectOption('increase');await page.locator('#what-incomeDelta').fill('100');await page.getByRole('button',{name:'Compare goal dates',exact:true}).click();
+ for(const width of [320,390,760]){await page.setViewportSize({width,height:844});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'What If fits '+width);}
+ await page.getByText('Savings goal · optional',{exact:true}).click();await page.locator('#what-goalName').fill('<img src=x onerror=alert(1)>');await page.locator('#what-goalTarget').fill('2000');await page.locator('#what-goalSaved').fill('500');await page.locator('#what-newDebtShare').fill('50');await page.getByRole('button',{name:'Compare goal dates',exact:true}).click();assert.equal(await page.locator('#fin-scenario-result img, #fin-scenario-result script').count(),0);assert.match(await page.locator('#fin-scenario-result').innerText(),/img src/);
+ await page.setViewportSize({width:390,height:844});await page.locator('#fin-scenario-result').screenshot({path:'/private/tmp/finance-what-if-preview.png'});
+ assert.equal(await page.evaluate(()=>F.validate(JSON.parse(JSON.stringify(finState))).whatIf.length),1);
  const sharedBefore=await page.evaluate(()=>localStorage.getItem('akb-development-prototype'));await page.evaluate(()=>finCommit({...finState,strategy:'avalanche'}));assert.equal(await page.evaluate(()=>localStorage.getItem('akb-development-prototype')),sharedBefore,'Finance leaves shared state unchanged');
  await page.evaluate(()=>{const d=finState.debts[0];d.name='<img src=x onerror=alert(1)>';finRender();});assert.equal(await page.locator('#fin-dashboard img, #fin-dashboard script').count(),0);
  for(const n of ['dashboard','fitness','learn','coach','money','names','contacts','customers','lli','screenshots'])await page.evaluate(n=>activateTab(n),n);assert.deepEqual(errors,[]);
