@@ -46,3 +46,26 @@ const cascade={...allocState,bills:[],debts:[{...noInterest,opening:10000,paymen
 assert.equal(F.allocation(cascade,40000,'2026-01-01').left,10000,'Extra cascades through all debts');
 assert.equal(F.allocation({...cascade,strategy:'snowball'},40000,'2026-01-01').rows[0].id,'loan');
 console.log('PASS: payments, interest, reconciliation, calendar/payday scheduling, imports, deduplication, allocation, payoff forecasts, backup validation');
+
+// Multiple income streams preserve the legacy schedule and actual pay ledger.
+const source=(id,name,anchor,mode='interval',days=14)=>({id,name,anchor,mode,days,active:true,expected:10000});
+let household={...F.empty(),incomeSources:[source('mine','My pay','2026-01-02'),source('partner','Partner pay','2026-01-09'),source('business','Business','2026-01-20','monthly'),source('benefit','Benefit','2026-01-20','monthly')]};
+assert.deepEqual(F.incomeSources(s).map(x=>x.id),['legacy']);
+assert.equal(F.nextHouseholdPayday(household,'2026-01-02'),'2026-01-09');
+assert.deepEqual(F.upcomingPaydays(household,'2026-01-20',2).map(x=>x.name),['Benefit','Business']);
+assert.equal(F.nextPayday(source('monthly','Monthly','2026-01-31','monthly'),'2026-02-01'),'2026-02-28');
+assert.equal(F.nextPayday(source('monthly','Monthly','2026-01-31','monthly'),'2026-03-01'),'2026-03-31');
+assert.equal(F.nextPayday(source('once','Business','2026-01-20','once'),'2026-01-20',false),null);
+household=F.recordPay(household,{id:'pay1',sourceId:'business',date:'2026-01-20',amount:10000});
+household=F.recordPay(household,{id:'pay2',sourceId:'benefit',date:'2026-01-20',amount:10000});
+assert.equal(household.paydays.length,2,'Different sources can be paid on the same date');
+assert.throws(()=>F.recordPay(household,{id:'pay3',sourceId:'benefit',date:'2026-01-20',amount:10000}),/already/);
+assert.equal(F.recordPay(household,{id:'pay2',sourceId:'benefit',date:'2026-01-20',amount:10000}).paydays.length,2);
+assert.ok(F.upcomingPaydays(household,'2026-01-20').every(p=>p.date!=='2026-01-20'),'Recorded occurrences are no longer upcoming');
+assert.deepEqual(F.validate(JSON.parse(JSON.stringify(household))),household);
+assert.throws(()=>F.validate({...household,incomeSources:[household.incomeSources[0],household.incomeSources[0]]}),/source/);
+const paused={...household,incomeSources:household.incomeSources.map(x=>({...x,active:false}))};
+assert.equal(F.nextHouseholdPayday(paused,'2026-01-20'),null);
+assert.equal(F.allocation(paused,10000,'2026-01-20','2026-02-01').end,'2026-02-01');
+assert.throws(()=>F.allocation(paused,10000,'2026-01-20'),/planning end/);
+console.log('PASS: multiple income streams, same-day pay, history, monthly end dates, one-off income, pause, migration, backup validation');

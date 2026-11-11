@@ -24,6 +24,28 @@ function fixture(){const xml=s=>`<?xml version="1.0"?><worksheet xmlns="http://s
  // Storage failure must not silently claim that changes persisted.
  await page.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=()=>{throw Error('full')};try{finCommit({...finState,strategy:'snowball'})}catch(e){finMessage(e.message,true)}Storage.prototype.setItem=original;});assert.match(await page.locator('#fin-status').innerText(),/No changes were applied/);
  if(process.env.BUDGET_WORKBOOK){await page.getByText('Import Excel workbook',{exact:true}).click();await page.locator('#fin-workbook').setInputFiles(process.env.BUDGET_WORKBOOK);await page.locator('#fin-visa').selectOption('Credit Card 1');await page.getByRole('button',{name:'Preview complete budget',exact:true}).click();await page.getByRole('button',{name:'Apply complete budget',exact:true}).click();assert.equal(await page.evaluate(()=>finState.debts.find(d=>d.name==='Visa').opening),0);assert.equal(await page.evaluate(()=>finState.events.length),2);assert.ok(await page.evaluate(()=>finState.bills.length>0));assert.ok(await page.evaluate(()=>finState.debts.some(d=>d.installments?.length===2)));assert.ok(await page.evaluate(()=>{const source=finSheets.find(s=>s.name==='Balance Sheet').rows;const imported=FinanceTemplate.prepare(finSheets,finToday(),'Credit Card 1');return imported.bills.reduce((n,b)=>n+b.amount,0)+imported.debts.reduce((n,d)=>n+d.payment,0)===F.money(source[34][6])+F.money(source[34][7]);}),'Imported monthly obligations reconcile to workbook summary');await page.reload();await page.evaluate(()=>activateTab('money'));}
+
+ // Separate sources may receive money on the same date; actual income remains distinct.
+ for(const name of ['Partner pay','Business','CCB']){
+  await page.getByRole('button',{name:'Add income source',exact:true}).click();
+  await page.locator('#fin-name').fill(name);await page.locator('#fin-mode').selectOption('monthly');await page.locator('#fin-expected').fill('200');
+  await page.getByRole('button',{name:'Save settings',exact:true}).click();
+ }
+ assert.equal(await page.evaluate(()=>F.incomeSources(finState).length),4);
+ const partnerId=await page.evaluate(()=>F.incomeSources(finState).find(s=>s.name==='Partner pay').id);
+ await page.locator('#fin-pay-source').selectOption(partnerId);await page.locator('#fin-pay-amount').fill('300');await page.getByRole('button',{name:'Plan this pay',exact:true}).click();
+ assert.match(await page.locator('#fin-plan').innerText(),/already recorded on this date/);
+ await page.getByRole('button',{name:'Save actual take-home pay',exact:true}).click();assert.equal(await page.evaluate(()=>finState.paydays.length),2);
+ await page.locator('#fin-pay-amount').fill('300');await page.getByRole('button',{name:'Plan this pay',exact:true}).click();await page.getByRole('button',{name:'Save actual take-home pay',exact:true}).click();
+ assert.equal(await page.evaluate(()=>finState.paydays.length),2);assert.match(await page.locator('#fin-status').innerText(),/already recorded/);
+ await page.locator(`[data-fin="income-toggle"][data-id="${partnerId}"]`).click();
+ await page.reload();await page.evaluate(()=>activateTab('money'));
+ assert.equal(await page.evaluate(()=>finState.paydays.length),2);assert.equal(await page.locator('#fin-pay-source option').count(),3);
+ assert.equal(await page.evaluate(id=>F.incomeSources(finState).find(s=>s.id===id).active,partnerId),false);
+ await page.locator(`[data-fin="income-toggle"][data-id="${partnerId}"]`).click();assert.equal(await page.locator('#fin-pay-source option').count(),4);
+ assert.equal(await page.evaluate(()=>F.validate(JSON.parse(JSON.stringify(finState))).paydays.length),2);
+ for(const width of [320,390,760]){await page.setViewportSize({width,height:844});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Income sources fit '+width);}
+ await page.setViewportSize({width:390,height:844});await page.evaluate(()=>{finMessage('Saved on this device.');window.scrollTo(0,document.getElementById('fin-income-sources').getBoundingClientRect().top+scrollY-70)});await page.locator('#fin-income-sources').screenshot({path:'/private/tmp/multiple-income-paydays.png'});
  const sharedBefore=await page.evaluate(()=>localStorage.getItem('akb-development-prototype'));await page.evaluate(()=>finCommit({...finState,strategy:'avalanche'}));assert.equal(await page.evaluate(()=>localStorage.getItem('akb-development-prototype')),sharedBefore,'Finance leaves shared state unchanged');
  await page.evaluate(()=>{const d=finState.debts[0];d.name='<img src=x onerror=alert(1)>';finRender();});assert.equal(await page.locator('#fin-dashboard img, #fin-dashboard script').count(),0);
  for(const n of ['dashboard','fitness','learn','coach','money','names','contacts','customers','lli','screenshots'])await page.evaluate(n=>activateTab(n),n);assert.deepEqual(errors,[]);
