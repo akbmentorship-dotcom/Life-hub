@@ -39,3 +39,11 @@ assert.equal(r.baseline.savingsDate,'2026-04-01');assert.equal(r.scenario.saving
 r=S.compare({...state,debts:[]},{...input,incomeDelta:0,goalTarget:50000,goalSaved:10000,oneOffCost:20000},on);
 assert.equal(r.scenario.shortfall,10000);assert.equal(r.scenario.shortfallPeriod,'one-time');
 console.log('PASS: one-time purchases delay savings goals; unfunded withdrawals are flagged');
+const promoDebt={...debt,id:'promo',name:'Synthetic promotion',opening:10000,payment:0,deadlineAsOf:on,deadlinePaymentIds:[],deadlines:[{id:'target',label:'First dated portion',amount:10000,due:'2026-03-01'}]};
+const highRate={...debt,id:'rate',name:'Higher interest',opening:10000,payment:0,apr:20};
+const datedState={...state,debts:[highRate,promoDebt]},datedSnapshot=JSON.stringify(datedState);
+const datedResult=S.compare(datedState,{...input,monthlySurplus:10000,incomeDelta:0,debtShare:100,newDebtShare:100},on);
+assert.equal(datedResult.baseline.debts.find(d=>d.id==='promo').date,on,'Scenario uses the same deadline-first ordering as actual payday plans');
+assert.ok(datedResult.baseline.debts.find(d=>d.id==='rate').date>on);
+assert.equal(JSON.stringify(datedState),datedSnapshot,'Simulated milestone reductions never write real deadlines');
+console.log('PASS: scenario and payday deadline priorities agree; real milestone snapshots remain unchanged');
