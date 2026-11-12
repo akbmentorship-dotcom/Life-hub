@@ -22,3 +22,8 @@
 .fin-preview{padding:12px;border-radius:8px;background:var(--paper);margin:16px 0}
 #page-finance .fin-date-move{border-bottom:1px solid var(--line);padding-bottom:8px}
 @media(max-width:350px){.fin-focus-facts{grid-template-columns:1fr}#page-finance .fin-focus{padding:16px}}
+
+#page-finance .fin-impact{border-left:3px solid var(--accent);padding:2px 12px;margin:14px 0}#page-finance .fin-impact strong{display:block;font-size:1.2rem;overflow-wrap:anywhere}
+#decision-history .fin-row{align-items:flex-start}#decision-history .btn{flex:0 0 auto}
+
+#fin-paycheck-section .fin-row{align-items:flex-start}#fin-paycheck-section .fin-row>div:last-child{min-width:92px;text-align:right}#fin-paycheck-section .fin-row .btn{max-width:100%;padding:8px}#fin-paycheck-section select{max-width:100%}

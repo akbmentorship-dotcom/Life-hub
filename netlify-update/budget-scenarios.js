@@ -10,12 +10,13 @@ function simulate(state,input,on,changed=false){
 
  const debts=state.debts.map(d=>({id:d.id,name:d.name,apr:d.apr,value:F.balance(d,state.events,on).amount,at:on,interest:0,paidOn:null,milestones:F.debtDeadlines(d,state.events,on).map(x=>({...x}))}));
  for(const d of debts)if(d.value===0)d.paidOn=on;
- let savings=Math.min(input.goalSaved,input.goalTarget),savingsDate=input.goalTarget&&savings>=input.goalTarget?on:null;
+ let pendingSpending=0;let savings=Math.min(input.goalSaved,input.goalTarget),savingsDate=input.goalTarget&&savings>=input.goalTarget?on:null;
+ const milestones=()=>debts.flatMap(d=>d.milestones.map(x=>({debtId:d.id,id:x.id,label:x.label,due:x.due,date:x.paidOn||null,remaining:x.remaining})));
  const snapshots=()=>debts.map(d=>({id:d.id,name:d.name,date:d.paidOn}));
- if(monthly<0)return {debts:snapshots(),debtFreeDate:debts.every(d=>d.value===0)?on:null,savingsDate,interest:null,shortfall:-monthly,shortfallPeriod:'monthly',horizon};
+ if(monthly<0)return {milestones:milestones(),debts:snapshots(),debtFreeDate:debts.every(d=>d.value===0)?on:null,savingsDate,interest:null,shortfall:-monthly,shortfallPeriod:'monthly',horizon};
  const events=[];
  for(const debt of state.debts)for(const due of F.duePayments(debt,on,horizon)){
-  const recorded=state.events.filter(e=>e.debtId===debt.id&&e.type==='payment'&&e.date===due.date).reduce((n,e)=>n+e.amount,0);
+  const recorded=F.scheduledPaid(state,debt.id,due.date,on);
   const amount=Math.max(0,due.amount-recorded);if(amount)events.push({date:due.date,type:'minimum',debtId:debt.id,amount});
  }
  let tick=on;
@@ -23,7 +24,7 @@ function simulate(state,input,on,changed=false){
  if(changed)events.push({date:input.startDate,type:'oneoff'});
  const order={minimum:0,oneoff:1,monthly:2};events.sort((a,b)=>a.date.localeCompare(b.date)||order[a.type]-order[b.type]);
  function current(d,date){return d.value+Math.round(d.value*d.apr/100*(F.date(date)-F.date(d.at))/DAY/365);}
- function pay(d,amount,date){if(d.value===0)return 0;const owed=current(d,date),interest=owed-d.value;d.interest+=interest;d.at=date;const paid=Math.min(amount,owed);d.value=owed-paid;let applied=paid,available=d.value;for(const x of d.milestones){const used=Math.min(applied,x.remaining);applied-=used;x.remaining=Math.min(available,x.remaining-used);available-=x.remaining;}if(!d.value)d.paidOn=date;return paid;}
+ function pay(d,amount,date){if(d.value===0)return 0;const owed=current(d,date),interest=owed-d.value;d.interest+=interest;d.at=date;const paid=Math.min(amount,owed);d.value=owed-paid;let applied=paid,available=d.value;for(const x of d.milestones){const used=Math.min(applied,x.remaining);applied-=used;x.remaining=Math.min(available,x.remaining-used);available-=x.remaining;if(x.remaining===0&&!x.paidOn)x.paidOn=date;}if(!d.value)d.paidOn=date;return paid;}
  function fundGoal(amount,date){if(!input.goalTarget)return;const applied=Math.min(amount,Math.max(0,input.goalTarget-savings));savings+=applied;if(savings>=input.goalTarget&&!savingsDate)savingsDate=date;}
  function extra(amount,date){const dated=debts.flatMap(d=>d.milestones.filter(x=>x.remaining>0).map(x=>({debt:d,milestone:x}))).sort((a,b)=>a.milestone.due.localeCompare(b.milestone.due));for(const x of dated){if(!amount)break;amount-=pay(x.debt,Math.min(amount,x.milestone.remaining),date);}const targets=debts.filter(d=>d.value>0).sort((a,b)=>(changed&&date>=input.startDate?input.newStrategy:state.strategy)==='snowball'?current(a,date)-current(b,date):b.apr-a.apr);for(const debt of targets){if(!amount)break;amount-=pay(debt,amount,date);}return amount;}
  for(const event of events){
@@ -32,17 +33,28 @@ function simulate(state,input,on,changed=false){
    // Freed scheduled payments roll forward only once the decision starts.
    fundGoal(extra(event.amount-paid,event.date),event.date);
   }
-  if(event.type==='oneoff'){fundGoal(extra(input.oneOffDebt,event.date)+input.oneOffSavings,event.date);if(input.oneOffCost>savings)return {debts:snapshots(),debtFreeDate:debts.every(d=>d.value===0)?debts.reduce((d,x)=>x.paidOn>d?x.paidOn:d,on):null,savingsDate:null,interest:null,shortfall:input.oneOffCost-savings,shortfallPeriod:'one-time',horizon};savings-=input.oneOffCost;if(input.goalTarget&&savings<input.goalTarget)savingsDate=null;}
+  if(event.type==='oneoff'){if((input.oneOffSpending||0)>monthly)return {milestones:milestones(),debts:snapshots(),debtFreeDate:null,savingsDate:null,interest:null,shortfall:input.oneOffSpending-monthly,shortfallPeriod:'one-time',horizon};pendingSpending=input.oneOffSpending||0;fundGoal(extra(input.oneOffDebt,event.date)+input.oneOffSavings,event.date);if(input.oneOffCost>savings)return {milestones:milestones(),debts:snapshots(),debtFreeDate:debts.every(d=>d.value===0)?debts.reduce((d,x)=>x.paidOn>d?x.paidOn:d,on):null,savingsDate:null,interest:null,shortfall:input.oneOffCost-savings,shortfallPeriod:'one-time',horizon};savings-=input.oneOffCost;if(input.goalTarget&&savings<input.goalTarget)savingsDate=null;}
   if(event.type==='monthly'){
-   const applies=changed&&event.date>=input.startDate;const pool=applies?monthly:input.monthlySurplus;const split=(applies?input.newDebtShare:input.debtShare)/100;
+   const applies=changed&&event.date>=input.startDate;let pool=applies?monthly:input.monthlySurplus;if(applies&&pendingSpending){pool-=pendingSpending;pendingSpending=0;}const split=(applies?input.newDebtShare:input.debtShare)/100;
    const debtAmount=Math.round(pool*split),leftover=extra(debtAmount,event.date);
    fundGoal(pool-debtAmount+leftover,event.date);
   }
   if(debts.every(d=>d.value===0)&&(!input.goalTarget||savingsDate)&&(!changed||event.date>=input.startDate))break;
  }
  const allPaid=debts.every(d=>d.value===0),debtFreeDate=allPaid?debts.reduce((latest,d)=>d.paidOn>latest?d.paidOn:latest,on):null;
- return {debts:snapshots(),debtFreeDate,savingsDate,shortfall:0,horizon,interest:debts.reduce((n,d)=>n+d.interest+(d.value?current(d,horizon)-d.value:0),0),interestComplete:allPaid};
+ return {milestones:milestones(),debts:snapshots(),debtFreeDate,savingsDate,shortfall:0,horizon,interest:debts.reduce((n,d)=>n+d.interest+(d.value?current(d,horizon)-d.value:0),0),interestComplete:allPaid};
 }
 function compare(state,input,on){return {baseline:simulate(state,input,on),scenario:simulate(state,input,on,true)};}
-const api={simulate,compare};if(typeof module!=='undefined')module.exports=api;else root.FinanceScenarios=api;
+function decisionScenario(state,plan,decision,on){
+ F.scenarioInput(plan);F.decisionInput(decision);F.date(on);if(decision.startDate<on)throw Error('Choose today or a future date');
+ const input={...plan,incomeDelta:0,spendingDelta:0,oneOffDebt:0,oneOffSavings:0,oneOffCost:0,oneOffSpending:0,newDebtShare:plan.debtShare,newStrategy:state.strategy||'avalanche',startDate:decision.startDate};
+ if(decision.kind==='purchase')input[decision.funding==='savings'?'oneOffCost':'oneOffSpending']=decision.amount;
+ if(decision.kind==='monthly-cost')input.spendingDelta=decision.amount;
+ if(decision.kind==='monthly-saving')input.spendingDelta=-decision.amount;
+ if(decision.kind==='income-more')input.incomeDelta=decision.amount;
+ if(decision.kind==='income-less')input.incomeDelta=-decision.amount;
+ if(decision.kind==='extra-debt')input.oneOffDebt=decision.amount;
+ return {input,...compare(state,input,on)};
+}
+const api={simulate,compare,decisionScenario};if(typeof module!=='undefined')module.exports=api;else root.FinanceScenarios=api;
 })(globalThis);

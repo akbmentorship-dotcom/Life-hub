@@ -1,10 +1,10 @@
-# Netlify Finance v47
+# Netlify Finance v50
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v47.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v50.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -22,7 +22,7 @@ Add a named income source for each household pay stream (employment, partner pay
 
 Actual pay records keep a source ID and source-name snapshot. Different sources can be paid on the same date; duplicate source/date records are blocked. The next household payday across all active sources defines the default budget period. Expected future income never becomes spendable cash. Same-day actual pay is combined into a single replacement household allocation plan rather than repeating the full budget against each paycheck. Users can override the planning end date when there is no next known payday.
 
-Tests cover same-day sources, deduplication, migration, month-end recurrence, one-off pay, pause/resume, backup round trips and live form interactions. v46 was published with explicit approval. This v47 update is pending approval.
+Tests cover same-day sources, deduplication, migration, month-end recurrence, one-off pay, pause/resume, backup round trips and live form interactions. v47 was published with explicit approval. This v50 update is pending approval.
 
 ## What If goal dates (v46)
 
@@ -32,7 +32,7 @@ Decisions support more/less take-home income, more/less monthly spending, a diff
 
 Calculations are pure: no payments, balances, income schedules or actual goals are changed. Up to 20 named scenarios save only assumptions in the Finance backup. Reopening a scenario recalculates against current projected balances and rebases a past start date to today. Monthly allocations use today's day of month; scheduled debt payments retain their real configured recurrence. Freed debt payments roll to the remaining debt and then the selected savings goal. This is a goal-timing model, not a bank cash-flow schedule; lender-specific compounding, future rate changes, fees and new borrowing are excluded. Expected income is never automatically counted as available cash.
 
-Validation adds deterministic debt/savings dates, financial tradeoffs, future decisions, interest, rollover, one-time withdrawals, shortfalls, unreachable goals, immutability and saved-scenario restore checks. Mobile UI tests verify comparison, save/reload, safe goal text, and widths down to 320px. The complete v46 ZIP includes the multiple-payday work from v45. Production is v46. v47 publishing requires explicit approval.
+Validation adds deterministic debt/savings dates, financial tradeoffs, future decisions, interest, rollover, one-time withdrawals, shortfalls, unreachable goals, immutability and saved-scenario restore checks. Mobile UI tests verify comparison, save/reload, safe goal text, and widths down to 320px. The complete v46 ZIP includes the multiple-payday work from v45. Production is v47. v50 publishing requires explicit approval.
 
 ## Guided pay rules and next focus (v47)
 
@@ -47,3 +47,37 @@ Guided income setup supports weekly, every two weeks, N-day intervals, chosen mo
 A private JSON setup import previews source/debt matching. It updates selected schedules and milestone snapshots only, preserving account balances, payment/reconciliation history, budgets, scenarios and unrelated storage. Users can skip items and must map milestones to existing debts. Reapplying the same setup does not add transactions. Unselected old schedules remain and may be paused by the user. The user's personal schedule and photographed promotion values are held in an uncommitted private file, excluded from both the deployment ZIP and GitHub. The release does not ship personal defaults.
 
 Tests cover month ends and leap years, weekday and business-day rules, closure/weekend adjustments across month boundaries, specific date moves, old-state compatibility, focus progression, milestone snapshots and caps, deadline allocation and simulation consistency, reviewed setup preservation, responsive mobile forms and backup validation. Existing Home/Fitness/Learning/follow-up flows and offline cache upgrades are checked.
+
+## Household CFO check-in (v48, pending approval)
+
+v47 is published. v48 adds an expandable 30-day CFO check-in below Next focus: expected income, scheduled obligations, upcoming calendar, dated payoff portions, missing schedule/amount/payment warnings, unconfirmed or aging lender snapshots and a weekly review note/date. Its difference is explicitly a plan, not a bank balance or safe-to-spend amount. Unknown income amounts withhold the planned difference. Completed receipts and matching debt payments are not reserved twice; payoff portions never increase total debt. Review completion does not confirm statements or create payments. Data remains in the existing Finance key and backup.
+
+See FAMILY-CFO.md for the product direction, current gaps and open-source review. No third-party project code or new service/dependency is introduced by this release; the check-in reuses the existing Finance calculations.
+
+## Focused decision impact (v49, supersedes unpublished v48)
+
+Next focus links to a prominent Before we decide checker. Users save current monthly surplus, debt allocation and an optional savings goal once. A decision then needs a type and amount, plus purchase funding and optional name/date. Types cover one-time purchase, recurring cost/reduction, more/less monthly take-home and an extra debt payment from additional cash. The detailed What If form begins with the saved current-plan assumptions. The main debt forecast also uses the saved monthly plan, keeping the focus and quick comparison consistent.
+
+Results lead with the next focus, then total debt-free and selected savings dates, interest through payoff when both forecasts complete, and individual milestone completion dates against entered requirements. A scenario can expose a newly missed promotion date. A purchase from extra money replaces one monthly allocation and must fit that source; savings withdrawals must be funded. Required debt minimums remain modeled. The checker does not prove cash availability or model a new loan, taxes, changing rates, lender fees or deferred-interest penalties.
+
+Decision log entries are considering/chosen/passed assumptions with a reviewed date and baseline snapshot. They do not write real payments, change balances or apply choices to the budget. Each is compared independently; saved choices do not stack automatically. Update the current-plan assumptions as the real budget changes. Reopening recalculates against current balances/current plan and rebases a past date to today. Up to 100 entries are included in Finance backup/restore. State extensions remain optional for existing users.
+
+Validation covers one-time allocation diversion, recurring changes, funded/unfunded sources, newly missed milestones, immutable actual data, restore validation, mobile quick entry and save/reload/recheck, detailed scenario regression, and offline inclusion of the new script. Production remains v47; v49 requires explicit publishing approval.
+
+## Actual paycheque loop and real savings goals (v50)
+
+v50 includes unpublished v48/v49 work. Enter actual received pay, preview and save its plan, then record what was actually done. The selected paycheque shows received, assigned and unassigned totals and a retained action history. Variable expected income is never available cash. Same-day sources share household recommendations but keep separate receipt caps. Planning end dates are saved on each receipt rather than drifting as later pay is entered. Take-home corrections retain from/to/date history and cannot reduce a receipt below assigned actions.
+
+Actions include debt payments, reserved/paid budget money, actual goal contributions and a kept cash buffer. A reserved bill becomes paid in the same entry without assigning cash twice; releasing an earmark restores its receipt's unassigned amount. New debt actions create one linked payment. Existing payments may be attributed in portions across receipts without adding transactions or exceeding the original payment. Target-card payments can use the same funding linkage. Explicit due-date attribution discounts an instalment paid early from recommendations, forecasts and the CFO calendar.
+
+Mistake corrections retain entries. Correcting a payment created by this workflow voids that tracker payment and recalculates balances. Correcting an attribution to a pre-existing payment only removes the receipt attribution, preserving that payment. These are tracker corrections, not bank reversals/refunds. Lender and savings statements remain authoritative snapshots; confirm balances if needed.
+
+Real savings goals have opening snapshots, targets, optional desired dates and per-household-pay-date commitments. Actual contributions update recorded progress; dated goal confirmations reset the recorded balance without creating income. Snapshot contribution IDs prevent a later contribution on the same day from disappearing into an earlier confirmation. Link existing workbook savings categories (including split-month categories) to a goal so those amounts become goal recommendations rather than duplicated bill/per-pay allocations. Linked category amounts replace that goal's standalone per-pay commitment. Other per-pay commitments are funded once per household pay date. After debt is cleared, the next unfunded real goal appears in focus.
+
+The recommendation order is living costs and required debt instalments, debt milestone pace, linked savings-budget/per-pay commitments, then remaining extra by the common debt/savings split. Actual prior actions reduce amounts still required. Recording the estimated deadline pace does not request that same pace repeatedly. Suggestions never become actual actions automatically. Goal contributions refresh a linked saved decision plan's actual starting balance; future dates still depend on explicit monthly forecast assumptions rather than assuming variable future pay or all per-pay contributions arrive. Existing opening snapshots should start before the first new contribution/payment being recorded; statements can align the current recorded balance without adding income.
+
+State: version-1 records load unchanged. Writing the actual-action/goal ledger uses Finance version 2; old clients that cannot interpret corrected payments reject it rather than silently calculating those records incorrectly. Use the updated app before restoring version-2 backups. Refresh/reopen after deployment, keeping site data, and close/refresh old running tabs. New writes reject stale local-storage snapshots. Explicit restore offers a backup of the latest stored Finance. Rollback requires retaining/exporting version-2 data and returning to a compatible client; publishing old v47 code is not a data migration. Shared/legacy Money and Fitness storage is untouched.
+
+Browser-local persistence does not synchronize between devices/browsers. JSON backup/restore includes paycheques, actions, goals, confirmations, corrections and decisions. No workbook, ledger or private household setup is in Git or the release.
+
+Validation adds paychecks.cjs and paycheck-browser.cjs for variable amounts, same-day sources, linking/splitting payments, bill reserves, corrections, goal progress, same-day statements, linked decision goals, workbook category mapping, take-home corrections, real-goal focus, stale writes and mobile layout. Existing calculation, What If, workbook/UI, Life Hub/Fitness regression and offline-upgrade suites pass. Production remains v47; v50 requires explicit publishing approval.
