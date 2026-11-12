@@ -120,3 +120,15 @@ assert.deepEqual(mergedSetup.events,dated.events);assert.deepEqual(mergedSetup.p
 assert.deepEqual(F.mergeSetup(mergedSetup,setup,{sources:['existing'],accounts:['promo']},'2026-01-01').debts,mergedSetup.debts,'Reapplying setup does not add debt or payments');
 assert.throws(()=>F.mergeSetup(dated,setup,{sources:['new'],accounts:['small']},'2026-01-01'),/exceed/);
 console.log('PASS: third-last business day, multiple promotion targets, deadline priority, payment allocation, statement caps, private setup preserves balances/history');
+const cfoState={...F.empty(),incomeSources:[{...source('pay','Pay','2026-01-02','monthly'),expected:100000}],debts:[{...noInterest,payment:10000,nextDue:'2026-01-05',opening:100000}],bills:[{id:'living',name:'Living',amount:50000,frequency:'monthly',nextDue:'2026-01-10'}]};
+const cfoBefore=JSON.stringify(cfoState),brief=F.cfoBrief(cfoState,'2026-01-01');
+assert.equal(brief.knownIncome,100000);assert.equal(brief.scheduledOut,60000);assert.equal(brief.plannedDifference,40000);assert.equal(brief.reviewDue,true);
+assert.equal(JSON.stringify(cfoState),cfoBefore,'CFO calculations never mutate the ledger');
+assert.equal(F.cfoBrief({...cfoState,incomeSources:cfoState.incomeSources.map(x=>({...x,expected:0}))},'2026-01-01').plannedDifference,null,'Missing income is never presented as a complete surplus');
+const reviewed={...cfoState,cfoReview:{date:'2026-01-01',note:'Review'}};assert.equal(F.cfoBrief(reviewed,'2026-01-07').reviewDue,false);assert.equal(F.cfoBrief(reviewed,'2026-01-08').reviewDue,true);assert.deepEqual(F.validate(JSON.parse(JSON.stringify(reviewed))),reviewed);
+const settled={...cfoState,events:[{id:'paid',type:'payment',debtId:'loan',date:'2026-01-05',amount:10000}],paydays:[{id:'income',sourceId:'pay',sourceName:'Pay',date:'2026-01-02',amount:100000}]};
+assert.equal(F.cfoBrief(settled,'2026-01-05').scheduledOut,50000,'Recorded debt payments are not reserved twice');assert.equal(F.cfoBrief(settled,'2026-01-02').knownIncome,0,'Received income is not upcoming income');
+assert.equal(F.cfoBrief({...cfoState,debts:[{...cfoState.debts[0],deadlines:promo.deadlines,deadlineAsOf:'2026-01-01',deadlinePaymentIds:[]}]},'2026-01-01').scheduledOut,60000,'Milestones are not added as duplicate debt obligations');
+const dailySources=Array.from({length:12},(_,i)=>({...source('daily'+i,'Daily '+i,'2026-01-01','interval',1),expected:100}));
+assert.equal(F.cfoBrief({...F.empty(),incomeSources:dailySources},'2026-01-01').income.length,360,'Busy households do not truncate 30-day income totals');
+console.log('PASS: CFO brief, incomplete income, actual receipts/payments, no duplicate milestones, weekly review and immutable ledger');
