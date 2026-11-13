@@ -1,10 +1,10 @@
-# Netlify Finance v52
+# Netlify Life Hub v53
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v52.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v53.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -91,3 +91,15 @@ Talk to LifeHub provides optional single-request browser speech recognition with
 The #lifehub-voice link opens the existing Money/Finance voice section. iPhone wake phrase setup is manual: create an Apple Shortcut opening this URL, then use Accessibility Vocal Shortcuts to train Hey LifeHub, or invoke the shortcut through Siri. This is not website background listening or speaker authentication. Physical iPhone microphone/wake phrase behavior still needs user-device verification. No additional backend, dependency or AI service was introduced.
 
 Validation: eight suites, including voice parser coverage and isolated mobile voice draft tests proving no automatic ledger mutations. Existing Finance, Fitness/Life Hub and offline upgrade tests pass. Production remains v47; this package is not yet published.
+
+## App simplification (v53)
+
+Daily navigation is four destinations plus More, replacing ten competing tabs. Secondary screens retain their original IDs and role visibility. More closes after choosing a destination, outside click or Escape. The current secondary destination highlights More. Home tiles remain the main entry points; all ten sections remain reachable.
+
+Relationship/customer creation forms open only when needed. Optional owner/notes and customer metadata stay under a disclosure. Customer edits now use one prefilled form (including name and order history), one Save or Cancel instead of four prompt dialogs. Existing customer IDs and extra fields survive edits. Cancelling does not mutate records. Forms close after save.
+
+Quick financial decisions and Advanced What If share one section. Recorded savings progress has one home under real goals rather than a duplicate panel per paycheque. Debt-first allocation, next focus, statements, paycheque actions, scenarios and legacy Money records retain their behavior and storage. Learning notes no longer repeat their column category on every card. Fitness omits the last-session comparison when it is the same session already shown under Last week; distinct comparisons remain. Settings no longer requires opening another nested Settings drawer, and workspace backup controls explicitly state which records they include. Screenshot file fields now fit narrow phones.
+
+No data migration or automatic ledger writes. Existing storage keys, historical financial ledgers, partner records and Fitness data are unchanged. New simplicity.cjs exercises real navigation, customer create/edit/cancel, person capture, role switches, all ten screens at 320/390/760px, reload and unrelated ledger preservation. Existing Finance/browser, paycheck/browser, Life Hub/Fitness and offline-cache tests pass.
+
+Review includes cumulative v43 host changes and the styles.css delta against the previous v52 package. v53 is prepared for review, not deployed. The v52 publishing attempt stalled at Netlify upload; production was still v47 at the last verified check.

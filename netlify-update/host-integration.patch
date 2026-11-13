@@ -5,11 +5,51 @@
      <link rel="apple-touch-icon" href="assets/icon-180.png" />
      <link rel="manifest" href="manifest.json" />
 -    <link rel="stylesheet" href="styles.css?v=43" />
-+    <link rel="stylesheet" href="styles.css?v=52" />
-+    <link rel="stylesheet" href="budget.css?v=52" />
++    <link rel="stylesheet" href="styles.css?v=53" />
++    <link rel="stylesheet" href="budget.css?v=53" />
    </head>
    <body>
      <section class="invite-claim" id="partnerInvitePanel" hidden>
+@@ -45,7 +46,7 @@
+ 
+       <main>
+         <section class="view active" id="dashboard" data-admin-only-panel="true">
+-          <div class="home-intro"><p class="eyebrow">Your daily hub</p><h2>Home</h2><p>What would you like to work on?</p></div>
++          <div class="home-intro"><h2>Home</h2><p>Choose your next focus.</p></div>
+           <div class="home-grid" aria-label="Your daily spaces">
+ <button class="home-tile" type="button" data-open-drawer="taskBoardDrawer"><span class="home-tile-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 7 2 2 4-4M13 7h6M5 14h14M5 19h10"/></svg><span class="home-tile-meta" id="home-meta-tasks"></span></span><strong>Tasks</strong><span class="home-tile-caption">Choose your next action</span></button><button class="home-tile" type="button" data-open-drawer="followupDrawer"><span class="home-tile-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 1-8 8H5l-3 3V11a9 9 0 0 1 18 0Z"/><path d="m8 11 2 2 5-5"/></svg><span class="home-tile-meta" id="home-meta-followups"></span></span><strong>Follow-ups</strong><span class="home-tile-caption">Check in and clear the loop</span></button><button class="home-tile" type="button" data-open-tab="fitness"><span class="home-tile-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 7 11 10M4 5l3-3M2 7l5-5M17 22l5-5M17 20l3-3M5 10l5-5M14 19l5-5"/></svg><span class="home-tile-meta" id="home-meta-fitness"></span></span><strong>Fitness</strong><span class="home-tile-caption">Open today’s workout</span></button><button class="home-tile" type="button" data-open-tab="learn"><span class="home-tile-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v15M3 4c4-1 6 0 9 2 3-2 5-3 9-2v15c-4-1-6 0-9 2-3-2-5-3-9-2Z"/></svg><span class="home-tile-meta" id="home-meta-learn"></span></span><strong>Learning</strong><span class="home-tile-caption">Put a lesson into practice</span></button><button class="home-tile" type="button" data-open-tab="names"><span class="home-tile-top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5"/></svg><span class="home-tile-meta" id="home-meta-names"></span></span><strong>Relationships</strong><span class="home-tile-caption">People and conversations</span></button><button class="home-tile" type="button" data-open-tab="money"><span class="home-tile-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v14H4zM4 7V4h13v3M16 12h5v5h-5z"/></svg><span class="home-tile-meta" id="home-meta-money"></span></span><strong>Money</strong><span class="home-tile-caption">Your family finances</span></button>
+           </div>
+@@ -105,8 +106,8 @@
+ <details class="hub-drawer" id="dtmDrawer"><summary><span>Weekly DTM</span><strong>Log a conversation</strong></summary>          <section class="panel dtm-tracker dtm-primary" aria-label="Weekly DTM tracker">
+             <div class="panel-head">
+               <div>
+-                <p class="eyebrow">Primary focus</p>
+-                <h3>Weekly DTM Tracker</h3>
++                
++                <h3>Conversations this week</h3>
+                 <p class="subtle">Add the person, jot the memory, keep moving.</p>
+               </div>
+               <span id="weeklyDtmProgress"></span>
+@@ -122,7 +123,7 @@
+ </details>
+ <details class="hub-drawer" id="captureDrawer"><summary><span>Quick capture</span><strong>Write or speak what’s on your mind</strong></summary>            <div class="brain-capture compact-capture">
+               <div class="panel-head">
+-                <h3>Brain Dump</h3>
++                <h3>Capture a thought</h3>
+                 <span id="brainInboxCount"></span>
+               </div>
+               <textarea id="brainDumpInput" rows="4" placeholder="Ramble here. Use voice or type anything on your mind..."></textarea>
+@@ -210,8 +211,8 @@
+         <section class="view" id="learn" data-admin-only-panel="true">
+           <div class="section-head">
+             <div>
+-              <p class="eyebrow">Learning Notes</p>
+-              <h2>Document What You’re Learning</h2>
++              
++              <h2>Learning</h2>
+             </div>
+           </div>
+           <div class="learning-layout">
 @@ -261,6 +262,8 @@
          </section>
  
@@ -19,7 +59,7 @@
            <div class="section-head">
              <div>
                <p class="eyebrow">Family Financial Operating System</p>
-@@ -414,6 +417,7 @@
+@@ -414,24 +417,25 @@
  
              <div class="finance-list" id="financeList"></div>
            </div>
@@ -27,6 +67,116 @@
          </section>
  
          <section class="view" id="names">
+           <div class="section-head">
+             <div>
+-              <p class="eyebrow">Pipeline</p>
+-              <h2>Names List</h2>
+-            </div>
+-            <button class="primary-action" id="addNameBtn" type="button">Add Name</button>
+-          </div>
+-          <form class="quick-form" id="nameForm">
++              
++              <h2>Relationships</h2>
++            </div>
++            <button class="primary-action" id="addNameBtn" type="button" aria-expanded="false" aria-controls="nameForm">Add person</button>
++          </div>
++          <form class="quick-form" id="nameForm" hidden>
+             <input id="personName" type="text" placeholder="Name" required />
+             <input id="contactMethod" type="text" placeholder="Contact method" required />
+-            <input id="stoodOut" type="text" placeholder="What stood out?" />
++            <details class="person-details"><summary>Notes & owner · optional</summary><input id="stoodOut" type="text" placeholder="What stood out?" />
+             <select id="partnerOwner" aria-label="Partner owner">
+               <option value="admins">AKB Dashboard</option>
+             </select>
+-            <button type="submit">Save</button>
++            </details><button type="submit">Save person</button><button type="button" id="cancelNameBtn" class="secondary-action">Cancel</button>
+           </form>
+           <div class="board" id="pipelineBoard" aria-live="polite"></div>
+         </section>
+@@ -469,14 +473,14 @@
+               <p class="eyebrow">Service</p>
+               <h2>Customers</h2>
+             </div>
+-            <button class="primary-action" id="addCustomerBtn" type="button">Add Customer</button>
+-          </div>
+-          <form class="quick-form" id="customerForm">
++            <button class="primary-action" id="addCustomerBtn" type="button" aria-expanded="false" aria-controls="customerForm">Add customer</button>
++          </div>
++          <form class="quick-form" id="customerForm" hidden>
+             <input id="customerName" type="text" placeholder="Customer name" required />
+-            <input id="preferences" type="text" placeholder="Reach out preference" />
++            <details class="customer-details"><summary>Preferences, dates & orders · optional</summary><input id="preferences" type="text" placeholder="Reach out preference" />
+             <input id="birthday" type="text" placeholder="Birthday or key date" />
+-            <input id="sampleNote" type="text" placeholder="Sample requested/given" />
+-            <button type="submit">Save</button>
++            <input id="sampleNote" type="text" placeholder="Sample requested/given" /><textarea id="customerOrders" rows="2" placeholder="Previous orders"></textarea></details>
++            <button type="submit" id="saveCustomerBtn">Save customer</button><button type="button" id="cancelCustomerBtn" class="secondary-action">Cancel</button>
+           </form>
+           <div class="customer-list" id="customerList"></div>
+         </section>
+@@ -485,7 +489,7 @@
+           <div class="section-head">
+             <div>
+               <p class="eyebrow">Leader Led Initiative</p>
+-              <h2>Partnership Lists</h2>
++              <h2>Partners</h2>
+             </div>
+             <button class="primary-action" id="addLliPartnerBtn" data-admin-only="true" type="button">+ Partner</button>
+           </div>
+@@ -518,21 +522,21 @@
+         <nav class="tabbar" aria-label="Primary">
+           <button class="tab active" data-tab="dashboard" data-admin-only="true" type="button">Home</button>
+           <button class="tab" data-tab="fitness" data-admin-only="true" type="button">Fitness</button>
+-          <button class="tab" data-tab="learn" data-admin-only="true" type="button">Learn</button>
+-          <button class="tab" data-tab="coach" data-admin-only="true" type="button">Coach</button>
+           <button class="tab" data-tab="money" data-admin-only="true" type="button">Money</button>
+-          <button class="tab" data-tab="names" type="button">Names</button>
+-          <button class="tab" data-tab="contacts" data-admin-only="true" type="button">Contacts</button>
+-          <button class="tab" data-tab="customers" data-admin-only="true" type="button">Customers</button>
+-          <button class="tab" data-tab="lli" type="button">LLI</button>
+-          <button class="tab" data-tab="screenshots" type="button">Screens</button>
++          <button class="tab" data-tab="names" type="button">People</button>
++          <button class="tab" id="navMoreBtn" type="button" aria-expanded="false" aria-controls="navMore">More</button>
++          <div id="navMore" class="nav-more-panel" hidden>
++            <button class="tab" data-tab="learn" data-admin-only="true" type="button">Learning</button>
++            <button class="tab" data-tab="coach" data-admin-only="true" type="button">Coach</button>
++            <button class="tab" data-tab="contacts" data-admin-only="true" type="button">Contacts</button>
++            <button class="tab" data-tab="customers" data-admin-only="true" type="button">Customers</button>
++            <button class="tab" data-tab="lli" type="button">Partners</button>
++            <button class="tab" data-tab="screenshots" data-admin-only="true" type="button">Screenshots</button>
++          </div>
+         </nav>
+ 
+         <details class="home-utilities"><summary>Settings & tools</summary><section class="panel system-panel">
+-          <details class="system-drawer">
+-            <summary>
+-              <span>Settings</span>
+-            </summary>
++          <div class="system-drawer">
+             <div class="system-actions">
+               <label class="role-switch">
+                 <span>Space</span>
+@@ -549,16 +553,16 @@
+               <button class="secondary-action" id="signOutBtn" type="button" hidden>Sign Out</button>
+               <span class="sync-status" id="authStatus">Secure login optional</span>
+             </form>
+-          </details>
++          </div>
+           <details class="backup-drawer">
+-            <summary>Backup tools</summary>
++            <summary>Workspace backup</summary><p class="subtle">Tasks, people, learning and older Money records. Finance has its own backup in Money; Fitness records are stored separately.</p>
+             <div class="backup-actions">
+-              <button class="secondary-action" id="exportDataBtn" type="button">Export Backup</button>
++              <button class="secondary-action" id="exportDataBtn" type="button">Export workspace</button>
+               <label class="secondary-action import-action">
+                 Import
+                 <input id="importDataFile" type="file" accept="application/json" />
+               </label>
+-              <button class="secondary-action danger-action" id="seedDataBtn" type="button">Clear Data</button>
++              <button class="secondary-action danger-action" id="seedDataBtn" type="button">Clear workspace data</button>
+             </div>
+           </details>
+           <details class="phone-drawer">
 @@ -591,8 +595,17 @@
      </dialog>
  
@@ -34,56 +184,204 @@
 -    <script src="cloud-config.js?v=43"></script>
 -    <script src="finance-engine.js?v=43"></script>
 -    <script src="app.js?v=43"></script>
-+    <script src="cloud-config.js?v=52"></script>
-+    <script src="finance-engine.js?v=52"></script>
-+    <script src="app.js?v=52"></script>
-+    <script src="budget-engine.js?v=52"></script>
-+    <script src="budget-xlsx.js?v=52"></script>
-+    <script src="budget-template.js?v=52"></script>
-+    <script src="budget-scenarios.js?v=52"></script>
-+    <script src="budget-scenario-ui.js?v=52"></script>
-+    <script src="budget-decision-ui.js?v=52"></script>
-+    <script src="budget-paycheck-ui.js?v=52"></script>
-+    <script src="budget-ui.js?v=52"></script>
-+    <script src="budget-voice.js?v=52"></script>
++    <script src="cloud-config.js?v=53"></script>
++    <script src="finance-engine.js?v=53"></script>
++    <script src="app.js?v=53"></script>
++    <script src="budget-engine.js?v=53"></script>
++    <script src="budget-xlsx.js?v=53"></script>
++    <script src="budget-template.js?v=53"></script>
++    <script src="budget-scenarios.js?v=53"></script>
++    <script src="budget-scenario-ui.js?v=53"></script>
++    <script src="budget-decision-ui.js?v=53"></script>
++    <script src="budget-paycheck-ui.js?v=53"></script>
++    <script src="budget-ui.js?v=53"></script>
++    <script src="budget-voice.js?v=53"></script>
    </body>
  </html>
 --- a/app.js
 +++ b/app.js
-@@ -339,6 +339,7 @@
+@@ -213,7 +213,7 @@
+ let speechRecognition = null;
+ let voiceActive = false;
+ 
+-const tabs = document.querySelectorAll(".tab");
++const tabs = document.querySelectorAll(".tab[data-tab]");
+ const views = document.querySelectorAll(".view");
+ const appShell = document.querySelector(".app-shell");
+ const partnerInvitePanel = document.querySelector("#partnerInvitePanel");
+@@ -339,6 +339,9 @@
  });
  
  function activateTab(tabId) {
 +  if(tabId === "money" && typeof finRender === "function") finRender();
++  closeMoreNavigation();
++  document.getElementById("navMoreBtn").classList.toggle("active",Boolean(document.querySelector("#navMore [data-tab=\""+tabId+"\"]")));
    appShell.classList.toggle("home-active",tabId === "dashboard");
    if(tabId === "dashboard") closeHomePanel(false);
    if(tabId === "fitness") openFitness();
+@@ -465,11 +468,11 @@
+ });
+ 
+ document.querySelector("#addNameBtn")?.addEventListener("click", () => {
+-  document.querySelector("#personName").focus();
++  nameForm.hidden=false;document.getElementById("addNameBtn").setAttribute("aria-expanded","true");document.querySelector("#personName").focus();
+ });
+ 
+ document.querySelector("#addCustomerBtn")?.addEventListener("click", () => {
+-  document.querySelector("#customerName").focus();
++  openCustomerForm();
+ });
+ 
+ addLliPartnerBtn?.addEventListener("click", () => {
+@@ -499,22 +502,18 @@
+     dtmAt: null,
+     mg1aAt: null
+   });
+-  nameForm.reset();
++  nameForm.reset();nameForm.hidden=true;document.getElementById("addNameBtn").setAttribute("aria-expanded","false");
+   persist();
+   render();
+ });
+ 
+ customerForm?.addEventListener("submit", (event) => {
+   event.preventDefault();
+-  state.customers.unshift({
+-    id: crypto.randomUUID(),
+-    name: document.querySelector("#customerName").value.trim(),
+-    preferences: document.querySelector("#preferences").value.trim(),
+-    birthday: document.querySelector("#birthday").value.trim(),
+-    sampleNote: document.querySelector("#sampleNote").value.trim(),
+-    previousOrders: "Add previous orders"
+-  });
+-  customerForm.reset();
++  const existing=customerForm.dataset.editId?state.customers.find(c=>c.id===customerForm.dataset.editId):null;
++  if(customerForm.dataset.editId&&!existing){alert('This customer is no longer available.');return;}
++  const fields={name:document.querySelector('#customerName').value.trim(),preferences:document.querySelector('#preferences').value.trim(),birthday:document.querySelector('#birthday').value.trim(),sampleNote:document.querySelector('#sampleNote').value.trim(),previousOrders:document.querySelector('#customerOrders').value.trim()};
++  if(existing)Object.assign(existing,fields);else state.customers.unshift({id:crypto.randomUUID(),...fields});
++  closeCustomerForm();
+   persist();
+   render();
+ });
+@@ -1352,7 +1351,7 @@
+   });
+   accessBanner.textContent = `${ownerName(state.role)} viewer workspace: this partner can see their own list and mark lightweight outreach checkboxes only.`;
+ 
+-  if (document.querySelector(".tab.active")?.hidden) {
++  if (document.querySelector(".tab[data-tab].active")?.hidden) {
+     activateTab("names");
+   }
+ }
+@@ -2221,7 +2220,7 @@
+   return `
+     <article class="learning-card">
+       <div>
+-        <span class="status-pill">${learningCategoryLabel(note.category)}</span>
++        
+         <p class="learning-note-body">${escapeHtml(note.body || note.title)}</p>
+         <p>${formatShortDate(note.createdAt)}</p>
+         <div class="learning-themes">
+@@ -3136,17 +3135,7 @@
+   customerList.querySelectorAll("[data-edit-customer]").forEach((button) => {
+     button.addEventListener("click", () => {
+       const customer = state.customers.find((item) => item.id === button.dataset.editCustomer);
+-      const preferences = prompt("Reach out preference", customer.preferences);
+-      if (preferences === null) return;
+-      const birthday = prompt("Birthday or key date", customer.birthday);
+-      if (birthday === null) return;
+-      const sampleNote = prompt("Sample requested/given", customer.sampleNote);
+-      if (sampleNote === null) return;
+-      const previousOrders = prompt("Previous orders", customer.previousOrders);
+-      if (previousOrders === null) return;
+-      Object.assign(customer, { preferences, birthday, sampleNote, previousOrders });
+-      persist();
+-      render();
++      openCustomerForm(customer);
+     });
+   });
+ 
+@@ -3998,7 +3987,7 @@
+ function fitDraft(){const key=fitDate+'|'+fitDay;let d=fitState.drafts[key];if(!d||!Array.isArray(d.exercises)){d={date:fitDate,day:fitDay,week:fitWeek(),notes:'',exercises:fitPlan().map(e=>({...e,sets:Array.from({length:e.count},()=>({weight:'',reps:'',done:false}))}))};}fitState.drafts[key]=d;return d;}
+ function openFitness(){fitState=fitRead();fitDate=fitLocalDate();fitDay=fitScheduled(fitDate);fitTab('today');}
+ function fitTab(tab){document.getElementById('fit-today').hidden=tab!=='today';document.getElementById('fit-summary').hidden=tab!=='summary';for(const t of ['today','summary'])document.getElementById('fit-'+t+'-tab').classList.toggle('active',t===tab);if(tab==='today')renderFitness();else renderFitSummary();}
+-function fitPrevious(name){const session=fitState.sessions.filter(s=>Array.isArray(s.exercises)&&s.exercises.some(e=>e.name===name)&&s.date<=fitDate).sort((a,b)=>b.date.localeCompare(a.date)||(b.finished||'').localeCompare(a.finished||''))[0];return session?{...session.exercises.find(e=>e.name===name),weightUnit:session.weightUnit}:null;}
++function fitPrevious(name){const session=fitState.sessions.filter(s=>Array.isArray(s.exercises)&&s.exercises.some(e=>e.name===name)&&s.date<=fitDate).sort((a,b)=>b.date.localeCompare(a.date)||(b.finished||'').localeCompare(a.finished||''))[0];return session?{...session.exercises.find(e=>e.name===name),weightUnit:session.weightUnit,date:session.date}:null;}
+ function fitLastWeek(name){
+  const monday=new Date(fitDate+'T12:00:00');
+  monday.setDate(monday.getDate()-((monday.getDay()+6)%7));
+@@ -4026,7 +4015,7 @@
+  </div>`+d.exercises.map((e,i)=>{
+  const prev=fitPrevious(e.name),lastWeek=fitLastWeek(e.name);
+  return `<div class="card fit-exercise-card"><div class="card-title">${escapeHtml(e.name)}</div><p class="fit-target">${e.sets.length} sets × ${e.min===e.max?e.min:e.min+'–'+e.max} ${escapeHtml(e.unit)}</p>
+- <div class="fit-comparison"><div class="fit-last-week"><span class="fit-comparison-label">Last week${lastWeek?' · '+escapeHtml(new Date(lastWeek.date+'T12:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric'})):''}</span><span>${lastWeek?fitSetSummary(lastWeek):'No completed sets recorded'}</span></div>${prev?`<div class="fit-previous"><span class="fit-comparison-label">Last session</span><span>${fitSetSummary(prev)}</span></div>`:''}</div>
++ <div class="fit-comparison"><div class="fit-last-week"><span class="fit-comparison-label">Last week${lastWeek?' · '+escapeHtml(new Date(lastWeek.date+'T12:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric'})):''}</span><span>${lastWeek?fitSetSummary(lastWeek):'No completed sets recorded'}</span></div>${prev&&(!lastWeek||prev.date!==lastWeek.date)?`<div class="fit-previous"><span class="fit-comparison-label">Last session</span><span>${fitSetSummary(prev)}</span></div>`:''}</div>
+  <div class="fit-set fit-set-heading"><span>Set</span><span>Weight (${fitState.unit})</span><span>${e.unit.includes('seconds')?'Seconds':'Reps'}${e.unit.includes('/side')?' / side':e.unit.includes('/leg')?' / leg':''}</span><span>Done</span></div>
+  ${e.sets.map((s,j)=>`<div class="fit-set"><span class="fit-set-number">${j+1}</span><input class="inp" aria-label="${escapeHtml(e.name)} set ${j+1} weight" type="number" min="0" max="2000" step="0.25" inputmode="decimal" placeholder="—" value="${escapeHtml(s.weight)}" oninput="fitInput(${i},${j},'weight',this)"><input class="inp" aria-label="${escapeHtml(e.name)} set ${j+1} reps or seconds" type="number" min="1" max="999" step="1" inputmode="numeric" placeholder="—" value="${escapeHtml(s.reps)}" oninput="fitInput(${i},${j},'reps',this)"><button aria-label="Complete ${escapeHtml(e.name)} set ${j+1}" aria-pressed="${!!s.done}" onclick="fitComplete(${i},${j},this)">${s.done?'✓':'○'}</button></div>`).join('')}</div>`;
+  }).join('')+`<div class="card fit-finish-card">${d.exercises.length?'':`<p class="fit-muted">${fitDay==='Rest'?'Rest today. Optional gentle stretching.':'Easy cardio or recovery. Record activity and duration below.'}</p>`}<label>Notes<textarea class="inp" maxlength="2000" rows="2" placeholder="How did it feel?" oninput="fitDraft().notes=this.value;fitPersist()">${escapeHtml(d.notes)}</textarea></label><button class="btn btn-primary" onclick="finishWorkout()">Finish Workout</button></div>`;
+@@ -4158,6 +4147,16 @@
+ document.getElementById('homeBack').addEventListener('click',()=>closeHomePanel());
+ document.querySelectorAll('#dashboard .home-tile[data-open-drawer]').forEach(b=>{b.setAttribute('aria-controls','homeWorkspace');b.setAttribute('aria-expanded','false');});
+ 
++
++function closeMoreNavigation(){const menu=document.getElementById('navMore');if(menu)menu.hidden=true;document.getElementById('navMoreBtn')?.setAttribute('aria-expanded','false');}
++document.getElementById('navMoreBtn').onclick=()=>{const menu=document.getElementById('navMore');menu.hidden=!menu.hidden;document.getElementById('navMoreBtn').setAttribute('aria-expanded',String(!menu.hidden));};
++document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('navMore').hidden){closeMoreNavigation();document.getElementById('navMoreBtn').focus();}});
++document.addEventListener('click',e=>{if(!e.target.closest('.tabbar'))closeMoreNavigation();});
++function closeCustomerForm(){customerForm.reset();customerForm.hidden=true;delete customerForm.dataset.editId;document.getElementById('addCustomerBtn').setAttribute('aria-expanded','false');}
++function openCustomerForm(customer){customerForm.reset();customerForm.hidden=false;document.getElementById('addCustomerBtn').setAttribute('aria-expanded','true');document.getElementById('saveCustomerBtn').textContent=customer?'Save changes':'Save customer';if(customer){customerForm.dataset.editId=customer.id;for(const [id,key] of Object.entries({customerName:'name',preferences:'preferences',birthday:'birthday',sampleNote:'sampleNote',customerOrders:'previousOrders'}))document.getElementById(id).value=customer[key]||'';customerForm.querySelector('details').open=true;}else{delete customerForm.dataset.editId;customerForm.querySelector('details').open=false;}document.getElementById('customerName').focus();customerForm.scrollIntoView({block:'center',behavior:'smooth'});}
++document.getElementById('cancelCustomerBtn').onclick=()=>{closeCustomerForm();document.getElementById('addCustomerBtn').focus();};
++document.getElementById('cancelNameBtn').onclick=()=>{nameForm.hidden=true;document.getElementById('addNameBtn').setAttribute('aria-expanded','false');document.getElementById('addNameBtn').focus();};
++
+ const inviteModeActive = initInviteMode();
+ if (!inviteModeActive) {
+   render();
 --- a/sw.js
 +++ b/sw.js
 @@ -1,11 +1,21 @@
 -const cacheName = "akb-development-v43";
-+const cacheName = "akb-development-v52";
++const cacheName = "akb-development-v53";
  const assets = [
-+  "./budget-voice.js?v=52",
-+  "./budget-paycheck-ui.js?v=52",
-+  "./budget-decision-ui.js?v=52",
-+  "./budget-scenarios.js?v=52",
-+  "./budget-scenario-ui.js?v=52",
-+  "./budget.css?v=52",
-+  "./budget-engine.js?v=52",
-+  "./budget-xlsx.js?v=52",
-+  "./budget-template.js?v=52",
-+  "./budget-ui.js?v=52",
++  "./budget-voice.js?v=53",
++  "./budget-paycheck-ui.js?v=53",
++  "./budget-decision-ui.js?v=53",
++  "./budget-scenarios.js?v=53",
++  "./budget-scenario-ui.js?v=53",
++  "./budget.css?v=53",
++  "./budget-engine.js?v=53",
++  "./budget-xlsx.js?v=53",
++  "./budget-template.js?v=53",
++  "./budget-ui.js?v=53",
    "./",
    "./index.html",
 -  "./styles.css?v=43",
 -  "./finance-engine.js?v=43",
 -  "./app.js?v=43",
 -  "./cloud-config.js?v=43",
-+  "./styles.css?v=52",
-+  "./finance-engine.js?v=52",
-+  "./app.js?v=52",
-+  "./cloud-config.js?v=52",
++  "./styles.css?v=53",
++  "./finance-engine.js?v=53",
++  "./app.js?v=53",
++  "./cloud-config.js?v=53",
    "./manifest.json",
    "./icon.svg",
    "./assets/icon-180.png",
+--- a/styles.css
++++ b/styles.css
+@@ -2256,3 +2256,19 @@
+ .home-utilities{margin:4px 0 14px;border-top:1px solid #d9ded2}.home-utilities .system-panel{margin-top:0}
+ @media(max-width:650px){.home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.home-tile{min-height:139px;padding:15px}.home-tile-top{margin-bottom:14px}.home-tile strong{font-size:16px}.home-tile-caption{font-size:11px}.home-workspace .task-form{display:grid;grid-template-columns:minmax(0,1fr)}.home-workspace .task-form>*{min-width:0;max-width:100%}.home-workspace .task-form .task-details{grid-column:1/-1}}
+ @media(prefers-reduced-motion:reduce){.home-tile{transition:none}}
++
++/* Keep daily destinations first; secondary tools remain one tap away. */
++.tabbar{grid-template-columns:repeat(5,minmax(0,1fr));border-style:solid}
++.tabbar>.tab{min-width:0;overflow-wrap:anywhere}
++.nav-more-panel{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding-top:8px;border-top:1px solid #d9ded2}
++.nav-more-panel[hidden],#nameForm[hidden],#customerForm[hidden],.tabbar [hidden]{display:none!important}
++.customer-details{grid-column:1/-1;min-width:0}
++.customer-details>summary{cursor:pointer;padding:10px 0;color:#65705f}
++.customer-details input,.customer-details textarea{display:block;width:100%;margin-bottom:8px;box-sizing:border-box}
++#customerForm textarea{max-width:100%;min-width:0}
++@media(max-width:650px){.nav-more-panel{grid-template-columns:repeat(2,minmax(0,1fr))}}
++/* File controls must shrink with the mobile upload form. */
++.upload-form,.upload-form>*{min-width:0;max-width:100%}
++.upload-form input[type=file]{width:100%;box-sizing:border-box}
++
++.person-details{grid-column:1/-1;min-width:0}.person-details>summary{cursor:pointer;padding:10px 0;color:#65705f}.person-details input,.person-details select{width:100%;box-sizing:border-box;margin-bottom:8px}
