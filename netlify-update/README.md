@@ -1,10 +1,10 @@
-# Netlify Life Hub v55
+# Netlify Life Hub v56
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v55.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v56.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -121,3 +121,11 @@ The calendar is a private runtime snapshot, not ongoing iCloud synchronization. 
 A corrected private household schedule import was prepared separately from source: CCB on the 19th, variable biweekly Wednesday pay anchored to the user-confirmed date, with a matching calendar cutoff. It must be reviewed/imported in the browser/device holding the ledger. Existing unrelated income remains active; whether business income should be paused is awaiting user clarification. Payroll rates/break/deduction assumptions also await confirmation.
 
 Validation: planning.cjs covers cutoff boundaries, overnight start-date assignment, breaks, gross/net calculations, incomplete coverage, overlaps/dedup, weekday rules, linked imports and graph statement history. planning-browser.cjs verifies mobile graph, reviewed snapshot import, settings, backup-ready persistence and unchanged actual financial records. Existing pure budget/paycheque/scenario and Finance/paycheque/offline browser regressions pass. Current live release before this change: v54 under AKB; v55 prepared for review.
+
+## Local-time shift premiums (v56)
+
+Calendar estimate assumptions now support editable hourly premium windows, including overnight windows. Work is segmented by local clock minutes; start is inclusive and end exclusive. Users explicitly choose highest-only or stacked overlap treatment. Base pay plus premiums is calculated before the approximate net percentage. Without timed breaks, nonzero unpaid minutes are prorated across rate windows; zero means all breaks paid. Missing premium endpoints or an unset overlap rule disable monetary estimates until completed. Calendar refresh/import retains or explicitly updates supplied assumptions instead of silently dropping incoming rates.
+
+Alberta Time uses UTC-06 year-round from November 1, 2026. The formatter normalizes this rule even on clients with older timezone databases; other zones use their browser timezone rules. Source: https://www.alberta.ca/albertas-new-time-system-abt . User payroll figures and calendar shifts remain in private runtime files only.
+
+Tests cover premium boundaries, midnight/overnight work, overlapping-window replacement/stacking, unpaid-minute proration, spring/fall transitions in a zone that still observes them, incomplete rules, subtotal breakdown and net-after-premiums. Browser coverage verifies adding, editing, saving and restoring premium assumptions, importing private calendar data and preserving actual records. Existing paycheque and Finance browser suites pass. Before this update v55 is live; v56 contains the premium support.
