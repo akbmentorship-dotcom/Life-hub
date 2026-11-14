@@ -5,8 +5,8 @@
      <link rel="apple-touch-icon" href="assets/icon-180.png" />
      <link rel="manifest" href="manifest.json" />
 -    <link rel="stylesheet" href="styles.css?v=43" />
-+    <link rel="stylesheet" href="styles.css?v=59" />
-+    <link rel="stylesheet" href="budget.css?v=59" />
++    <link rel="stylesheet" href="styles.css?v=60" />
++    <link rel="stylesheet" href="budget.css?v=60" />
    </head>
    <body>
      <section class="invite-claim" id="partnerInvitePanel" hidden>
@@ -184,20 +184,20 @@
 -    <script src="cloud-config.js?v=43"></script>
 -    <script src="finance-engine.js?v=43"></script>
 -    <script src="app.js?v=43"></script>
-+    <script src="cloud-config.js?v=59"></script>
-+    <script src="finance-engine.js?v=59"></script>
-+    <script src="app.js?v=59"></script>
-+    <script src="budget-engine.js?v=59"></script>
-+    <script src="budget-xlsx.js?v=59"></script>
-+    <script src="budget-template.js?v=59"></script>
-+    <script src="budget-scenarios.js?v=59"></script>
++    <script src="cloud-config.js?v=60"></script>
++    <script src="finance-engine.js?v=60"></script>
++    <script src="app.js?v=60"></script>
++    <script src="budget-engine.js?v=60"></script>
++    <script src="budget-xlsx.js?v=60"></script>
++    <script src="budget-template.js?v=60"></script>
++    <script src="budget-scenarios.js?v=60"></script>
 +
-+    <script src="budget-decision-ui.js?v=59"></script>
-+    <script src="budget-paycheck-ui.js?v=59"></script>
-+    <script src="budget-planning-ui.js?v=59"></script>
-+    <script src="budget-layout.js?v=59"></script>
-+    <script src="budget-ui.js?v=59"></script>
-+    <script src="budget-voice.js?v=59"></script>
++    <script src="budget-decision-ui.js?v=60"></script>
++    <script src="budget-paycheck-ui.js?v=60"></script>
++    <script src="budget-planning-ui.js?v=60"></script>
++    <script src="budget-layout.js?v=60"></script>
++    <script src="budget-ui.js?v=60"></script>
++    <script src="budget-voice.js?v=60"></script>
    </body>
  </html>
 --- a/app.js
@@ -310,16 +310,28 @@
  function fitLastWeek(name){
   const monday=new Date(fitDate+'T12:00:00');
   monday.setDate(monday.getDate()-((monday.getDay()+6)%7));
-@@ -4026,7 +4015,7 @@
+@@ -4025,16 +4014,17 @@
+   </div></details>
   </div>`+d.exercises.map((e,i)=>{
   const prev=fitPrevious(e.name),lastWeek=fitLastWeek(e.name);
-  return `<div class="card fit-exercise-card"><div class="card-title">${escapeHtml(e.name)}</div><p class="fit-target">${e.sets.length} sets × ${e.min===e.max?e.min:e.min+'–'+e.max} ${escapeHtml(e.unit)}</p>
+- return `<div class="card fit-exercise-card"><div class="card-title">${escapeHtml(e.name)}</div><p class="fit-target">${e.sets.length} sets × ${e.min===e.max?e.min:e.min+'–'+e.max} ${escapeHtml(e.unit)}</p>
 - <div class="fit-comparison"><div class="fit-last-week"><span class="fit-comparison-label">Last week${lastWeek?' · '+escapeHtml(new Date(lastWeek.date+'T12:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric'})):''}</span><span>${lastWeek?fitSetSummary(lastWeek):'No completed sets recorded'}</span></div>${prev?`<div class="fit-previous"><span class="fit-comparison-label">Last session</span><span>${fitSetSummary(prev)}</span></div>`:''}</div>
++ return `<div class="card fit-exercise-card"><div class="card-title">${escapeHtml(e.name)}</div><details class="fit-exercise-edit"><summary>Edit exercise</summary><form onsubmit="fitRenameExercise(${i},this);return false"><label>Exercise name<input class="inp" name="exerciseName" maxlength="100" value="${escapeHtml(e.name)}"></label><p class="fit-muted">This workout only. Your sets and completed entries stay with this exercise.</p><div class="fin-actions"><button class="btn btn-primary" type="submit">Save exercise</button><button class="btn btn-ghost" type="button" onclick="renderFitness()">Cancel</button></div></form></details><p class="fit-target">${e.sets.length} sets × ${e.min===e.max?e.min:e.min+'–'+e.max} ${escapeHtml(e.unit)}</p>
 + <div class="fit-comparison"><div class="fit-last-week"><span class="fit-comparison-label">Last week${lastWeek?' · '+escapeHtml(new Date(lastWeek.date+'T12:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric'})):''}</span><span>${lastWeek?fitSetSummary(lastWeek):'No completed sets recorded'}</span></div>${prev&&(!lastWeek||prev.date!==lastWeek.date)?`<div class="fit-previous"><span class="fit-comparison-label">Last session</span><span>${fitSetSummary(prev)}</span></div>`:''}</div>
   <div class="fit-set fit-set-heading"><span>Set</span><span>Weight (${fitState.unit})</span><span>${e.unit.includes('seconds')?'Seconds':'Reps'}${e.unit.includes('/side')?' / side':e.unit.includes('/leg')?' / leg':''}</span><span>Done</span></div>
   ${e.sets.map((s,j)=>`<div class="fit-set"><span class="fit-set-number">${j+1}</span><input class="inp" aria-label="${escapeHtml(e.name)} set ${j+1} weight" type="number" min="0" max="2000" step="0.25" inputmode="decimal" placeholder="—" value="${escapeHtml(s.weight)}" oninput="fitInput(${i},${j},'weight',this)"><input class="inp" aria-label="${escapeHtml(e.name)} set ${j+1} reps or seconds" type="number" min="1" max="999" step="1" inputmode="numeric" placeholder="—" value="${escapeHtml(s.reps)}" oninput="fitInput(${i},${j},'reps',this)"><button aria-label="Complete ${escapeHtml(e.name)} set ${j+1}" aria-pressed="${!!s.done}" onclick="fitComplete(${i},${j},this)">${s.done?'✓':'○'}</button></div>`).join('')}</div>`;
   }).join('')+`<div class="card fit-finish-card">${d.exercises.length?'':`<p class="fit-muted">${fitDay==='Rest'?'Rest today. Optional gentle stretching.':'Easy cardio or recovery. Record activity and duration below.'}</p>`}<label>Notes<textarea class="inp" maxlength="2000" rows="2" placeholder="How did it feel?" oninput="fitDraft().notes=this.value;fitPersist()">${escapeHtml(d.notes)}</textarea></label><button class="btn btn-primary" onclick="finishWorkout()">Finish Workout</button></div>`;
-@@ -4158,6 +4147,16 @@
+ }
+ function fitChangeDate(el){if(!fitValidDate(el.value)){el.setCustomValidity('Choose a valid date');return;}el.setCustomValidity('');fitDate=el.value;fitDay=fitScheduled(fitDate);renderFitness();}
+ function fitSelect(day){if(!Object.hasOwn(fitPrograms,day))return;fitDay=day;fitState.schedule[fitDate]=day;fitPersist();renderFitness();}
+-function fitSetStart(el){if(!fitValidDate(el.value))return;fitState.start=el.value;for(const [key,d] of Object.entries(fitState.drafts)){if(!d.notes&&d.exercises?.every(e=>e.sets.every(s=>s.weight===''&&s.reps===''&&!s.done)))delete fitState.drafts[key];}fitPersist();renderFitness();}
++function fitSetStart(el){if(!fitValidDate(el.value))return;fitState.start=el.value;for(const [key,d] of Object.entries(fitState.drafts)){if(!d.notes&&d.exercises?.every(e=>!e.customized&&e.sets.every(s=>s.weight===''&&s.reps===''&&!s.done)))delete fitState.drafts[key];}fitPersist();renderFitness();}
+ function fitReschedule(){const target=document.getElementById('fit-move-date').value;if(!fitValidDate(target)||target===fitDate){fitToast('Choose a different valid date');return;}const other=fitScheduled(target);fitState.schedule[target]=fitDay;fitState.schedule[fitDate]=other;fitPersist();fitDate=target;renderFitness();}
++function fitRenameExercise(i,form){const input=form.elements.exerciseName,name=input.value.trim(),d=fitDraft(),exercise=d.exercises[i];if(!exercise)return;if(!name||name.length>100){input.setCustomValidity('Enter an exercise name up to 100 characters');input.reportValidity();input.oninput=()=>input.setCustomValidity('');return;}if(d.exercises.some((e,j)=>j!==i&&e.name.toLowerCase()===name.toLowerCase())){input.setCustomValidity('Use a distinct name for each exercise in this workout');input.reportValidity();input.oninput=()=>input.setCustomValidity('');return;}if(name!==exercise.name){exercise.originalName=exercise.originalName||exercise.name;exercise.name=name;exercise.customized=true;fitPersist();}renderFitness();fitToast('Exercise saved for this workout');}
+ function fitInput(i,j,field,el){const valid=el.value===''||(fitNumber(el.value,field==='weight'?2000:999)&&(field==='weight'||(Number.isInteger(Number(el.value))&&Number(el.value)>0)));el.setCustomValidity(valid?'':'Enter a valid positive whole count or nonnegative weight');el.setAttribute('aria-invalid',String(!valid));if(!valid)return;const s=fitDraft().exercises[i].sets[j];s[field]=el.value;s.done=false;const button=el.parentElement.querySelector('button');button.setAttribute('aria-pressed','false');button.textContent='○';fitPersist();}
+ function fitComplete(i,j,button){const row=button.parentElement;if(!Array.from(row.querySelectorAll('input')).every(el=>el.reportValidity()))return;const s=fitDraft().exercises[i].sets[j];if(!s.done&&(!fitNumber(s.weight)||!fitNumber(s.reps,999)||Number(s.reps)<1)){fitToast('Enter weight (0 for bodyweight) and reps / seconds');return;}s.done=!s.done;button.setAttribute('aria-pressed',String(s.done));button.textContent=s.done?'✓':'○';fitPersist();}
+ function finishWorkout(){if(!Array.from(document.querySelectorAll('#fit-today input')).every(el=>el.reportValidity()))return;const d=fitDraft();const sets=d.exercises.flatMap(e=>e.sets);if(sets.length&&!sets.some(s=>s.done)){fitToast('Complete at least one set first');return;}if(sets.some(s=>!s.done)&&!confirm('Finish with incomplete sets? Only checked sets count toward progression.'))return;const key=fitDate+'|'+fitDay;if(fitState.sessions.some(s=>s.key===key)){fitToast('This workout is already finished for this date. Your draft is retained.');return;}fitState.sessions.unshift({...JSON.parse(JSON.stringify(d)),key,weightUnit:fitState.unit,finished:new Date().toISOString()});delete fitState.drafts[key];fitPersist();fitToast('Workout finished');fitTab('summary');}
+@@ -4158,6 +4148,16 @@
  document.getElementById('homeBack').addEventListener('click',()=>closeHomePanel());
  document.querySelectorAll('#dashboard .home-tile[data-open-drawer]').forEach(b=>{b.setAttribute('aria-controls','homeWorkspace');b.setAttribute('aria-expanded','false');});
  
@@ -340,29 +352,29 @@
 +++ b/sw.js
 @@ -1,11 +1,22 @@
 -const cacheName = "akb-development-v43";
-+const cacheName = "akb-development-v59";
++const cacheName = "akb-development-v60";
  const assets = [
-+  "./budget-layout.js?v=59",
-+  "./budget-planning-ui.js?v=59",
-+  "./budget-voice.js?v=59",
-+  "./budget-paycheck-ui.js?v=59",
-+  "./budget-decision-ui.js?v=59",
-+  "./budget-scenarios.js?v=59",
-+  "./budget.css?v=59",
-+  "./budget-engine.js?v=59",
-+  "./budget-xlsx.js?v=59",
-+  "./budget-template.js?v=59",
-+  "./budget-ui.js?v=59",
++  "./budget-layout.js?v=60",
++  "./budget-planning-ui.js?v=60",
++  "./budget-voice.js?v=60",
++  "./budget-paycheck-ui.js?v=60",
++  "./budget-decision-ui.js?v=60",
++  "./budget-scenarios.js?v=60",
++  "./budget.css?v=60",
++  "./budget-engine.js?v=60",
++  "./budget-xlsx.js?v=60",
++  "./budget-template.js?v=60",
++  "./budget-ui.js?v=60",
    "./",
    "./index.html",
 -  "./styles.css?v=43",
 -  "./finance-engine.js?v=43",
 -  "./app.js?v=43",
 -  "./cloud-config.js?v=43",
-+  "./styles.css?v=59",
-+  "./finance-engine.js?v=59",
-+  "./app.js?v=59",
-+  "./cloud-config.js?v=59",
++  "./styles.css?v=60",
++  "./finance-engine.js?v=60",
++  "./app.js?v=60",
++  "./cloud-config.js?v=60",
    "./manifest.json",
    "./icon.svg",
    "./assets/icon-180.png",

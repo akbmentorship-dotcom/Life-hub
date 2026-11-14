@@ -1,10 +1,10 @@
-# Netlify Life Hub v59
+# Netlify Life Hub v60
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v59.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v60.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -149,3 +149,9 @@ The isolated money-layout test verifies three primary areas, one graph, actual p
 This payday keeps the linked calendar income’s next pay visible, even when another household income comes first. The compact card shows estimated take-home, pay date, scheduled hours and snapshot refresh date, with one button to reveal the matching cutoff/premium breakdown. Missing coverage, overlapping shifts and cycle mismatches show review prompts instead of an unsupported dollar estimate. The matching date is omitted from the generic list to avoid duplication. No private household values are embedded in source. Calendar data remains a reviewed snapshot, not live sync.
 
 Planning browser coverage verifies visibility alongside an earlier household payday, changed-shift recalculation, one-tap breakdown, unchanged actual ledger, reload and mobile widths. Money layout and offline cache regressions pass.
+
+## Workout exercise editing (v60)
+
+Each Fitness exercise has a compact Edit exercise disclosure with one name field and Save/Cancel. Substitutions apply to that workout draft only and preserve all set weights, counts and completion flags. The saved workout and future history comparisons use the substituted name, preventing a replacement from being presented as the original movement. The base program and previous sessions remain unchanged. Customized empty drafts also survive program-start changes.
+
+fitness-edit.cjs verifies cancellation, blank-name validation, completed-set preservation, per-date scope, reload, finished history and mobile widths. Existing Fitness/app workflow and offline-cache tests pass.
