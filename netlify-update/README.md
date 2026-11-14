@@ -1,10 +1,10 @@
-# Netlify Life Hub v60
+# Netlify Life Hub v61
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v60.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v61.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -155,3 +155,7 @@ Planning browser coverage verifies visibility alongside an earlier household pay
 Each Fitness exercise has a compact Edit exercise disclosure with one name field and Save/Cancel. Substitutions apply to that workout draft only and preserve all set weights, counts and completion flags. The saved workout and future history comparisons use the substituted name, preventing a replacement from being presented as the original movement. The base program and previous sessions remain unchanged. Customized empty drafts also survive program-start changes.
 
 fitness-edit.cjs verifies cancellation, blank-name validation, completed-set preservation, per-date scope, reload, finished history and mobile widths. Existing Fitness/app workflow and offline-cache tests pass.
+
+## Add workout sets (v61)
+
+An Add set button at the bottom of each exercise appends a blank, unchecked weight/reps row and focuses its weight field. Existing entries and completion flags are preserved. Extra sets belong to the current workout, persist across reload and appear in finished history. Customized empty drafts survive program-start changes. Exercise editing and offline-cache tests cover added-set persistence and completion.
