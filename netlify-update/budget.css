@@ -27,3 +27,5 @@
 #decision-history .fin-row{align-items:flex-start}#decision-history .btn{flex:0 0 auto}
 
 #fin-paycheck-section .fin-row{align-items:flex-start}#fin-paycheck-section .fin-row>div:last-child{min-width:92px;text-align:right}#fin-paycheck-section .fin-row .btn{max-width:100%;padding:8px}#fin-paycheck-section select{max-width:100%}
+
+#page-finance .fin-progress-card svg{display:block;width:100%;max-height:220px;color:#5a665e}#page-finance .fin-progress-card h2{margin-top:8px}#page-finance .fin-progress-card .fin-total{display:block}

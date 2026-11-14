@@ -1,10 +1,10 @@
-# Netlify Life Hub v54
+# Netlify Life Hub v55
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v54.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v55.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -109,3 +109,15 @@ Review includes cumulative v43 host changes and the styles.css delta against the
 The next-focus card shows the funded recommendation from the latest active actual household pay period, including its extra-debt component. Recurring payment on file is moved into plan details and is explicitly separate from extra allocations. Without current actual pay, the card asks for take-home pay instead of inventing an extra amount. Expired periods are excluded. Completed-payment forms start blank rather than defaulting to the recurring amount. Existing minimums, schedules, balances and actual history are unchanged. Regression cases include a $50 recurring payment with a $700 total funded recommendation ($650 extra), missing/expired pay, UI display and blank actual-payment entry. Pure paycheque and Finance/paycheque browser tests pass.
 
 Transfer to AKB was verified; v53 is live at the original URL. v54 is the next reviewed correction. No paid plan was added.
+
+## Debt progress and private pay calendar (v55)
+
+A mobile SVG graph shows full-account balance history for the current debt focus, opening/current amounts and net reduction. The line is calculated from actual recorded events with estimated interest; gold squares mark lender statement checkpoints, and the green endpoint remains a projection. Milestone focus is explicitly distinguished from its full-account graph. Balance reduction includes interest/reconciliations rather than claiming all reduction was a payment.
+
+Optional private pay-calendar JSON links a reviewed snapshot of timed Work shifts to an income source. Fourteen-day payroll periods end inclusively at cutoff; the cutoff-to-pay lag is configurable. Whole overnight shifts belong to their local start date. Per-shift unpaid minutes, gross hourly rate and approximate take-home percentage are explicit assumptions. Without rate/percentage, dollar estimates remain unset. Duplicate shift IDs, invalid timestamps, overlapping shifts and incomplete coverage cannot silently produce dollar estimates. Expected income remains distinct from actual received pay and cannot fund debt allocations.
+
+The calendar is a private runtime snapshot, not ongoing iCloud synchronization. The chat calendar connector does not grant website credentials; no backend or Apple credential/public calendar URL was introduced. Refresh snapshots as shifts change or coverage ends. Snapshot data and assumptions are included in private Finance backups and validated on restore. The combined private schedule importer can map its calendar income ID onto an existing source, preserving IDs, actual pay, transactions and balances. No work schedule or household-specific dates/financial values are committed or deployed.
+
+A corrected private household schedule import was prepared separately from source: CCB on the 19th, variable biweekly Wednesday pay anchored to the user-confirmed date, with a matching calendar cutoff. It must be reviewed/imported in the browser/device holding the ledger. Existing unrelated income remains active; whether business income should be paused is awaiting user clarification. Payroll rates/break/deduction assumptions also await confirmation.
+
+Validation: planning.cjs covers cutoff boundaries, overnight start-date assignment, breaks, gross/net calculations, incomplete coverage, overlaps/dedup, weekday rules, linked imports and graph statement history. planning-browser.cjs verifies mobile graph, reviewed snapshot import, settings, backup-ready persistence and unchanged actual financial records. Existing pure budget/paycheque/scenario and Finance/paycheque/offline browser regressions pass. Current live release before this change: v54 under AKB; v55 prepared for review.
