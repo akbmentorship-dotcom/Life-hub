@@ -31,3 +31,11 @@
 #page-finance .fin-progress-card svg{display:block;width:100%;max-height:220px;color:#5a665e}#page-finance .fin-progress-card h2{margin-top:8px}#page-finance .fin-progress-card .fin-total{display:block}
 
 #page-finance .fin-premium-row{border:1px solid #d9ded2;border-radius:12px;padding:12px;margin:10px 0;min-width:0}#page-finance .fin-premium-row input{max-width:100%;box-sizing:border-box}
+#page-finance .fin-main-area{border:1px solid #d9ded2;border-radius:16px;background:#fff;padding:18px;margin:14px 0}
+#page-finance .fin-main-area .card{border:0;box-shadow:none;padding:0;margin:0 0 12px}
+#page-finance #fin-progress{margin:12px 0}#page-finance .fin-archive-data{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:350px;overflow:auto}
+#page-finance #fin-pay-entry{margin:12px 0}#page-finance #fin-manage>summary{font-weight:700}
+#page-finance #fin-manage .card{box-shadow:none}#page-finance #fin-voice-dialog{max-width:460px;width:calc(100% - 36px);max-height:85vh;border:1px solid #d9ded2;border-radius:16px;padding:16px;box-sizing:border-box}
+#page-finance #fin-voice-dialog::backdrop{background:#0007}#page-finance .fin-mic{min-width:44px;min-height:44px}
+
+#page-finance #fin-pay-entry:not([open]),#page-finance #decision-form[hidden]{display:none!important}

@@ -1,10 +1,10 @@
-# Netlify Life Hub v57
+# Netlify Life Hub v58
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v57.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v58.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -135,3 +135,11 @@ Tests cover premium boundaries, midnight/overnight work, overlapping-window repl
 A Pay & estimates card appears immediately after the main debt focus, showing the next three scheduled income items with calendar-estimated take-home distinguished from other expected amounts. One button opens calendar estimates, and another opens the existing private setup picker without digging through household settings. The #pay-estimates deep link opens the existing Money view and its calendar section. No financial values are encoded in the URL.
 
 Browser tests cover direct navigation/deep-link reload, setup-picker import, mapping existing income without duplicates and unchanged debt/payment/paycheque records. Both available desktop Chrome profiles were inspected through the normal UI and had zero Finance accounts; no personal setup was applied to those empty profiles. The browser holding the user's ledger must still perform the private runtime import. Data is still browser-local, not silently synchronized or packaged with private setup.
+
+## Money simplification (v58)
+
+Money has three primary areas: next debt goal with one progress graph, This payday with actual-pay planning and recording, and Before we spend for quick decisions. Debt balances, setup, schedules, calendar estimates, histories, imports, backups and archived records live under Manage Money. Voice opens from small microphone buttons.
+
+Standalone CFO, legacy Money, advanced scenario and savings dashboards no longer compete with the daily workflow. Historical records and advanced scenario assumptions remain available in read-only archives and exports. No ledger migration or deletion occurs. Existing local storage keys, calculations and other Life Hub features are preserved.
+
+The isolated money-layout test verifies three primary areas, one graph, actual pay and payment recording, voice dialog, archives, unique IDs, persistence and narrow mobile widths. Browser regressions cover Finance, paycheck actions, calendar planning, unrelated app workflows and offline upgrades. Private financial data is excluded from source and deployment.

@@ -5,8 +5,8 @@
      <link rel="apple-touch-icon" href="assets/icon-180.png" />
      <link rel="manifest" href="manifest.json" />
 -    <link rel="stylesheet" href="styles.css?v=43" />
-+    <link rel="stylesheet" href="styles.css?v=57" />
-+    <link rel="stylesheet" href="budget.css?v=57" />
++    <link rel="stylesheet" href="styles.css?v=58" />
++    <link rel="stylesheet" href="budget.css?v=58" />
    </head>
    <body>
      <section class="invite-claim" id="partnerInvitePanel" hidden>
@@ -177,26 +177,27 @@
              </div>
            </details>
            <details class="phone-drawer">
-@@ -591,8 +595,18 @@
+@@ -591,8 +595,19 @@
      </dialog>
  
      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 -    <script src="cloud-config.js?v=43"></script>
 -    <script src="finance-engine.js?v=43"></script>
 -    <script src="app.js?v=43"></script>
-+    <script src="cloud-config.js?v=57"></script>
-+    <script src="finance-engine.js?v=57"></script>
-+    <script src="app.js?v=57"></script>
-+    <script src="budget-engine.js?v=57"></script>
-+    <script src="budget-xlsx.js?v=57"></script>
-+    <script src="budget-template.js?v=57"></script>
-+    <script src="budget-scenarios.js?v=57"></script>
-+    <script src="budget-scenario-ui.js?v=57"></script>
-+    <script src="budget-decision-ui.js?v=57"></script>
-+    <script src="budget-paycheck-ui.js?v=57"></script>
-+    <script src="budget-planning-ui.js?v=57"></script>
-+    <script src="budget-ui.js?v=57"></script>
-+    <script src="budget-voice.js?v=57"></script>
++    <script src="cloud-config.js?v=58"></script>
++    <script src="finance-engine.js?v=58"></script>
++    <script src="app.js?v=58"></script>
++    <script src="budget-engine.js?v=58"></script>
++    <script src="budget-xlsx.js?v=58"></script>
++    <script src="budget-template.js?v=58"></script>
++    <script src="budget-scenarios.js?v=58"></script>
++
++    <script src="budget-decision-ui.js?v=58"></script>
++    <script src="budget-paycheck-ui.js?v=58"></script>
++    <script src="budget-planning-ui.js?v=58"></script>
++    <script src="budget-layout.js?v=58"></script>
++    <script src="budget-ui.js?v=58"></script>
++    <script src="budget-voice.js?v=58"></script>
    </body>
  </html>
 --- a/app.js
@@ -339,29 +340,29 @@
 +++ b/sw.js
 @@ -1,11 +1,22 @@
 -const cacheName = "akb-development-v43";
-+const cacheName = "akb-development-v57";
++const cacheName = "akb-development-v58";
  const assets = [
-+  "./budget-planning-ui.js?v=57",
-+  "./budget-voice.js?v=57",
-+  "./budget-paycheck-ui.js?v=57",
-+  "./budget-decision-ui.js?v=57",
-+  "./budget-scenarios.js?v=57",
-+  "./budget-scenario-ui.js?v=57",
-+  "./budget.css?v=57",
-+  "./budget-engine.js?v=57",
-+  "./budget-xlsx.js?v=57",
-+  "./budget-template.js?v=57",
-+  "./budget-ui.js?v=57",
++  "./budget-layout.js?v=58",
++  "./budget-planning-ui.js?v=58",
++  "./budget-voice.js?v=58",
++  "./budget-paycheck-ui.js?v=58",
++  "./budget-decision-ui.js?v=58",
++  "./budget-scenarios.js?v=58",
++  "./budget.css?v=58",
++  "./budget-engine.js?v=58",
++  "./budget-xlsx.js?v=58",
++  "./budget-template.js?v=58",
++  "./budget-ui.js?v=58",
    "./",
    "./index.html",
 -  "./styles.css?v=43",
 -  "./finance-engine.js?v=43",
 -  "./app.js?v=43",
 -  "./cloud-config.js?v=43",
-+  "./styles.css?v=57",
-+  "./finance-engine.js?v=57",
-+  "./app.js?v=57",
-+  "./cloud-config.js?v=57",
++  "./styles.css?v=58",
++  "./finance-engine.js?v=58",
++  "./app.js?v=58",
++  "./cloud-config.js?v=58",
    "./manifest.json",
    "./icon.svg",
    "./assets/icon-180.png",
