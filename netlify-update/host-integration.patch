@@ -5,8 +5,8 @@
      <link rel="apple-touch-icon" href="assets/icon-180.png" />
      <link rel="manifest" href="manifest.json" />
 -    <link rel="stylesheet" href="styles.css?v=43" />
-+    <link rel="stylesheet" href="styles.css?v=53" />
-+    <link rel="stylesheet" href="budget.css?v=53" />
++    <link rel="stylesheet" href="styles.css?v=54" />
++    <link rel="stylesheet" href="budget.css?v=54" />
    </head>
    <body>
      <section class="invite-claim" id="partnerInvitePanel" hidden>
@@ -184,18 +184,18 @@
 -    <script src="cloud-config.js?v=43"></script>
 -    <script src="finance-engine.js?v=43"></script>
 -    <script src="app.js?v=43"></script>
-+    <script src="cloud-config.js?v=53"></script>
-+    <script src="finance-engine.js?v=53"></script>
-+    <script src="app.js?v=53"></script>
-+    <script src="budget-engine.js?v=53"></script>
-+    <script src="budget-xlsx.js?v=53"></script>
-+    <script src="budget-template.js?v=53"></script>
-+    <script src="budget-scenarios.js?v=53"></script>
-+    <script src="budget-scenario-ui.js?v=53"></script>
-+    <script src="budget-decision-ui.js?v=53"></script>
-+    <script src="budget-paycheck-ui.js?v=53"></script>
-+    <script src="budget-ui.js?v=53"></script>
-+    <script src="budget-voice.js?v=53"></script>
++    <script src="cloud-config.js?v=54"></script>
++    <script src="finance-engine.js?v=54"></script>
++    <script src="app.js?v=54"></script>
++    <script src="budget-engine.js?v=54"></script>
++    <script src="budget-xlsx.js?v=54"></script>
++    <script src="budget-template.js?v=54"></script>
++    <script src="budget-scenarios.js?v=54"></script>
++    <script src="budget-scenario-ui.js?v=54"></script>
++    <script src="budget-decision-ui.js?v=54"></script>
++    <script src="budget-paycheck-ui.js?v=54"></script>
++    <script src="budget-ui.js?v=54"></script>
++    <script src="budget-voice.js?v=54"></script>
    </body>
  </html>
 --- a/app.js
@@ -338,28 +338,28 @@
 +++ b/sw.js
 @@ -1,11 +1,21 @@
 -const cacheName = "akb-development-v43";
-+const cacheName = "akb-development-v53";
++const cacheName = "akb-development-v54";
  const assets = [
-+  "./budget-voice.js?v=53",
-+  "./budget-paycheck-ui.js?v=53",
-+  "./budget-decision-ui.js?v=53",
-+  "./budget-scenarios.js?v=53",
-+  "./budget-scenario-ui.js?v=53",
-+  "./budget.css?v=53",
-+  "./budget-engine.js?v=53",
-+  "./budget-xlsx.js?v=53",
-+  "./budget-template.js?v=53",
-+  "./budget-ui.js?v=53",
++  "./budget-voice.js?v=54",
++  "./budget-paycheck-ui.js?v=54",
++  "./budget-decision-ui.js?v=54",
++  "./budget-scenarios.js?v=54",
++  "./budget-scenario-ui.js?v=54",
++  "./budget.css?v=54",
++  "./budget-engine.js?v=54",
++  "./budget-xlsx.js?v=54",
++  "./budget-template.js?v=54",
++  "./budget-ui.js?v=54",
    "./",
    "./index.html",
 -  "./styles.css?v=43",
 -  "./finance-engine.js?v=43",
 -  "./app.js?v=43",
 -  "./cloud-config.js?v=43",
-+  "./styles.css?v=53",
-+  "./finance-engine.js?v=53",
-+  "./app.js?v=53",
-+  "./cloud-config.js?v=53",
++  "./styles.css?v=54",
++  "./finance-engine.js?v=54",
++  "./app.js?v=54",
++  "./cloud-config.js?v=54",
    "./manifest.json",
    "./icon.svg",
    "./assets/icon-180.png",

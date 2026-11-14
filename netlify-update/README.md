@@ -1,10 +1,10 @@
-# Netlify Life Hub v53
+# Netlify Life Hub v54
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v53.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v54.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -103,3 +103,9 @@ Quick financial decisions and Advanced What If share one section. Recorded savin
 No data migration or automatic ledger writes. Existing storage keys, historical financial ledgers, partner records and Fitness data are unchanged. New simplicity.cjs exercises real navigation, customer create/edit/cancel, person capture, role switches, all ten screens at 320/390/760px, reload and unrelated ledger preservation. Existing Finance/browser, paycheck/browser, Life Hub/Fitness and offline-cache tests pass.
 
 Review includes cumulative v43 host changes and the styles.css delta against the previous v52 package. v53 is prepared for review, not deployed. The v52 publishing attempt stalled at Netlify upload; production was still v47 at the last verified check.
+
+## Target payment clarity (v54)
+
+The next-focus card shows the funded recommendation from the latest active actual household pay period, including its extra-debt component. Recurring payment on file is moved into plan details and is explicitly separate from extra allocations. Without current actual pay, the card asks for take-home pay instead of inventing an extra amount. Expired periods are excluded. Completed-payment forms start blank rather than defaulting to the recurring amount. Existing minimums, schedules, balances and actual history are unchanged. Regression cases include a $50 recurring payment with a $700 total funded recommendation ($650 extra), missing/expired pay, UI display and blank actual-payment entry. Pure paycheque and Finance/paycheque browser tests pass.
+
+Transfer to AKB was verified; v53 is live at the original URL. v54 is the next reviewed correction. No paid plan was added.
