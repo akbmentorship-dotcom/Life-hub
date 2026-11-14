@@ -7,7 +7,7 @@ function fixture(){const xml=s=>`<?xml version="1.0"?><worksheet xmlns="http://s
  const root=path.resolve(__dirname,'..');const server=http.createServer((req,res)=>{const name=decodeURIComponent(req.url.split('?')[0]);const file=path.join(root,name==='/'?'index.html':name);if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}try{res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html':'application/octet-stream');res.end(fs.readFileSync(file));}catch{res.writeHead(404).end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try{const page=await browser.newPage({viewport:{width:390,height:844}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.route('**/cloud-config.js*',r=>r.fulfill({contentType:'application/javascript',body:'window.AKB_CLOUD_CONFIG={};'}));await page.route('https://**',r=>r.abort());await page.goto('http://127.0.0.1:'+server.address().port+'/');await page.evaluate(()=>{localStorage.clear();localStorage.setItem('unrelated','preserve');});await page.reload();await page.evaluate(()=>activateTab('money'));
+ await page.route('**/cloud-config.js*',r=>r.fulfill({contentType:'application/javascript',body:'window.AKB_CLOUD_CONFIG={};'}));await page.route('https://**',r=>r.abort());await page.goto('http://127.0.0.1:'+server.address().port+'/');await page.evaluate(()=>{localStorage.clear();localStorage.setItem('unrelated','preserve');});await page.reload();await page.evaluate(()=>{activateTab('money');finReveal('fin-manage');finReveal('fin-pay-entry');});
  await page.getByText('Import Excel workbook',{exact:true}).click();await page.locator('#fin-workbook').setInputFiles({name:'synthetic.xlsx',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',buffer:fixture()});await page.getByRole('button',{name:'Choose columns',exact:true}).click();
  for(const [k,col] of Object.entries({name:0,balance:1,apr:2,payment:3}))await page.locator('#fin-map-'+k).selectOption(String(col));
  await page.getByRole('button',{name:'Preview import',exact:true}).click();await page.getByRole('button',{name:'Apply reviewed import',exact:true}).click();
@@ -15,15 +15,15 @@ function fixture(){const xml=s=>`<?xml version="1.0"?><worksheet xmlns="http://s
  const loanId=await page.evaluate(()=>finState.debts.find(d=>d.name==='Test Loan').id);
  assert.equal(await page.locator('#fin-debt-overview').getAttribute('open'),null);assert.match(await page.locator('#fin-next-focus').innerText(),/Test Loan/);await page.locator('#fin-debt-overview > summary').click();await page.locator(`#fin-debt-overview [data-fin="payment"][data-id="${loanId}"]`).click();await page.locator('#fin-amount').fill('100');await page.getByRole('button',{name:'Save payment',exact:true}).click();
  assert.equal(await page.evaluate(()=>finState.events.length),1);assert.equal(await page.evaluate(()=>F.balance(finState.debts.find(d=>d.name==='Test Loan'),finState.events,finToday()).amount),90000);
- await page.locator(`#fin-debt-overview [data-fin="reconcile"][data-id="${loanId}"]`).click();await page.locator('#fin-amount').fill('850');await page.getByRole('button',{name:'Save confirmed balance',exact:true}).click();assert.match(await page.locator('#fin-dashboard').innerText(),/Lender-confirmed/);
- await page.locator('#fin-household-paydays > summary').click();await page.getByRole('button',{name:'Set payday schedule',exact:true}).click();await page.getByRole('button',{name:'Save settings',exact:true}).click();await page.locator('#fin-pay-amount').fill('500');await page.getByRole('button',{name:'Plan this pay',exact:true}).click();await page.getByRole('button',{name:'Save actual take-home pay',exact:true}).click();
- assert.equal(await page.evaluate(()=>finState.paydays.length),1);await page.reload();await page.evaluate(()=>activateTab('money'));assert.equal(await page.evaluate(()=>finState.events.length),2);assert.equal(await page.evaluate(()=>localStorage.getItem('unrelated')),'preserve');
+ await page.locator(`#fin-debt-overview [data-fin="reconcile"][data-id="${loanId}"]`).click();await page.locator('#fin-amount').fill('850');await page.getByRole('button',{name:'Save confirmed balance',exact:true}).click();assert.match(await page.locator('#fin-manage').innerText(),/Lender-confirmed/);
+ await page.locator('#fin-household-paydays > summary').click();await page.getByRole('button',{name:'Set payday schedule',exact:true}).click();await page.getByRole('button',{name:'Save settings',exact:true}).click();await page.getByRole('button',{name:'Enter actual take-home pay',exact:true}).click();await page.locator('#fin-pay-amount').fill('500');await page.getByRole('button',{name:'Plan this pay',exact:true}).click();await page.getByRole('button',{name:'Save actual take-home pay',exact:true}).click();
+ assert.equal(await page.evaluate(()=>finState.paydays.length),1);await page.reload();await page.evaluate(()=>{activateTab('money');finReveal('fin-manage');finReveal('fin-pay-entry');});assert.equal(await page.evaluate(()=>finState.events.length),2);assert.equal(await page.evaluate(()=>localStorage.getItem('unrelated')),'preserve');
  const backup=await page.evaluate(()=>JSON.stringify(finState));await page.getByText('Backup & restore',{exact:true}).click();page.on('dialog',d=>d.accept());await page.locator('#fin-restore').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(backup)});await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>finState.events.length),2);
  await page.locator('#fin-restore').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{"version":1}')});await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>finState.events.length),2);assert.match(await page.locator('#fin-status').innerText(),/Invalid/);
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'/tmp/netlify-finance-mobile.png',fullPage:true});
  // Storage failure must not silently claim that changes persisted.
  await page.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=()=>{throw Error('full')};try{finCommit({...finState,strategy:'snowball'})}catch(e){finMessage(e.message,true)}Storage.prototype.setItem=original;});assert.match(await page.locator('#fin-status').innerText(),/No changes were applied/);
- if(process.env.BUDGET_WORKBOOK){await page.getByText('Import Excel workbook',{exact:true}).click();await page.locator('#fin-workbook').setInputFiles(process.env.BUDGET_WORKBOOK);await page.locator('#fin-visa').selectOption('Credit Card 1');await page.getByRole('button',{name:'Preview complete budget',exact:true}).click();await page.getByRole('button',{name:'Apply complete budget',exact:true}).click();assert.equal(await page.evaluate(()=>finState.debts.find(d=>d.name==='Visa').opening),0);assert.equal(await page.evaluate(()=>finState.events.length),2);assert.ok(await page.evaluate(()=>finState.bills.length>0));assert.ok(await page.evaluate(()=>finState.debts.some(d=>d.installments?.length===2)));assert.ok(await page.evaluate(()=>{const source=finSheets.find(s=>s.name==='Balance Sheet').rows;const imported=FinanceTemplate.prepare(finSheets,finToday(),'Credit Card 1');return imported.bills.reduce((n,b)=>n+b.amount,0)+imported.debts.reduce((n,d)=>n+d.payment,0)===F.money(source[34][6])+F.money(source[34][7]);}),'Imported monthly obligations reconcile to workbook summary');await page.reload();await page.evaluate(()=>activateTab('money'));}
+ if(process.env.BUDGET_WORKBOOK){await page.getByText('Import Excel workbook',{exact:true}).click();await page.locator('#fin-workbook').setInputFiles(process.env.BUDGET_WORKBOOK);await page.locator('#fin-visa').selectOption('Credit Card 1');await page.getByRole('button',{name:'Preview complete budget',exact:true}).click();await page.getByRole('button',{name:'Apply complete budget',exact:true}).click();assert.equal(await page.evaluate(()=>finState.debts.find(d=>d.name==='Visa').opening),0);assert.equal(await page.evaluate(()=>finState.events.length),2);assert.ok(await page.evaluate(()=>finState.bills.length>0));assert.ok(await page.evaluate(()=>finState.debts.some(d=>d.installments?.length===2)));assert.ok(await page.evaluate(()=>{const source=finSheets.find(s=>s.name==='Balance Sheet').rows;const imported=FinanceTemplate.prepare(finSheets,finToday(),'Credit Card 1');return imported.bills.reduce((n,b)=>n+b.amount,0)+imported.debts.reduce((n,d)=>n+d.payment,0)===F.money(source[34][6])+F.money(source[34][7]);}),'Imported monthly obligations reconcile to workbook summary');await page.reload();await page.evaluate(()=>{activateTab('money');finReveal('fin-manage');finReveal('fin-pay-entry');});}
 
  await page.locator('#fin-household-paydays').evaluate(el=>el.open=true);
  // Separate sources may receive money on the same date; actual income remains distinct.
@@ -34,13 +34,13 @@ function fixture(){const xml=s=>`<?xml version="1.0"?><worksheet xmlns="http://s
  }
  assert.equal(await page.evaluate(()=>F.incomeSources(finState).length),4);
  const partnerId=await page.evaluate(()=>F.incomeSources(finState).find(s=>s.name==='Partner pay').id);
- await page.locator('#fin-pay-source').selectOption(partnerId);await page.locator('#fin-pay-amount').fill('300');await page.getByRole('button',{name:'Plan this pay',exact:true}).click();
+ await page.locator('#fin-pay-source').selectOption(partnerId);await page.getByRole('button',{name:'Enter actual take-home pay',exact:true}).click();await page.locator('#fin-pay-amount').fill('300');await page.getByRole('button',{name:'Plan this pay',exact:true}).click();
  assert.match(await page.locator('#fin-plan').innerText(),/already recorded on this date/);
  await page.getByRole('button',{name:'Save actual take-home pay',exact:true}).click();assert.equal(await page.evaluate(()=>finState.paydays.length),2);
- await page.locator('#fin-pay-amount').fill('300');await page.getByRole('button',{name:'Plan this pay',exact:true}).click();await page.getByRole('button',{name:'Save actual take-home pay',exact:true}).click();
+ await page.getByRole('button',{name:'Enter actual take-home pay',exact:true}).click();await page.locator('#fin-pay-amount').fill('300');await page.getByRole('button',{name:'Plan this pay',exact:true}).click();await page.getByRole('button',{name:'Save actual take-home pay',exact:true}).click();
  assert.equal(await page.evaluate(()=>finState.paydays.length),2);assert.match(await page.locator('#fin-status').innerText(),/already recorded/);
  await page.locator(`[data-fin="income-toggle"][data-id="${partnerId}"]`).click();
- await page.reload();await page.evaluate(()=>activateTab('money'));
+ await page.reload();await page.evaluate(()=>{activateTab('money');finReveal('fin-manage');finReveal('fin-pay-entry');});
  await page.locator('#fin-household-paydays > summary').click();assert.equal(await page.evaluate(()=>finState.paydays.length),2);assert.equal(await page.locator('#fin-pay-source option').count(),3);
  assert.equal(await page.evaluate(id=>F.incomeSources(finState).find(s=>s.id===id).active,partnerId),false);
  await page.locator(`[data-fin="income-toggle"][data-id="${partnerId}"]`).click();assert.equal(await page.locator('#fin-pay-source option').count(),4);
@@ -62,27 +62,27 @@ function fixture(){const xml=s=>`<?xml version="1.0"?><worksheet xmlns="http://s
  await page.locator(`[data-fin="schedule"][data-id="${partnerId}"]`).click();
  await page.locator('#fin-mode').selectOption('monthlyweekday');await page.locator('#fin-ordinal').selectOption('-1');await page.locator('#fin-weekday').selectOption('5');
  await page.getByRole('button',{name:'Save settings',exact:true}).click();
- await page.reload();await page.evaluate(()=>activateTab('money'));
+ await page.reload();await page.evaluate(()=>{activateTab('money');finReveal('fin-manage');finReveal('fin-pay-entry');});
  assert.equal(await page.locator('#fin-debt-overview').getAttribute('open'),null);
  assert.match(await page.locator('#fin-next-focus').innerText(),/Next focus/);
- await page.locator('#fin-next-focus .fin-plan-settings > summary').click();await page.locator('#fin-next-focus .fin-focus-settings > summary').click();
+ await page.locator('#fin-goal-settings .fin-plan-settings > summary').click();await page.locator('#fin-goal-settings .fin-focus-settings > summary').click();
  await page.locator('#fin-focus-choice').selectOption(loanId);
  assert.equal(await page.evaluate(()=>finState.focusDebtId),loanId);
- await page.reload();await page.evaluate(()=>activateTab('money'));
+ await page.reload();await page.evaluate(()=>{activateTab('money');finReveal('fin-manage');finReveal('fin-pay-entry');});
  assert.match(await page.locator('#fin-next-focus').innerText(),/pinned/);
  assert.equal(await page.evaluate(()=>JSON.stringify(finState.paydays)),ledgerBefore);
  assert.equal(await page.evaluate(id=>F.incomeSources(finState).find(x=>x.id===id).mode,partnerId),'monthlyweekday');
  await page.locator('#fin-next-focus').screenshot({path:'/private/tmp/finance-next-focus.png'});
  // Multiple milestone dates focus the next portion without changing total debt.
  const outstandingBefore=await page.evaluate(()=>F.balance(finState.debts.find(d=>d.id===finState.focusDebtId),finState.events,finToday()).amount);
- await page.locator('#fin-next-focus .fin-plan-settings > summary').click();await page.locator('#fin-next-focus [data-fin="deadlines"]').click();
+ await page.locator('#fin-goal-settings .fin-plan-settings > summary').click();await page.locator('#fin-goal-settings [data-fin="deadlines"]').click();
  await page.locator('[name="milestoneLabel"]').fill('Promotion A');await page.locator('[name="milestoneAmount"]').fill('200');await page.locator('[name="milestoneDue"]').fill('2027-03-01');
  await page.getByRole('button',{name:'Add another milestone',exact:true}).click();
  await page.locator('[name="milestoneLabel"]').nth(1).fill('Promotion B');await page.locator('[name="milestoneAmount"]').nth(1).fill('100');await page.locator('[name="milestoneDue"]').nth(1).fill('2027-04-01');
  await page.getByRole('button',{name:'Save settings',exact:true}).click();
  assert.match(await page.locator('#fin-next-focus').innerText(),/Clear Promotion A/);assert.match(await page.locator('#fin-next-focus').innerText(),/deadline first/);
  assert.equal(await page.evaluate(()=>F.balance(finState.debts.find(d=>d.id===finState.focusDebtId),finState.events,finToday()).amount),outstandingBefore);
- await page.locator('#fin-next-focus [data-fin="payment"]').click();await page.locator('#fin-amount').fill('200');await page.getByRole('button',{name:'Save payment',exact:true}).click();
+ await page.evaluate(()=>finReveal('fin-debt-overview'));const focusId=await page.evaluate(()=>finState.focusDebtId);await page.locator(`#fin-debt-overview [data-fin="payment"][data-id="${focusId}"]`).click();await page.locator('#fin-amount').fill('200');await page.getByRole('button',{name:'Save payment',exact:true}).click();
  assert.match(await page.locator('#fin-next-focus').innerText(),/Clear Promotion B/);
  const setupBefore=await page.evaluate(()=>JSON.stringify({debts:finState.debts.map(d=>({id:d.id,opening:d.opening})),events:finState.events,paydays:finState.paydays}));
  await page.locator('#fin-household-paydays > summary').click();
@@ -95,14 +95,8 @@ function fixture(){const xml=s=>`<?xml version="1.0"?><worksheet xmlns="http://s
  assert.equal(await page.evaluate(()=>JSON.stringify({debts:finState.debts.map(d=>({id:d.id,opening:d.opening})),events:finState.events,paydays:finState.paydays})),setupBefore);
  assert.match(await page.locator('#fin-next-focus').innerText(),/Reviewed target/);
  await page.locator('#fin-next-focus').screenshot({path:'/private/tmp/finance-deadline-focus.png'});
- // CFO check-in records a review without changing actual financial records.
- const beforeReview=await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays}));
- await page.locator('#fin-cfo-section > summary').click();assert.match(await page.locator('#fin-cfo-section').innerText(),/Expected income/);
- await page.locator('#fin-review-note').fill('<img src=x onerror=alert(1)> Review statements');await page.getByRole('button',{name:'Mark household review complete',exact:true}).click();
- assert.equal(await page.evaluate(()=>finState.cfoReview.date),await page.evaluate(()=>finToday()));assert.equal(await page.locator('#fin-cfo-section img').count(),0);
- assert.equal(await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays})),beforeReview);
- await page.reload();await page.evaluate(()=>activateTab('money'));await page.locator('#fin-cfo-section > summary').click();assert.match(await page.locator('#fin-review-note').inputValue(),/Review statements/);
- await page.locator('#fin-cfo-section').screenshot({path:'/private/tmp/finance-cfo-checkin.png'});
+ // Retired household review records remain archived, without a duplicate dashboard.
+ await page.evaluate(()=>finCommit({...finState,cfoReview:{date:finToday(),note:'Review statements'}}));assert.equal(await page.locator('#fin-cfo-section').count(),0);assert.match(await page.locator('#fin-money-archive-body').textContent(),/Review statements/);
  // A quick decision compares against the saved plan and logs no real transaction.
  const beforeDecision=await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays,sources:finState.incomeSources}));
  await page.locator('#decision-surplus').fill('100');await page.getByRole('button',{name:'Save current plan assumptions',exact:true}).click();
@@ -111,32 +105,14 @@ function fixture(){const xml=s=>`<?xml version="1.0"?><worksheet xmlns="http://s
  await page.locator('#decision-status').selectOption('chosen');await page.getByRole('button',{name:'Save to decision log',exact:true}).click();
  assert.equal(await page.evaluate(()=>finState.decisions[0].status),'chosen');
  assert.equal(await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays,sources:finState.incomeSources})),beforeDecision);
- await page.reload();await page.evaluate(()=>activateTab('money'));await page.locator('#decision-history > summary').click();await page.getByRole('button',{name:'Recheck',exact:true}).click();assert.match(await page.locator('#decision-result').innerText(),/What changes/);
+ await page.reload();await page.evaluate(()=>{activateTab('money');finReveal('fin-manage');finReveal('fin-pay-entry');});await page.locator('#decision-history > summary').click();await page.getByRole('button',{name:'Recheck',exact:true}).click();assert.match(await page.locator('#decision-result').innerText(),/What changes/);
  await page.locator('#decision-amount').fill('200');await page.getByRole('button',{name:'Show the impact',exact:true}).click();assert.match(await page.locator('#decision-result').innerText(),/Funding gap/);
  await page.locator('#decision-kind').selectOption('monthly-cost');await page.locator('#decision-amount').fill('10');assert.equal(await page.locator('#decision-funding-wrap').isVisible(),false);await page.getByRole('button',{name:'Show the impact',exact:true}).click();
  for(const width of [320,390,760]){await page.setViewportSize({width,height:844});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Decision check fits '+width);}
  assert.equal(await page.evaluate(()=>F.validate(JSON.parse(JSON.stringify(finState))).decisions.length),1);
  await page.setViewportSize({width:390,height:844});await page.locator('#fin-decision-check').screenshot({path:'/private/tmp/finance-decision-check.png'});
- // Scenario previews and saves must not change real balances, payment history or sources.
- const realBefore=await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays,sources:finState.incomeSources}));
- await page.locator('#fin-scenario-section > summary').click();
- await page.locator('#what-monthlySurplus').fill('100');await page.locator('#what-incomeDelta').fill('100');
- await page.getByRole('button',{name:'Compare goal dates',exact:true}).click();
- assert.match(await page.locator('#fin-scenario-result').innerText(),/earlier/);
- assert.equal(await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays,sources:finState.incomeSources})),realBefore);
- await page.locator('#what-name').fill('Extra income');await page.getByRole('button',{name:'Save assumptions',exact:true}).click();
- assert.equal(await page.evaluate(()=>finState.whatIf.length),1);
- assert.equal(await page.evaluate(()=>JSON.stringify({debts:finState.debts,events:finState.events,paydays:finState.paydays,sources:finState.incomeSources})),realBefore);
- await page.reload();await page.evaluate(()=>activateTab('money'));await page.locator('#fin-scenario-section > summary').click();
- const scenarioId=await page.evaluate(()=>finState.whatIf[0].id);await page.locator('#what-saved').selectOption(scenarioId);
- assert.match(await page.locator('#fin-scenario-result').innerText(),/earlier/);
- await page.locator('#what-incomeDirection').selectOption('decrease');await page.locator('#what-incomeDelta').fill('1000');
- await page.getByRole('button',{name:'Compare goal dates',exact:true}).click();assert.match(await page.locator('#fin-scenario-result').innerText(),/shortfall/);
- await page.locator('#what-incomeDirection').selectOption('increase');await page.locator('#what-incomeDelta').fill('100');await page.getByRole('button',{name:'Compare goal dates',exact:true}).click();
- for(const width of [320,390,760]){await page.setViewportSize({width,height:844});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'What If fits '+width);}
- await page.locator('#fin-scenario-form').getByText('Savings goal · optional',{exact:true}).click();await page.locator('#what-goalName').fill('<img src=x onerror=alert(1)>');await page.locator('#what-goalTarget').fill('2000');await page.locator('#what-goalSaved').fill('500');await page.locator('#what-newDebtShare').fill('50');await page.getByRole('button',{name:'Compare goal dates',exact:true}).click();assert.equal(await page.locator('#fin-scenario-result img, #fin-scenario-result script').count(),0);assert.match(await page.locator('#fin-scenario-result').innerText(),/img src/);
- await page.setViewportSize({width:390,height:844});await page.locator('#fin-scenario-result').screenshot({path:'/private/tmp/finance-what-if-preview.png'});
- assert.equal(await page.evaluate(()=>F.validate(JSON.parse(JSON.stringify(finState))).whatIf.length),1);
+ // Advanced scenario records remain read-only, with one active decision checker.
+ await page.evaluate(()=>finCommit({...finState,whatIf:[{id:'archived',name:'Old scenario <img src=x>',input:F.currentPlan(finState,finToday())}]}));assert.equal(await page.locator('#fin-scenario-section').count(),0);assert.match(await page.locator('#fin-money-archive-body').textContent(),/Old scenario/);assert.equal(await page.locator('#fin-money-archive-body img').count(),0);assert.equal(await page.evaluate(()=>F.validate(JSON.parse(JSON.stringify(finState))).whatIf.length),1);
  const sharedBefore=await page.evaluate(()=>localStorage.getItem('akb-development-prototype'));await page.evaluate(()=>finCommit({...finState,strategy:'avalanche'}));assert.equal(await page.evaluate(()=>localStorage.getItem('akb-development-prototype')),sharedBefore,'Finance leaves shared state unchanged');
  await page.evaluate(()=>{const d=finState.debts[0];d.name='<img src=x onerror=alert(1)>';finRender();});assert.equal(await page.locator('#fin-dashboard img, #fin-dashboard script').count(),0);
  for(const n of ['dashboard','fitness','learn','coach','money','names','contacts','customers','lli','screenshots'])await page.evaluate(n=>activateTab(n),n);assert.deepEqual(errors,[]);
