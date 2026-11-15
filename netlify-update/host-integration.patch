@@ -5,11 +5,23 @@
      <link rel="apple-touch-icon" href="assets/icon-180.png" />
      <link rel="manifest" href="manifest.json" />
 -    <link rel="stylesheet" href="styles.css?v=43" />
-+    <link rel="stylesheet" href="styles.css?v=61" />
-+    <link rel="stylesheet" href="budget.css?v=61" />
++    <link rel="stylesheet" href="styles.css?v=62" />
++    <link rel="stylesheet" href="budget.css?v=62" />
    </head>
    <body>
      <section class="invite-claim" id="partnerInvitePanel" hidden>
+@@ -33,9 +34,9 @@
+     <div class="app-shell home-active">
+       <header class="topbar">
+         <div class="brand-lockup">
+-          <div class="brand-mark" aria-hidden="true">
++          <button class="brand-mark" type="button" aria-label="AKB · Return to main menu" onclick="activateTab('dashboard')">
+             <span>AKB</span>
+-          </div>
++          </button>
+           <div>
+             <p class="eyebrow">AKB Development</p>
+             <h1>Life Hub</h1>
 @@ -45,7 +46,7 @@
  
        <main>
@@ -184,20 +196,20 @@
 -    <script src="cloud-config.js?v=43"></script>
 -    <script src="finance-engine.js?v=43"></script>
 -    <script src="app.js?v=43"></script>
-+    <script src="cloud-config.js?v=61"></script>
-+    <script src="finance-engine.js?v=61"></script>
-+    <script src="app.js?v=61"></script>
-+    <script src="budget-engine.js?v=61"></script>
-+    <script src="budget-xlsx.js?v=61"></script>
-+    <script src="budget-template.js?v=61"></script>
-+    <script src="budget-scenarios.js?v=61"></script>
++    <script src="cloud-config.js?v=62"></script>
++    <script src="finance-engine.js?v=62"></script>
++    <script src="app.js?v=62"></script>
++    <script src="budget-engine.js?v=62"></script>
++    <script src="budget-xlsx.js?v=62"></script>
++    <script src="budget-template.js?v=62"></script>
++    <script src="budget-scenarios.js?v=62"></script>
 +
-+    <script src="budget-decision-ui.js?v=61"></script>
-+    <script src="budget-paycheck-ui.js?v=61"></script>
-+    <script src="budget-planning-ui.js?v=61"></script>
-+    <script src="budget-layout.js?v=61"></script>
-+    <script src="budget-ui.js?v=61"></script>
-+    <script src="budget-voice.js?v=61"></script>
++    <script src="budget-decision-ui.js?v=62"></script>
++    <script src="budget-paycheck-ui.js?v=62"></script>
++    <script src="budget-planning-ui.js?v=62"></script>
++    <script src="budget-layout.js?v=62"></script>
++    <script src="budget-ui.js?v=62"></script>
++    <script src="budget-voice.js?v=62"></script>
    </body>
  </html>
 --- a/app.js
@@ -354,35 +366,44 @@
 +++ b/sw.js
 @@ -1,11 +1,22 @@
 -const cacheName = "akb-development-v43";
-+const cacheName = "akb-development-v61";
++const cacheName = "akb-development-v62";
  const assets = [
-+  "./budget-layout.js?v=61",
-+  "./budget-planning-ui.js?v=61",
-+  "./budget-voice.js?v=61",
-+  "./budget-paycheck-ui.js?v=61",
-+  "./budget-decision-ui.js?v=61",
-+  "./budget-scenarios.js?v=61",
-+  "./budget.css?v=61",
-+  "./budget-engine.js?v=61",
-+  "./budget-xlsx.js?v=61",
-+  "./budget-template.js?v=61",
-+  "./budget-ui.js?v=61",
++  "./budget-layout.js?v=62",
++  "./budget-planning-ui.js?v=62",
++  "./budget-voice.js?v=62",
++  "./budget-paycheck-ui.js?v=62",
++  "./budget-decision-ui.js?v=62",
++  "./budget-scenarios.js?v=62",
++  "./budget.css?v=62",
++  "./budget-engine.js?v=62",
++  "./budget-xlsx.js?v=62",
++  "./budget-template.js?v=62",
++  "./budget-ui.js?v=62",
    "./",
    "./index.html",
 -  "./styles.css?v=43",
 -  "./finance-engine.js?v=43",
 -  "./app.js?v=43",
 -  "./cloud-config.js?v=43",
-+  "./styles.css?v=61",
-+  "./finance-engine.js?v=61",
-+  "./app.js?v=61",
-+  "./cloud-config.js?v=61",
++  "./styles.css?v=62",
++  "./finance-engine.js?v=62",
++  "./app.js?v=62",
++  "./cloud-config.js?v=62",
    "./manifest.json",
    "./icon.svg",
    "./assets/icon-180.png",
 --- a/styles.css
 +++ b/styles.css
-@@ -2256,3 +2256,19 @@
+@@ -99,6 +99,8 @@
+ }
+ 
+ .brand-mark {
++  padding: 0;
++  cursor: pointer;
+   display: grid;
+   place-items: center;
+   width: 52px;
+@@ -2256,3 +2258,21 @@
  .home-utilities{margin:4px 0 14px;border-top:1px solid #d9ded2}.home-utilities .system-panel{margin-top:0}
  @media(max-width:650px){.home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.home-tile{min-height:139px;padding:15px}.home-tile-top{margin-bottom:14px}.home-tile strong{font-size:16px}.home-tile-caption{font-size:11px}.home-workspace .task-form{display:grid;grid-template-columns:minmax(0,1fr)}.home-workspace .task-form>*{min-width:0;max-width:100%}.home-workspace .task-form .task-details{grid-column:1/-1}}
  @media(prefers-reduced-motion:reduce){.home-tile{transition:none}}
@@ -402,3 +423,5 @@
 +.upload-form input[type=file]{width:100%;box-sizing:border-box}
 +
 +.person-details{grid-column:1/-1;min-width:0}.person-details>summary{cursor:pointer;padding:10px 0;color:#65705f}.person-details input,.person-details select{width:100%;box-sizing:border-box;margin-bottom:8px}
++
++.brand-mark:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 4px; }

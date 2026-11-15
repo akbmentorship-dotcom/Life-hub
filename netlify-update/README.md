@@ -1,10 +1,10 @@
-# Netlify Life Hub v61
+# Netlify Life Hub v62
 
 Target: https://inspiring-paprenjak-0cfbca.netlify.app/
 
 This is the Finance integration for the actually deployed AKB Life Hub (v43), not the separate Align Living/GitHub Pages app at the repository root.
 
-The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v61.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
+The deployable working directory is ../akb-netlify-upgrade relative to the repository directory. Deployment uses the complete static bundle prepared as akb-netlify-finance-v62.zip, retaining the deployed app assets and original cloud configuration. Do not deploy the GitHub repository root over Netlify.
 
 Review: host-integration.patch modifies the deployed v43 index.html, app.js and sw.js. Copy the budget*.js and budget.css files alongside them. Tests run from the deployed app directory. New code is included here without copying the existing app's financial seed values or cloud configuration into public Git history. The private XLSX and exported ledgers are never in this bundle or repository.
 
@@ -159,3 +159,7 @@ fitness-edit.cjs verifies cancellation, blank-name validation, completed-set pre
 ## Add workout sets (v61)
 
 An Add set button at the bottom of each exercise appends a blank, unchecked weight/reps row and focuses its weight field. Existing entries and completion flags are preserved. Extra sets belong to the current workout, persist across reload and appear in finished history. Customized empty drafts survive program-start changes. Exercise editing and offline-cache tests cover added-set persistence and completion.
+
+## Logo returns Home (v62)
+
+The upper-left AKB mark is a labeled, keyboard-accessible button that opens the main Home tile menu through the existing navigation function. Open Home panels and More navigation close through their existing behavior. Workout drafts and stored records remain unchanged. Workflow checks verify returning from Fitness and an open task panel.
